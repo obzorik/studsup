@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudsUp — LEGO Community & Marketplace</title>
+<link rel="stylesheet" href="../css/shared.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f4ef;color:#1a1a1a;line-height:1.5}
+a{text-decoration:none;color:inherit}
+
+/* NAV */
+.nav{background:#1a1a2e;position:sticky;top:0;z-index:100;padding:0 32px;display:flex;align-items:center;height:56px;gap:8px}
+.logo{font-size:20px;font-weight:800;color:#FFD700;margin-right:20px;letter-spacing:-0.5px;white-space:nowrap}
+.logo span{color:#FF4444}
+.nav-links{display:flex;gap:2px;flex:1;overflow:hidden}
+.nl{color:rgba(255,255,255,.55);font-size:13px;padding:6px 11px;border-radius:6px;cursor:pointer;border:none;background:none;white-space:nowrap;transition:all .15s}
+.nl:hover,.nl.on{color:#fff;background:rgba(255,255,255,.1)}
+.nl.on{color:#FFD700}
+.nav-r{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.nb{background:#FFD700;color:#1a1a2e;border:none;border-radius:20px;font-size:12px;font-weight:700;padding:5px 14px;cursor:pointer;white-space:nowrap}
+.nb:hover{background:#f0c800}
+.nav-icon{color:rgba(255,255,255,.6);font-size:18px;cursor:pointer;padding:6px;border-radius:6px;border:none;background:none}
+.nav-icon:hover{color:#fff;background:rgba(255,255,255,.1)}
+.avatar{width:32px;height:32px;border-radius:50%;background:#FF4444;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0}
+
+/* HERO */
+.hero{background:#1a1a2e;padding:52px 32px 44px;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;right:-60px;top:-60px;width:320px;height:320px;background:rgba(255,215,0,.04);border-radius:50%;pointer-events:none}
+.hero-inner{max-width:1060px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(255,215,0,.12);color:#FFD700;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;margin-bottom:14px;border:1px solid rgba(255,215,0,.2)}
+.hero h1{font-size:40px;font-weight:800;color:#fff;line-height:1.15;margin-bottom:12px;letter-spacing:-1px}
+.hero h1 em{color:#FFD700;font-style:normal}
+.hero p{color:rgba(255,255,255,.6);font-size:15px;margin-bottom:24px;max-width:440px;line-height:1.65}
+.hero-btns{display:flex;gap:10px;flex-wrap:wrap}
+.btn-y{background:#FFD700;color:#1a1a2e;border:none;border-radius:8px;font-size:14px;font-weight:700;padding:11px 22px;cursor:pointer;transition:all .15s}
+.btn-y:hover{background:#f0c800;transform:translateY(-1px)}
+.btn-w{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:8px;font-size:14px;padding:11px 22px;cursor:pointer;transition:all .15s}
+.btn-w:hover{background:rgba(255,255,255,.15)}
+.hero-stats{display:flex;gap:28px;margin-top:28px}
+.hstat{color:rgba(255,255,255,.45);font-size:12px}
+.hstat strong{color:#FFD700;font-size:18px;font-weight:800;display:block}
+.search-wrap{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:20px}
+.search-wrap h3{color:#fff;font-size:15px;font-weight:600;margin-bottom:14px}
+.srow{display:flex;gap:8px;margin-bottom:10px}
+.sinp{flex:1;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:10px 14px;color:#fff;font-size:14px;outline:none}
+.sinp::placeholder{color:rgba(255,255,255,.35)}
+.sinp:focus{border-color:#FFD700;background:rgba(255,255,255,.15)}
+.sbtn{background:#FFD700;border:none;border-radius:8px;color:#1a1a2e;font-size:14px;font-weight:700;padding:10px 18px;cursor:pointer}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.fchip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.65);font-size:11px;padding:4px 10px;border-radius:20px;cursor:pointer;transition:all .12s}
+.fchip:hover,.fchip.on{background:rgba(255,215,0,.15);border-color:#FFD700;color:#FFD700}
+
+/* CONTENT */
+.content{max-width:1060px;margin:0 auto;padding:32px 20px}
+.sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.sec-hd h2{font-size:18px;font-weight:700}
+.sec-hd a{font-size:13px;color:#666;cursor:pointer}
+.sec-hd a:hover{color:#1a1a2e}
+
+/* CATEGORY STRIP */
+.cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:36px}
+.cat{background:#fff;border:1px solid #e8e7e2;border-radius:12px;padding:16px 12px;text-align:center;cursor:pointer;transition:all .15s}
+.cat:hover{border-color:#FFD700;transform:translateY(-2px)}
+.cat-ico{font-size:28px;margin-bottom:8px}
+.cat-name{font-size:13px;font-weight:600;margin-bottom:2px}
+.cat-cnt{font-size:11px;color:#888}
+
+/* PARTS GRID */
+.parts{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:12px;margin-bottom:36px}
+.pcard{background:#fff;border:1px solid #e8e7e2;border-radius:12px;overflow:hidden;cursor:pointer;transition:all .15s}
+.pcard:hover{border-color:#ddd;transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.08)}
+.pimg{height:120px;background:#f5f4ef;display:flex;align-items:center;justify-content:center;font-size:52px;position:relative}
+.pbadge{position:absolute;top:7px;right:7px;font-size:10px;font-weight:700;padding:3px 7px;border-radius:5px}
+.bnew{background:#E1F5EE;color:#085041}
+.bused{background:#FAEEDA;color:#633806}
+.phot{background:#FF4444;color:#fff}
+.pinfo{padding:12px}
+.pname{font-size:13px;font-weight:600;margin-bottom:2px}
+.pid{font-size:11px;color:#888;margin-bottom:8px}
+.pfoot{display:flex;align-items:center;justify-content:space-between}
+.pprice{font-size:15px;font-weight:800}
+.psellers{font-size:11px;color:#888}
+.pacts{display:flex;gap:5px;margin-top:8px}
+.pact{flex:1;background:#f5f4ef;border:1px solid #e0e0dc;border-radius:6px;font-size:11px;padding:5px;cursor:pointer;text-align:center;transition:all .12s}
+.pact:hover{background:#fff;border-color:#ccc}
+.pact.buy{background:#FFD700;border-color:#FFD700;color:#1a1a2e;font-weight:700}
+.pact.buy:hover{background:#f0c800}
+
+/* LIVE STREAMS */
+.streams{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:36px}
+.scard{background:#fff;border:1px solid #e8e7e2;border-radius:12px;overflow:hidden;cursor:pointer;transition:all .15s}
+.scard:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.08)}
+.sthumb{height:130px;background:#f5f4ef;display:flex;align-items:center;justify-content:center;font-size:44px;position:relative}
+.sthumb.dark{background:#1a1a2e}
+.live-badge{position:absolute;top:8px;left:8px;background:#FF4444;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px;display:flex;align-items:center;gap:4px}
+.ldot{width:6px;height:6px;background:#fff;border-radius:50%;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.viewers{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.65);color:#fff;font-size:10px;padding:3px 7px;border-radius:5px}
+.sinfo{padding:12px}
+.stitle{font-size:13px;font-weight:600;margin-bottom:3px}
+.suser{font-size:11px;color:#888;display:flex;align-items:center;gap:5px}
+.suser-dot{width:6px;height:6px;border-radius:50%;background:#22c55e}
+
+/* LUGS */
+.lugs{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px;margin-bottom:36px}
+.lcard{background:#fff;border:1px solid #e8e7e2;border-radius:12px;padding:16px;cursor:pointer;transition:all .15s}
+.lcard:hover{border-color:#ddd;box-shadow:0 4px 16px rgba(0,0,0,.07)}
+.lhead{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.lavatar{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.lname{font-size:15px;font-weight:700}
+.lloc{font-size:12px;color:#888;margin-top:2px}
+.lstats{display:flex;gap:16px;margin-bottom:10px}
+.lstat{font-size:12px;color:#888}
+.lstat strong{color:#1a1a1a;font-size:14px;font-weight:700;display:block}
+.ltags{display:flex;gap:5px;flex-wrap:wrap}
+.ltag{background:#f5f4ef;border:1px solid #e0e0dc;color:#666;font-size:11px;padding:2px 8px;border-radius:20px}
+.ljoin{margin-left:auto;background:#FFD700;border:none;border-radius:8px;font-size:12px;font-weight:700;color:#1a1a2e;padding:6px 14px;cursor:pointer;align-self:flex-start}
+
+/* BLOG */
+.blogs{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-bottom:36px}
+.bcard{background:#fff;border:1px solid #e8e7e2;border-radius:12px;overflow:hidden;cursor:pointer;transition:all .15s}
+.bcard:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.08)}
+.bcover{height:110px;display:flex;align-items:center;justify-content:center;font-size:44px}
+.bbody{padding:14px}
+.btag{display:inline-block;background:#FFF8DC;border:1px solid #E6B800;color:#8a6a00;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-bottom:8px}
+.btitle{font-size:14px;font-weight:700;margin-bottom:6px;line-height:1.4}
+.bexcerpt{font-size:12px;color:#666;line-height:1.55;margin-bottom:8px}
+.bmeta{font-size:11px;color:#999;display:flex;gap:10px;align-items:center}
+.bauthor{display:flex;align-items:center;gap:5px}
+.bav{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700}
+
+/* FEATURES BANNER */
+.features{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:36px}
+.fcard{background:#fff;border:1px solid #e8e7e2;border-radius:12px;padding:16px;transition:all .15s;cursor:pointer}
+.fcard:hover{border-color:#FFD700}
+.fico{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:10px}
+.fcard h3{font-size:13px;font-weight:700;margin-bottom:4px}
+.fcard p{font-size:12px;color:#666;line-height:1.5}
+
+/* FOOTER */
+footer{background:#1a1a2e;padding:36px 32px 24px;margin-top:20px}
+.footer-grid{max-width:1060px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:32px;margin-bottom:28px}
+.foot-logo{font-size:22px;font-weight:800;color:#FFD700;margin-bottom:8px}
+.foot-logo span{color:#FF4444}
+.foot-desc{font-size:13px;color:rgba(255,255,255,.45);line-height:1.6;margin-bottom:14px}
+.social-row{display:flex;gap:8px}
+.soc{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.6);font-size:14px;cursor:pointer;border:none}
+.soc:hover{background:rgba(255,215,0,.15);color:#FFD700}
+.foot-col h4{color:#fff;font-size:13px;font-weight:700;margin-bottom:12px}
+.foot-col ul{list-style:none}
+.foot-col li{margin-bottom:7px}
+.foot-col a{font-size:13px;color:rgba(255,255,255,.45);cursor:pointer}
+.foot-col a:hover{color:rgba(255,255,255,.85)}
+.foot-bottom{max-width:1060px;margin:0 auto;border-top:1px solid rgba(255,255,255,.08);padding-top:18px;display:flex;align-items:center;justify-content:space-between}
+.foot-copy{font-size:12px;color:rgba(255,255,255,.3)}
+.foot-links{display:flex;gap:14px}
+.foot-links a{font-size:12px;color:rgba(255,255,255,.3);cursor:pointer}
+.foot-links a:hover{color:rgba(255,255,255,.6)}
+
+/* MISC */
+.badge-strip{background:#FFD700;padding:10px 32px;display:flex;align-items:center;justify-content:center;gap:32px;font-size:12px;font-weight:700;color:#1a1a2e}
+.divider{height:1px;background:#e8e7e2;margin-bottom:36px}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="../../index.html" class="nav-logo">Studs<span>Up</span></a>
+  <div class="nav-links">
+    <a href="home.html"          class="nav-link">Marketplace</a>
+    <a href="lugbulk.html"       class="nav-link">📦 Parts catalogue</a>
+    <a href="search.html"        class="nav-link">Search</a>
+    <a href="collection.html"    class="nav-link">My Collection</a>
+    <a href="lug.html"           class="nav-link">LUGs</a>
+    <a href="stream.html"        class="nav-link">Streams</a>
+    <a href="profile-blog.html"  class="nav-link">Profile</a>
+    <a href="instructions.html"  class="nav-link">Instructions</a>
+  </div>
+  <div class="nav-right" id="navRight">
+    <div id="navSellArea"></div>
+    <div id="navUserArea"></div>
+  </div>
+</nav>
+<script>
+(function(){
+  var u=null;
+  try{u=JSON.parse(sessionStorage.getItem('su_user'));}catch(e){}
+  // Sell button
+  var sa=document.getElementById('navSellArea');
+  if(sa){
+    if(u&&u.name){
+      sa.innerHTML='<button class="nav-sell" onclick="window.location.href='profile-blog.html'">+ Sell parts</button>';
+    } else {
+      sa.innerHTML='<button class="nav-sell" onclick="window.location.href='login.html'">+ Sell parts</button>';
+    }
+  }
+  // User area
+  var el=document.getElementById('navUserArea');
+  if(!el)return;
+  if(u&&u.name){
+    el.innerHTML='<a href="profile-blog.html" style="display:flex;align-items:center;gap:7px;text-decoration:none">'
+      +'<div class="nav-avatar" style="font-size:12px;flex-shrink:0">'+u.avatar+'</div>'
+      +'<span style="font-size:12px;color:rgba(255,255,255,.75);white-space:nowrap">'+u.name+'</span></a>';
+  } else {
+    el.innerHTML='<a href="login.html" class="nav-sell" style="background:var(--yellow);color:var(--dark);text-decoration:none;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap">Sign in</a>';
+  }
+})();
+</script>
+
+<div class="badge-strip">
+  🧱 2.4M parts listed &nbsp;·&nbsp; 🏪 12,000+ sellers &nbsp;·&nbsp; 🎥 Live streams now &nbsp;·&nbsp; 🏛️ 340 LUG clubs &nbsp;·&nbsp; 🌍 Ship to 60 countries
+</div>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag">🏆 World's most complete LEGO platform</div>
+      <h1>Buy, Build &<br><em>Connect</em> with the<br>LEGO community</h1>
+      <p>Marketplace, collection tracker, live streams, LUG clubs, blogs, gallery and AI part identification — all in one place for builders worldwide.</p>
+      <div class="hero-btns">
+        <button class="btn-y">Browse marketplace →</button>
+        <button class="btn-w">Join free</button>
+      </div>
+      <div class="hero-stats">
+        <div class="hstat"><strong>2.4M</strong>Parts listed</div>
+        <div class="hstat"><strong>94K</strong>Unique parts</div>
+        <div class="hstat"><strong>12K</strong>Sellers</div>
+        <div class="hstat"><strong>340</strong>LUG clubs</div>
+        <div class="hstat"><strong>48</strong>Live now</div>
+      </div>
+    </div>
+    <div class="search-wrap">
+      <h3>Find any part, set or minifigure</h3>
+      <div class="srow">
+        <input class="sinp" type="text" placeholder="Search parts, sets, MOCs, minifigs…" id="heroSearch">
+        <button class="sbtn" onclick="doSearch()">Search</button>
+      </div>
+      <div class="filters">
+        <span class="fchip on" onclick="toggleChip(this)">All</span>
+        <span class="fchip" onclick="toggleChip(this)">Parts</span>
+        <span class="fchip" onclick="toggleChip(this)">Sets</span>
+        <span class="fchip" onclick="toggleChip(this)">Minifigures</span>
+        <span class="fchip" onclick="toggleChip(this)">MOCs</span>
+        <span class="fchip" onclick="toggleChip(this)">Bulk lots</span>
+        <span class="fchip" onclick="toggleChip(this)">New only</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="content">
+
+  <!-- CATEGORIES -->
+  <div class="sec-hd"><h2>Browse categories</h2><a onclick="alert('All 48 categories')">View all 48 →</a></div>
+  <div class="cats">
+    <div class="cat"><div class="cat-ico">🧱</div><div class="cat-name">Bricks</div><div class="cat-cnt">38,420 parts</div></div>
+    <div class="cat"><div class="cat-ico">⚙️</div><div class="cat-name">Technic</div><div class="cat-cnt">12,850 parts</div></div>
+    <div class="cat"><div class="cat-ico">🧑‍🚀</div><div class="cat-name">Minifigures</div><div class="cat-cnt">18,841 figs</div></div>
+    <div class="cat"><div class="cat-ico">📦</div><div class="cat-name">Sets</div><div class="cat-cnt">21,546 sets</div></div>
+    <div class="cat"><div class="cat-ico">🏆</div><div class="cat-name">MOCs</div><div class="cat-cnt">131K designs</div></div>
+    <div class="cat"><div class="cat-ico">🚗</div><div class="cat-name">City</div><div class="cat-cnt">9,200 parts</div></div>
+    <div class="cat"><div class="cat-ico">🏰</div><div class="cat-name">Castle</div><div class="cat-cnt">6,440 parts</div></div>
+    <div class="cat"><div class="cat-ico">🌌</div><div class="cat-name">Space</div><div class="cat-cnt">4,820 parts</div></div>
+  </div>
+
+  <!-- TRENDING PARTS -->
+  <div class="sec-hd"><h2>🔥 Trending parts</h2><a onclick="alert('All listings')">View all listings →</a></div>
+  <div class="parts">
+    <div class="pcard">
+      <div class="pimg">🟥<span class="pbadge bnew">New</span></div>
+      <div class="pinfo">
+        <div class="pname">Plate 2×4 Red</div>
+        <div class="pid">#3020 · 48 sellers</div>
+        <div class="pfoot"><span class="pprice">€0.03</span><span class="psellers">avg</span></div>
+        <div class="pacts">
+          <div class="pact buy" onclick="window.location.href='part-detail.html'">Buy</div>
+          <div class="pact">♡</div>
+          <div class="pact" onclick="window.location.href='part-detail.html'">📈</div>
+        </div>
+      </div>
+    </div>
+    <div class="pcard">
+      <div class="pimg">🏰<span class="pbadge bused">Used</span></div>
+      <div class="pinfo">
+        <div class="pname">Castle Set 10305</div>
+        <div class="pid">#10305 · 12 sellers</div>
+        <div class="pfoot"><span class="pprice">€189</span><span class="psellers">from</span></div>
+        <div class="pacts">
+          <div class="pact buy">Buy</div>
+          <div class="pact">♡</div>
+          <div class="pact">📈</div>
+        </div>
+      </div>
+    </div>
+    <div class="pcard">
+      <div class="pimg">🧑‍🚀<span class="pbadge bnew">New</span><span class="pbadge phot" style="top:7px;left:7px;right:auto">🔥 Hot</span></div>
+      <div class="pinfo">
+        <div class="pname">Astronaut Minifig</div>
+        <div class="pid">#sw0001 · 7 sellers</div>
+        <div class="pfoot"><span class="pprice">€3.20</span><span class="psellers">avg</span></div>
+        <div class="pacts">
+          <div class="pact buy">Buy</div>
+          <div class="pact">♡</div>
+          <div class="pact">📈</div>
+        </div>
+      </div>
+    </div>
+    <div class="pcard">
+      <div class="pimg">⚙️<span class="pbadge bnew">New</span></div>
+      <div class="pinfo">
+        <div class="pname">Technic Gear 24T</div>
+        <div class="pid">#3648 · 31 sellers</div>
+        <div class="pfoot"><span class="pprice">€0.15</span><span class="psellers">avg</span></div>
+        <div class="pacts">
+          <div class="pact buy">Buy</div>
+          <div class="pact">♡</div>
+          <div class="pact">📈</div>
+        </div>
+      </div>
+    </div>
+    <div class="pcard">
+      <div class="pimg">🌊<span class="pbadge bnew">New</span></div>
+      <div class="pinfo">
+        <div class="pname">Slope 45° Trans-Blue</div>
+        <div class="pid">#3040 · 22 sellers</div>
+        <div class="pfoot"><span class="pprice">€0.08</span><span class="psellers">avg</span></div>
+        <div class="pacts">
+          <div class="pact buy">Buy</div>
+          <div class="pact">♡</div>
+          <div class="pact">📈</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLATFORM FEATURES -->
+  <div class="sec-hd"><h2>✨ Platform features</h2></div>
+  <div class="features">
+    <div class="fcard"><div class="fico" style="background:#FFF8DC">📦</div><h3>Collection tracker</h3><p>Track every part you own. Check what's missing for any build.</p></div>
+    <div class="fcard"><div class="fico" style="background:#E1F5EE">📈</div><h3>Price history</h3><p>Full price charts per part or set. Set alerts when prices drop.</p></div>
+    <div class="fcard"><div class="fico" style="background:#E6F1FB">✅</div><h3>Build checker</h3><p>Upload a part list and instantly see what you have vs what's needed.</p></div>
+    <div class="fcard"><div class="fico" style="background:#EEEDFE">🤖</div><h3>AI part ID</h3><p>Snap a photo of any part — AI identifies it and shows listings.</p></div>
+    <div class="fcard"><div class="fico" style="background:#FCEBEB">⇄</div><h3>Part trading</h3><p>Swap parts with other collectors. Propose trades directly.</p></div>
+  </div>
+
+  <!-- LIVE STREAMS -->
+  <div class="sec-hd"><h2>🎥 Live streams</h2><a onclick="alert('All streams')">Browse all 48 live →</a></div>
+  <div class="streams">
+    <div class="scard">
+      <div class="sthumb dark">🏗️<div class="live-badge"><div class="ldot"></div>LIVE</div><div class="viewers">👁 1,240</div></div>
+      <div class="sinfo"><div class="stitle">Building Hogwarts Castle live!</div><div class="suser"><div class="suser-dot"></div>BrickMasterPaul</div></div>
+    </div>
+    <div class="scard">
+      <div class="sthumb" style="background:#0f172a">🤖<div class="live-badge"><div class="ldot"></div>LIVE</div><div class="viewers">👁 430</div></div>
+      <div class="sinfo"><div class="stitle">Technic supercar MOC speed build</div><div class="suser"><div class="suser-dot"></div>RobotBricks_LV</div></div>
+    </div>
+    <div class="scard">
+      <div class="sthumb" style="background:#1c1c1c">📦<div class="live-badge"><div class="ldot"></div>LIVE</div><div class="viewers">👁 218</div></div>
+      <div class="sinfo"><div class="stitle">Sorting 50K parts haul — come help!</div><div class="suser"><div class="suser-dot"></div>LegoSorterPro</div></div>
+    </div>
+    <div class="scard">
+      <div class="sthumb">🎨</div>
+      <div class="sinfo"><div class="stitle">Custom minifig painting tutorial</div><div class="suser" style="color:#aaa">📼 VOD · 12K views</div></div>
+    </div>
+  </div>
+
+  <!-- LUG CLUBS -->
+  <div class="sec-hd"><h2>🏛️ LUG clubs near you</h2><a onclick="alert('Find your LUG')">Find your LUG →</a></div>
+  <div class="lugs">
+    <div class="lcard">
+      <div class="lhead">
+        <div class="lavatar" style="background:#FFF8DC">🇱🇻</div>
+        <div style="flex:1">
+          <div class="lname">BrickBaltic LUG</div>
+          <div class="lloc">📍 Latvia · Riga</div>
+        </div>
+        <button class="ljoin">Join</button>
+      </div>
+      <div class="lstats">
+        <div class="lstat"><strong>284</strong>Members</div>
+        <div class="lstat"><strong>12</strong>Events/yr</div>
+        <div class="lstat"><strong>4.9★</strong>Rating</div>
+      </div>
+      <div class="ltags"><span class="ltag">Technic</span><span class="ltag">City</span><span class="ltag">Castle</span><span class="ltag">MOC</span></div>
+    </div>
+    <div class="lcard">
+      <div class="lhead">
+        <div class="lavatar" style="background:#E6F1FB">🏰</div>
+        <div style="flex:1">
+          <div class="lname">EuroBrick Castle Guild</div>
+          <div class="lloc">🌐 Online · EU</div>
+        </div>
+        <button class="ljoin">Join</button>
+      </div>
+      <div class="lstats">
+        <div class="lstat"><strong>1,820</strong>Members</div>
+        <div class="lstat"><strong>24</strong>Events/yr</div>
+        <div class="lstat"><strong>4.8★</strong>Rating</div>
+      </div>
+      <div class="ltags"><span class="ltag">Castle</span><span class="ltag">Medieval</span><span class="ltag">MOC</span></div>
+    </div>
+    <div class="lcard">
+      <div class="lhead">
+        <div class="lavatar" style="background:#EEEDFE">🚀</div>
+        <div style="flex:1">
+          <div class="lname">TechnicMasters</div>
+          <div class="lloc">📍 Germany · Berlin</div>
+        </div>
+        <button class="ljoin">Join</button>
+      </div>
+      <div class="lstats">
+        <div class="lstat"><strong>612</strong>Members</div>
+        <div class="lstat"><strong>8</strong>Events/yr</div>
+        <div class="lstat"><strong>4.7★</strong>Rating</div>
+      </div>
+      <div class="ltags"><span class="ltag">Technic</span><span class="ltag">Robotics</span><span class="ltag">MOC</span></div>
+    </div>
+  </div>
+
+  <!-- BLOG -->
+  <div class="sec-hd"><h2>📝 Community blog</h2><a onclick="alert('All posts')">Read all posts →</a></div>
+  <div class="blogs">
+    <div class="bcard">
+      <div class="bcover" style="background:#FFF8DC">🏗️</div>
+      <div class="bbody">
+        <div class="btag">MOC showcase</div>
+        <div class="btitle">How I built a 1:50 scale suspension bridge from 14,000 Technic parts</div>
+        <div class="bexcerpt">Three months, four failed attempts and one obsessed builder later — here's every technique I used.</div>
+        <div class="bmeta">
+          <div class="bauthor"><div class="bav" style="background:#E1F5EE;color:#085041">MK</div>MasterBuilder_K</div>
+          <span>❤️ 342</span><span>8 min</span>
+        </div>
+      </div>
+    </div>
+    <div class="bcard">
+      <div class="bcover" style="background:#E1F5EE">💰</div>
+      <div class="bbody">
+        <div class="btag">Investing</div>
+        <div class="btitle">Best retiring sets to buy in 2025 before prices spike on secondary market</div>
+        <div class="bexcerpt">Data from 5 years of price tracking shows which themes appreciate most after retirement.</div>
+        <div class="bmeta">
+          <div class="bauthor"><div class="bav" style="background:#E6F1FB;color:#0C447C">LP</div>LegoPriceWatch</div>
+          <span>❤️ 891</span><span>6 min</span>
+        </div>
+      </div>
+    </div>
+    <div class="bcard">
+      <div class="bcover" style="background:#EEEDFE">📦</div>
+      <div class="bbody">
+        <div class="btag">Guide</div>
+        <div class="btitle">Bulk sorting workflow: from 20kg of mixed bricks to perfectly organised bins</div>
+        <div class="bexcerpt">My complete system — containers, labelling, tools and what to do with the duplicates.</div>
+        <div class="bmeta">
+          <div class="bauthor"><div class="bav" style="background:#FAEEDA;color:#633806">SR</div>SortingRobot</div>
+          <span>❤️ 217</span><span>12 min</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="foot-logo">Studs<span>Up</span></div>
+      <div class="foot-desc">The world's most complete LEGO community platform. Marketplace, collection tools, live streams, clubs and more.</div>
+      <div class="social-row">
+        <button class="soc">𝕏</button>
+        <button class="soc">in</button>
+        <button class="soc">▶</button>
+        <button class="soc">📸</button>
+        <button class="soc">💬</button>
+      </div>
+    </div>
+    <div class="foot-col">
+      <h4>Marketplace</h4>
+      <ul>
+        <li><a>Buy parts</a></li>
+        <li><a>Sell parts</a></li>
+        <li><a>Price guide</a></li>
+        <li><a>Wanted list</a></li>
+        <li><a>Part trading</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h4>Community</h4>
+      <ul>
+        <li><a>Live streams</a></li>
+        <li><a>LUG clubs</a></li>
+        <li><a>Blog</a></li>
+        <li><a>Gallery</a></li>
+        <li><a>Forums</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h4>Tools</h4>
+      <ul>
+        <li><a>My Collection</a></li>
+        <li><a>Build checker</a></li>
+        <li><a>AI part ID</a></li>
+        <li><a>Price alerts</a></li>
+        <li><a>Studio MOC builder</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span class="foot-copy">© 2026 StudsUp.com · Not affiliated with the LEGO Group</span>
+    <div class="foot-links">
+      <a>About</a><a>API</a><a>Help</a><a>Privacy</a><a>Terms</a><a>Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggleChip(el){
+  document.querySelectorAll('.fchip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+}
+function doSearch(){
+  const v=document.getElementById('heroSearch').value.trim();
+  if(v) alert('Searching for: "'+v+'"');
+}
+document.getElementById('heroSearch').addEventListener('keydown',e=>{if(e.key==='Enter')doSearch();});
+document.querySelectorAll('.nl').forEach(b=>b.addEventListener('click',function(){
+  document.querySelectorAll('.nl').forEach(x=>x.classList.remove('on'));
+  this.classList.add('on');
+}));
+
+</script>
+<script src="../js/shared.js"></script>
+</body>
+</html>

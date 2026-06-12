@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudsUp — My Collection</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link rel="stylesheet" href="../css/shared.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f4ef;color:#1a1a1a}
+.nav{background:#1a1a2e;padding:0 32px;display:flex;align-items:center;height:56px;gap:8px}
+.logo{font-size:20px;font-weight:800;color:#FFD700;margin-right:20px}
+.logo span{color:#FF4444}
+.nl{color:rgba(255,255,255,.55);font-size:13px;padding:6px 11px;border-radius:6px;cursor:pointer;border:none;background:none}
+.nl:hover,.nl.on{color:#FFD700;background:rgba(255,255,255,.08)}
+.nav-r{display:flex;align-items:center;gap:8px;margin-left:auto}
+.nb{background:#FFD700;color:#1a1a2e;border:none;border-radius:20px;font-size:12px;font-weight:700;padding:5px 14px;cursor:pointer}
+.avatar{width:32px;height:32px;border-radius:50%;background:#FF4444;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700}
+
+.page{max-width:1060px;margin:28px auto;padding:0 20px;display:grid;grid-template-columns:260px 1fr;gap:18px}
+.sidebar{display:flex;flex-direction:column;gap:12px}
+.main{display:flex;flex-direction:column;gap:14px}
+.card{background:#fff;border:1px solid #e8e7e2;border-radius:12px;padding:16px}
+
+/* SIDEBAR */
+.user-block{text-align:center;padding:20px 16px}
+.user-av{width:64px;height:64px;border-radius:50%;background:#FF4444;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;font-weight:700}
+.user-name{font-size:16px;font-weight:700;margin-bottom:2px}
+.user-sub{font-size:12px;color:#888;margin-bottom:12px}
+.user-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ust{background:#f5f4ef;border-radius:8px;padding:8px;text-align:center}
+.ust strong{font-size:16px;font-weight:800;display:block}
+.ust span{font-size:10px;color:#888}
+
+.side-menu{display:flex;flex-direction:column;gap:2px}
+.smi{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;cursor:pointer;font-size:13px;color:#555;border:none;background:none;text-align:left;width:100%;transition:all .12s}
+.smi:hover{background:#f5f4ef;color:#1a1a1a}
+.smi.on{background:#FFF8DC;color:#8a6a00;font-weight:600}
+.smi-ico{font-size:16px;width:22px;text-align:center}
+.smi-cnt{margin-left:auto;background:#e8e7e2;color:#555;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px}
+.smi.on .smi-cnt{background:#FFD700;color:#1a1a2e}
+
+/* STATS ROW */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.sc{background:#fff;border:1px solid #e8e7e2;border-radius:12px;padding:14px}
+.sc-val{font-size:22px;font-weight:800;margin-bottom:2px}
+.sc-lbl{font-size:11px;color:#888}
+.sc-sub{font-size:11px;color:#22c55e;margin-top:2px}
+
+/* TABS */
+.tabs{display:flex;border-bottom:1px solid #eee;margin-bottom:14px}
+.tab{font-size:13px;color:#888;padding:8px 14px;border-bottom:2px solid transparent;cursor:pointer;border:none;background:none;font-weight:500}
+.tab.on{color:#1a1a1a;border-bottom:2px solid #FFD700}
+
+/* PARTS TABLE */
+.tbar{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.tinp{flex:1;border:1px solid #e0e0dc;border-radius:8px;padding:8px 12px;font-size:13px;outline:none}
+.tinp:focus{border-color:#FFD700}
+.tsel{border:1px solid #e0e0dc;border-radius:8px;padding:8px 10px;font-size:13px;outline:none;background:#fff;cursor:pointer}
+.tadd{background:#FFD700;border:none;border-radius:8px;font-size:13px;font-weight:700;color:#1a1a2e;padding:8px 16px;cursor:pointer;white-space:nowrap}
+
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px;padding:8px 10px;text-align:left;border-bottom:1px solid #f0f0ec}
+tbody tr{border-bottom:1px solid #f8f8f6;transition:background .1s;cursor:pointer}
+tbody tr:hover{background:#fafaf8}
+tbody td{padding:10px}
+.part-thumb{font-size:24px}
+.part-n{font-size:13px;font-weight:600}
+.part-id{font-size:11px;color:#888}
+.qty-edit{display:flex;align-items:center;gap:5px}
+.qe{width:24px;height:24px;border:1px solid #ddd;background:#f5f4ef;border-radius:5px;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.qnum{font-size:13px;font-weight:700;min-width:28px;text-align:center}
+.cval{font-size:13px;font-weight:700}
+.cval.up{color:#22c55e}
+.cval.dn{color:#ef4444}
+.cbar{height:4px;border-radius:2px;background:#e8e7e2;margin-top:4px}
+.cbar-fill{height:4px;border-radius:2px;background:#FFD700}
+.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+
+/* BUILD CHECKER */
+.bc-drop{border:2px dashed #e0e0dc;border-radius:12px;padding:32px;text-align:center;cursor:pointer;transition:all .15s;margin-bottom:14px}
+.bc-drop:hover{border-color:#FFD700;background:#FFFDF0}
+.bc-ico{font-size:36px;margin-bottom:8px}
+.bc-title{font-size:15px;font-weight:700;margin-bottom:4px}
+.bc-sub{font-size:13px;color:#888}
+.bc-res{display:none}
+.bc-bar{height:12px;border-radius:6px;background:#e8e7e2;margin:12px 0;overflow:hidden}
+.bc-fill{height:12px;border-radius:6px;background:linear-gradient(90deg,#22c55e,#FFD700);width:72%}
+.part-row-check{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f5f4ef}
+.chk{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
+.chk.ok{background:#E1F5EE;color:#085041}
+.chk.miss{background:#FCEBEB;color:#A32D2D}
+
+/* WISHLIST */
+.wlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.wcard{background:#f5f4ef;border-radius:10px;overflow:hidden;cursor:pointer;transition:all .15s;border:1px solid transparent}
+.wcard:hover{background:#fff;border-color:#ddd}
+.wimg{height:90px;display:flex;align-items:center;justify-content:center;font-size:36px}
+.winfo{padding:10px}
+.wname{font-size:12px;font-weight:700;margin-bottom:2px}
+.wprice{font-size:13px;font-weight:800}
+.walert{font-size:10px;color:#888}
+.walert.set{color:#22c55e;font-weight:600}
+
+/* CHART */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cw{position:relative;height:180px}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="../../index.html" class="nav-logo">Studs<span>Up</span></a>
+  <div class="nav-links">
+    <a href="home.html"          class="nav-link">Marketplace</a>
+    <a href="lugbulk.html"       class="nav-link">📦 Parts catalogue</a>
+    <a href="search.html"        class="nav-link">Search</a>
+    <a href="collection.html"    class="nav-link">My Collection</a>
+    <a href="lug.html"           class="nav-link">LUGs</a>
+    <a href="stream.html"        class="nav-link">Streams</a>
+    <a href="profile-blog.html"  class="nav-link">Profile</a>
+    <a href="instructions.html"  class="nav-link">Instructions</a>
+  </div>
+  <div class="nav-right" id="navRight">
+    <div id="navSellArea"></div>
+    <div id="navUserArea"></div>
+  </div>
+</nav>
+<script>
+(function(){
+  var u=null;
+  try{u=JSON.parse(sessionStorage.getItem('su_user'));}catch(e){}
+  // Sell button
+  var sa=document.getElementById('navSellArea');
+  if(sa){
+    if(u&&u.name){
+      sa.innerHTML='<button class="nav-sell" onclick="window.location.href='profile-blog.html'">+ Sell parts</button>';
+    } else {
+      sa.innerHTML='<button class="nav-sell" onclick="window.location.href='login.html'">+ Sell parts</button>';
+    }
+  }
+  // User area
+  var el=document.getElementById('navUserArea');
+  if(!el)return;
+  if(u&&u.name){
+    el.innerHTML='<a href="profile-blog.html" style="display:flex;align-items:center;gap:7px;text-decoration:none">'
+      +'<div class="nav-avatar" style="font-size:12px;flex-shrink:0">'+u.avatar+'</div>'
+      +'<span style="font-size:12px;color:rgba(255,255,255,.75);white-space:nowrap">'+u.name+'</span></a>';
+  } else {
+    el.innerHTML='<a href="login.html" class="nav-sell" style="background:var(--yellow);color:var(--dark);text-decoration:none;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap">Sign in</a>';
+  }
+})();
+</script>
+
+<div class="page">
+<div class="sidebar">
+
+  <div class="card user-block">
+    <div class="user-av">GT</div>
+    <div class="user-name">Georgs T.</div>
+    <div class="user-sub">Member since 2019 · Latvia 🇱🇻</div>
+    <div class="user-stats">
+      <div class="ust"><strong>14,820</strong><span>Parts owned</span></div>
+      <div class="ust"><strong>€2,340</strong><span>Est. value</span></div>
+      <div class="ust"><strong>48</strong><span>Sets owned</span></div>
+      <div class="ust"><strong>4.9★</strong><span>Seller rating</span></div>
+    </div>
+  </div>
+
+  <div class="card" style="padding:8px">
+    <div class="side-menu">
+      <button class="smi on" onclick="showTab('parts',this)"><span class="smi-ico">🧱</span>My parts<span class="smi-cnt">14,820</span></button>
+      <button class="smi" onclick="showTab('sets',this)"><span class="smi-ico">📦</span>My sets<span class="smi-cnt">48</span></button>
+      <button class="smi" onclick="showTab('wishlist',this)"><span class="smi-ico">♡</span>Wishlist<span class="smi-cnt">23</span></button>
+      <button class="smi" onclick="showTab('build',this)"><span class="smi-ico">✅</span>Build checker<span class="smi-cnt">3</span></button>
+      <button class="smi" onclick="showTab('value',this)"><span class="smi-ico">📈</span>Collection value</button>
+      <button class="smi" onclick="showTab('trade',this)"><span class="smi-ico">⇄</span>Trade offers<span class="smi-cnt">2</span></button>
+    </div>
+  </div>
+
+</div>
+<div class="main">
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="sc"><div class="sc-val">14,820</div><div class="sc-lbl">Total parts</div><div class="sc-sub">+240 this month</div></div>
+    <div class="sc"><div class="sc-val">€2,340</div><div class="sc-lbl">Est. value</div><div class="sc-sub" style="color:#ef4444">−€12 (−0.5%)</div></div>
+    <div class="sc"><div class="sc-val">48</div><div class="sc-lbl">Sets owned</div><div class="sc-sub">+2 this month</div></div>
+    <div class="sc"><div class="sc-val">23</div><div class="sc-lbl">Wishlist items</div><div class="sc-sub">4 price drops!</div></div>
+  </div>
+
+  <!-- PARTS TAB -->
+  <div class="card" id="tab-parts">
+    <div class="tbar">
+      <input class="tinp" type="text" placeholder="Search your parts…" id="partSearch" oninput="filterParts()">
+      <select class="tsel" id="catFilter" onchange="filterParts()">
+        <option value="">All categories</option>
+        <option>Plates</option>
+        <option>Bricks</option>
+        <option>Technic</option>
+        <option>Slopes</option>
+        <option>Tiles</option>
+      </select>
+      <select class="tsel">
+        <option>Sort: Name</option>
+        <option>Sort: Qty ↓</option>
+        <option>Sort: Value ↓</option>
+      </select>
+      <button class="tadd" onclick="alert('Add parts by part number, photo or import .bsx file')">+ Add parts</button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th>Part</th>
+          <th>Category</th>
+          <th>Color</th>
+          <th>Qty</th>
+          <th>Avg price</th>
+          <th>Total value</th>
+          <th>In market</th>
+        </tr>
+      </thead>
+      <tbody id="partsBody">
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SETS TAB -->
+  <div class="card" id="tab-sets" style="display:none">
+    <table>
+      <thead><tr><th></th><th>Set</th><th>Theme</th><th>Year</th><th>Parts</th><th>Paid</th><th>Current value</th><th>ROI</th></tr></thead>
+      <tbody>
+        <tr><td><span style="font-size:22px">🏰</span></td><td><div class="part-n">Lion Knights' Castle</div><div class="part-id">#10305</div></td><td>Castle</td><td>2022</td><td>4,514</td><td>€259</td><td style="font-weight:700">€340</td><td class="cval up">+31%</td></tr>
+        <tr><td><span style="font-size:22px">🌌</span></td><td><div class="part-n">Millennium Falcon</div><div class="part-id">#75192</div></td><td>Star Wars</td><td>2017</td><td>7,541</td><td>€799</td><td style="font-weight:700">€1,240</td><td class="cval up">+55%</td></tr>
+        <tr><td><span style="font-size:22px">🚂</span></td><td><div class="part-n">Steam Locomotive</div><div class="part-id">#10294</div></td><td>Icons</td><td>2021</td><td>2,807</td><td>€199</td><td style="font-weight:700">€178</td><td class="cval dn">−11%</td></tr>
+        <tr><td><span style="font-size:22px">🦁</span></td><td><div class="part-n">Colosseum</div><div class="part-id">#10276</div></td><td>Icons</td><td>2020</td><td>9,036</td><td>€449</td><td style="font-weight:700">€560</td><td class="cval up">+25%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- WISHLIST TAB -->
+  <div id="tab-wishlist" style="display:none">
+    <div class="card">
+      <div class="tabs">
+        <button class="tab on">All (23)</button>
+        <button class="tab">Price alerts (4)</button>
+        <button class="tab">Sets (8)</button>
+        <button class="tab">Parts (15)</button>
+      </div>
+      <div class="wlist">
+        <div class="wcard"><div class="wimg">🏯</div><div class="winfo"><div class="wname">Feudal Japan</div><div class="wprice">€299</div><div class="walert set">🔔 Alert: €280</div></div></div>
+        <div class="wcard"><div class="wimg">🚀</div><div class="winfo"><div class="wname">NASA Artemis</div><div class="wprice">€99</div><div class="walert">No alert set</div></div></div>
+        <div class="wcard"><div class="wimg">🟦</div><div class="winfo"><div class="wname">Plate 1×2 Dark Blue ×500</div><div class="wprice">€4.50</div><div class="walert set">↓ Price dropped!</div></div></div>
+        <div class="wcard"><div class="wimg">🧑‍🎤</div><div class="winfo"><div class="wname">Rock Star Minifig</div><div class="wprice">€12.00</div><div class="walert">No alert set</div></div></div>
+        <div class="wcard"><div class="wimg">🌆</div><div class="winfo"><div class="wname">Modular Bookshop</div><div class="wprice">€189</div><div class="walert set">↓ Lowest ever!</div></div></div>
+        <div class="wcard"><div class="wimg">⚙️</div><div class="winfo"><div class="wname">Technic Hub ×10</div><div class="wprice">€18.00</div><div class="walert">No alert set</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUILD CHECKER TAB -->
+  <div id="tab-build" style="display:none">
+    <div class="card">
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:14px">✅ Build checker</h3>
+      <div class="bc-drop" onclick="runChecker()">
+        <div class="bc-ico">📂</div>
+        <div class="bc-title">Drop your parts list here</div>
+        <div class="bc-sub">Supports .bsx, .ldr, .xml, .csv · or paste a part list below · <strong style="color:#FFD700">click to demo</strong></div>
+      </div>
+      <div class="bc-res" id="bcRes">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <strong style="font-size:14px">Hogwarts Castle #71043 — 6,020 parts required</strong>
+          <span style="font-size:13px;color:#22c55e;font-weight:700">72% ready</span>
+        </div>
+        <div class="bc-bar"><div class="bc-fill"></div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;font-size:12px">
+          <div style="background:#E1F5EE;border-radius:8px;padding:10px"><strong style="color:#085041;font-size:15px">4,334</strong><br>Parts you own</div>
+          <div style="background:#FCEBEB;border-radius:8px;padding:10px"><strong style="color:#A32D2D;font-size:15px">1,686</strong><br>Parts missing</div>
+        </div>
+        <p style="font-size:13px;font-weight:700;margin-bottom:8px">Missing parts — cheapest sources:</p>
+        <div class="part-row-check"><div class="chk miss">✗</div><span style="font-size:22px">🟫</span><div style="flex:1"><div style="font-size:13px;font-weight:600">Plate 2×4 Dark Brown ×84</div><div style="font-size:11px;color:#888">#3020 · Cheapest: €0.02/ea · Total: €1.68</div></div><button style="background:#FFD700;border:none;border-radius:6px;font-size:12px;font-weight:700;padding:5px 12px;cursor:pointer">Buy all</button></div>
+        <div class="part-row-check"><div class="chk miss">✗</div><span style="font-size:22px">⬛</span><div style="flex:1"><div style="font-size:13px;font-weight:600">Slope 45° Black ×32</div><div style="font-size:11px;color:#888">#3040 · Cheapest: €0.05/ea · Total: €1.60</div></div><button style="background:#FFD700;border:none;border-radius:6px;font-size:12px;font-weight:700;padding:5px 12px;cursor:pointer">Buy all</button></div>
+        <div class="part-row-check"><div class="chk ok">✓</div><span style="font-size:22px">🟥</span><div style="flex:1"><div style="font-size:13px;font-weight:600">Plate 2×4 Red ×48</div><div style="font-size:11px;color:#888">#3020 · You own 120 — sufficient</div></div><span style="font-size:12px;color:#22c55e;font-weight:600">✓ Have it</span></div>
+        <div style="margin-top:12px;padding-top:12px;border-top:1px solid #f5f4ef;display:flex;gap:8px">
+          <button style="background:#FFD700;border:none;border-radius:8px;font-size:13px;font-weight:700;color:#1a1a2e;padding:8px 18px;cursor:pointer">Buy all missing (€48.20)</button>
+          <button style="background:#f5f4ef;border:1px solid #ddd;border-radius:8px;font-size:13px;padding:8px 18px;cursor:pointer">Export missing list</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VALUE TAB -->
+  <div id="tab-value" style="display:none">
+    <div class="chart-grid">
+      <div class="card">
+        <p style="font-size:13px;font-weight:700;margin-bottom:12px">Collection value over time</p>
+        <div class="cw"><canvas id="valChart" role="img" aria-label="Line chart of collection value over 12 months">Value grew from €1,800 to €2,340.</canvas></div>
+      </div>
+      <div class="card">
+        <p style="font-size:13px;font-weight:700;margin-bottom:12px">Value by category</p>
+        <div class="cw"><canvas id="catChart" role="img" aria-label="Doughnut chart of collection value by category">Sets 54%, Parts 31%, Minifigs 15%.</canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRADE TAB -->
+  <div id="tab-trade" style="display:none">
+    <div class="card">
+      <h3 style="font-size:15px;font-weight:700;margin-bottom:14px">⇄ Trade offers (2 pending)</h3>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="background:#FFF8DC;border:1px solid #E6B800;border-radius:10px;padding:14px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <div style="width:32px;height:32px;border-radius:50%;background:#E1F5EE;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#085041">BM</div>
+            <div><div style="font-size:13px;font-weight:700">BrickMaster_Shop</div><div style="font-size:11px;color:#888">Sent 2 hours ago</div></div>
+            <span style="margin-left:auto;background:#FFD700;color:#1a1a2e;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px">New offer</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;font-size:13px;margin-bottom:10px">
+            <div style="background:#fff;border-radius:8px;padding:10px"><div style="font-size:11px;color:#888;margin-bottom:4px">They offer you</div><div style="font-size:22px">⚙️</div><div style="font-weight:700">Technic Axle ×50</div><div style="color:#888">~€4.50</div></div>
+            <div style="font-size:20px;color:#888">⇄</div>
+            <div style="background:#fff;border-radius:8px;padding:10px"><div style="font-size:11px;color:#888;margin-bottom:4px">They want</div><div style="font-size:22px">🟥</div><div style="font-weight:700">Plate 2×4 Red ×100</div><div style="color:#888">~€3.00</div></div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button style="flex:1;background:#22c55e;border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:700;padding:8px;cursor:pointer">Accept</button>
+            <button style="flex:1;background:#f5f4ef;border:1px solid #ddd;border-radius:8px;font-size:13px;padding:8px;cursor:pointer">Counter offer</button>
+            <button style="background:#f5f4ef;border:1px solid #ddd;border-radius:8px;font-size:13px;padding:8px;cursor:pointer">Decline</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+const PARTS=[
+  {ico:'🟥',name:'Plate 2×4',id:'#3020',cat:'Plates',color:'Red',qty:120,price:0.03,market:true},
+  {ico:'🔵',name:'Plate 1×2',id:'#3023',cat:'Plates',color:'Blue',qty:340,price:0.02,market:true},
+  {ico:'⬛',name:'Brick 2×4',id:'#3001',cat:'Bricks',color:'Black',qty:88,price:0.05,market:false},
+  {ico:'⚙️',name:'Technic Axle 4',id:'#3705',cat:'Technic',color:'Grey',qty:45,price:0.12,market:true},
+  {ico:'🟨',name:'Tile 2×2',id:'#3068',cat:'Tiles',color:'Yellow',qty:200,price:0.04,market:false},
+  {ico:'🌊',name:'Slope 45°',id:'#3040',cat:'Slopes',color:'Trans-Blue',qty:32,price:0.08,market:true},
+  {ico:'🟫',name:'Plate 2×6',id:'#3795',cat:'Plates',color:'Brown',qty:18,price:0.06,market:false},
+  {ico:'🔧',name:'Technic Pin',id:'#3673',cat:'Technic',color:'Black',qty:156,price:0.08,market:true},
+];
+
+function renderParts(list){
+  const tb=document.getElementById('partsBody');
+  tb.innerHTML=list.map(p=>{
+    const tv=(p.qty*p.price).toFixed(2);
+    const pct=Math.min(100,Math.round(p.qty/200*100));
+    return `<tr>
+      <td><span style="font-size:22px">${p.ico}</span></td>
+      <td><div class="part-n">${p.name}</div><div class="part-id">${p.id}</div></td>
+      <td><span style="background:#f5f4ef;padding:2px 7px;border-radius:20px;font-size:11px">${p.cat}</span></td>
+      <td style="font-size:12px">${p.color}</td>
+      <td><div class="qty-edit">
+        <div class="qe" onclick="chQty(${PARTS.indexOf(p)},-1)">−</div>
+        <span class="qnum">${p.qty}</span>
+        <div class="qe" onclick="chQty(${PARTS.indexOf(p)},1)">+</div>
+      </div><div class="cbar"><div class="cbar-fill" style="width:${pct}%"></div></div></td>
+      <td>€${p.price.toFixed(2)}</td>
+      <td style="font-weight:700">€${tv}</td>
+      <td><span class="status-dot" style="background:${p.market?'#22c55e':'#e8e7e2'}"></span> ${p.market?'Listed':'Private'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function chQty(i,d){PARTS[i].qty=Math.max(0,PARTS[i].qty+d);filterParts();}
+
+function filterParts(){
+  const s=document.getElementById('partSearch').value.toLowerCase();
+  const c=document.getElementById('catFilter').value;
+  renderParts(PARTS.filter(p=>(!s||p.name.toLowerCase().includes(s)||p.id.includes(s))&&(!c||p.cat===c)));
+}
+
+renderParts(PARTS);
+
+function showTab(name,btn){
+  ['parts','sets','wishlist','build','value','trade'].forEach(t=>{
+    const el=document.getElementById('tab-'+t);
+    if(el)el.style.display=t===name?'':'none';
+  });
+  document.querySelectorAll('.smi').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  if(name==='value')initCharts();
+}
+
+function runChecker(){
+  document.querySelector('.bc-drop').style.display='none';
+  document.getElementById('bcRes').style.display='block';
+}
+
+let chartsInited=false;
+function initCharts(){
+  if(chartsInited)return;chartsInited=true;
+  new Chart(document.getElementById('valChart'),{
+    type:'line',
+    data:{labels:['Jun','Aug','Oct','Dec','Feb','Apr','Jun'],datasets:[{label:'Value',data:[1800,1900,1980,2100,2200,2280,2340],borderColor:'#FFD700',backgroundColor:'rgba(255,215,0,.08)',borderWidth:2.5,fill:true,tension:.4,pointBackgroundColor:'#FFD700',pointRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10},color:'#888'}},y:{grid:{color:'rgba(0,0,0,.05)'},ticks:{font:{size:10},color:'#888',callback:v=>'€'+v}}}}
+  });
+  new Chart(document.getElementById('catChart'),{
+    type:'doughnut',
+    data:{labels:['Sets','Parts','Minifigs'],datasets:[{data:[54,31,15],backgroundColor:['#FFD700','#1a1a2e','#FF4444'],borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:12}}}}
+  });
+}
+</script>
+<script src="../js/shared.js"></script>
+</body>
+</html>

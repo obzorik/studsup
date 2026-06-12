@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudsUp — BrickBaltic LUG</title>
+<link rel="stylesheet" href="../css/shared.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f4ef;color:#1a1a1a;font-size:14px}
+.nav{background:#1a1a2e;padding:0 32px;display:flex;align-items:center;height:56px;gap:8px}
+.logo{font-size:20px;font-weight:800;color:#FFD700;margin-right:20px}.logo span{color:#FF4444}
+.nl{color:rgba(255,255,255,.5);font-size:13px;padding:6px 11px;border-radius:6px;cursor:pointer;border:none;background:none;white-space:nowrap}
+.nl:hover,.nl.on{color:#FFD700;background:rgba(255,255,255,.08)}
+.nav-r{display:flex;align-items:center;gap:8px;margin-left:auto}
+.nb{background:#FFD700;color:#1a1a2e;border:none;border-radius:20px;font-size:12px;font-weight:700;padding:5px 14px;cursor:pointer}
+.avatar{width:32px;height:32px;border-radius:50%;background:#FF4444;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700}
+
+/* COVER */
+.cover{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 60%,#0f3460 100%);padding:32px 32px 0;position:relative;overflow:hidden}
+.cover::after{content:'';position:absolute;right:-60px;bottom:-60px;width:360px;height:360px;background:rgba(255,215,0,.04);border-radius:50%;pointer-events:none}
+.cover-inner{max-width:1060px;margin:0 auto}
+.bc{font-size:12px;color:rgba(255,255,255,.4);margin-bottom:16px}
+.bc a{color:rgba(255,255,255,.6);cursor:pointer}
+.lug-top{display:flex;gap:20px;align-items:flex-end}
+.lug-logo{width:86px;height:86px;border-radius:14px;background:#FFF8DC;display:flex;align-items:center;justify-content:center;font-size:42px;border:3px solid rgba(255,215,0,.3);flex-shrink:0}
+.lug-info{flex:1;padding-bottom:14px}
+.lug-name{font-size:26px;font-weight:800;color:#fff;margin-bottom:4px;letter-spacing:-.5px}
+.lug-sub{font-size:13px;color:rgba(255,255,255,.5);display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:10px}
+.lug-badges{display:flex;gap:6px;flex-wrap:wrap}
+.lbadge{background:rgba(255,215,0,.12);border:1px solid rgba(255,215,0,.22);color:#FFD700;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px}
+.lug-actions{padding-bottom:14px;display:flex;flex-direction:column;gap:7px;align-items:flex-end;flex-shrink:0}
+.btn-primary{background:#FFD700;border:none;border-radius:8px;font-size:13px;font-weight:700;color:#1a1a2e;padding:9px 20px;cursor:pointer;white-space:nowrap}
+.btn-primary:hover{background:#f0c800}
+.btn-ghost{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:8px;font-size:13px;color:#fff;padding:8px 16px;cursor:pointer;white-space:nowrap}
+.btn-danger{background:rgba(255,60,60,.15);border:1px solid rgba(255,60,60,.3);border-radius:8px;font-size:13px;color:#ff6060;padding:8px 16px;cursor:pointer;white-space:nowrap}
+.btn-danger:hover{background:rgba(255,60,60,.25)}
+.stats-bar{border-top:1px solid rgba(255,255,255,.07);display:flex;gap:28px;padding:12px 0;flex-wrap:wrap}
+.lstat{text-align:center}
+.lstat strong{display:block;font-size:17px;font-weight:800;color:#FFD700}
+.lstat span{font-size:11px;color:rgba(255,255,255,.4)}
+
+/* RULE BANNER */
+.rule-banner{background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.2);border-radius:0;padding:8px 32px;font-size:12px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:8px}
+.rule-banner strong{color:#FFD700}
+
+/* TABS */
+.tab-nav{background:#fff;border-bottom:1px solid #e8e7e2;padding:0 32px}
+.tab-inner{max-width:1060px;margin:0 auto;display:flex;overflow-x:auto;gap:0}
+.tnav{font-size:13px;color:#888;padding:12px 14px;border-bottom:2px solid transparent;cursor:pointer;border:none;background:none;font-weight:500;white-space:nowrap}
+.tnav:hover{color:#1a1a1a}
+.tnav.on{color:#1a1a1a;border-bottom-color:#FFD700}
+.tnav .badge{background:#FF4444;color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:10px;margin-left:4px;vertical-align:middle}
+
+/* CONTENT */
+.content{max-width:1060px;margin:22px auto;padding:0 20px;display:grid;grid-template-columns:1fr 290px;gap:16px}
+.main{display:flex;flex-direction:column;gap:12px}
+.side{display:flex;flex-direction:column;gap:12px}
+.card{background:#fff;border:1px solid #e8e7e2;border-radius:12px;padding:16px}
+.sec-h{font-size:14px;font-weight:700;margin-bottom:13px;display:flex;align-items:center;justify-content:space-between}
+.sec-h small{font-size:11px;font-weight:400;color:#888}
+
+/* INFO ROWS */
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #f5f4ef;font-size:13px}
+.info-row:last-child{border-bottom:none}
+.info-lbl{color:#888}
+.info-val{font-weight:600;text-align:right}
+.editable-row{display:flex;align-items:center;gap:6px}
+.edit-btn{background:none;border:none;font-size:12px;color:#aaa;cursor:pointer;padding:2px 5px;border-radius:4px}
+.edit-btn:hover{background:#f5f4ef;color:#555}
+
+/* ABOUT GRID */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.arow{background:#f5f4ef;border-radius:8px;padding:10px 12px;display:flex;align-items:center;gap:8px}
+.arow-lbl{font-size:11px;color:#888;margin-bottom:2px}
+.arow-val{font-size:13px;font-weight:600}
+
+/* LEADERSHIP */
+.leader-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-bottom:0}
+.lcard{background:#fff;border:1px solid #e8e7e2;border-radius:12px;padding:14px;position:relative;transition:all .15s}
+.lcard:hover{border-color:#ddd}
+.lcard.head-card{border-color:#FFD700;background:#FFFDF0}
+.lcard.amb-card{border-color:#3b82f6;background:#F0F6FF}
+.lhead-row{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.lav{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0;position:relative}
+.lav-badge{position:absolute;top:-6px;left:50%;transform:translateX(-50%);font-size:12px}
+.lcard-name{font-size:13px;font-weight:700}
+.lcard-handle{font-size:11px;color:#888}
+.role-pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;margin-bottom:8px}
+.rp-head{background:#FFF8DC;color:#8a6a00;border:1px solid #E6B800}
+.rp-amb{background:#E6F1FB;color:#185FA5;border:1px solid #378ADD}
+.rp-custom{background:#EEEDFE;color:#3C3489;border:1px solid #7F77DD}
+.rp-member{background:#f5f4ef;color:#555;border:1px solid #ddd}
+.lcard-bio{font-size:12px;color:#666;line-height:1.5;margin-bottom:8px}
+.lcard-acts{display:flex;gap:5px;flex-wrap:wrap}
+.la{background:#f5f4ef;border:1px solid #e0e0dc;border-radius:6px;font-size:11px;padding:4px 9px;cursor:pointer;color:#555;transition:all .12s}
+.la:hover{background:#fff;border-color:#ccc}
+.la.y{background:#FFD700;border-color:#FFD700;color:#1a1a2e;font-weight:700}
+.la.red{background:#FCEBEB;border-color:#E24B4A;color:#791F1F}
+
+/* MEMBERS TABLE */
+.members-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:7px}
+.mcard{background:#f5f4ef;border-radius:10px;padding:11px;text-align:center;cursor:pointer;transition:all .15s;border:1px solid transparent;position:relative}
+.mcard:hover{background:#fff;border-color:#ddd}
+.mav2{width:40px;height:40px;border-radius:50%;margin:0 auto 7px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff}
+.mname{font-size:12px;font-weight:700;margin-bottom:2px}
+.mctry{font-size:10px;color:#aaa;margin-bottom:4px}
+.mbadge{display:inline-block;font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px}
+
+/* ROLES MANAGER */
+.rm-row{background:#f8f8f6;border:1px solid #e8e7e2;border-radius:8px;padding:9px 12px;display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.rm-ico{font-size:16px;flex-shrink:0}
+.rm-name{font-size:13px;font-weight:600;flex:1}
+.rm-sub{font-size:11px;color:#888}
+.rm-cnt{font-size:11px;color:#aaa;flex-shrink:0}
+.rbtn{background:none;border:1px solid #ddd;border-radius:5px;font-size:11px;padding:3px 8px;cursor:pointer;color:#555}
+.rbtn:hover{background:#fff}
+.rbtn.del{color:#ccc;border:none;font-size:14px;padding:2px 4px}
+.rbtn.del:hover{color:#ef4444}
+
+/* ROLE FORM */
+.role-form{display:none;background:#f8f8f6;border:1px solid #e8e7e2;border-radius:10px;padding:14px;margin-top:10px}
+.rf-row{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.rf-inp{flex:1;border:1px solid #ddd;border-radius:7px;padding:7px 10px;font-size:13px;outline:none;background:#fff;min-width:120px}
+.rf-inp:focus{border-color:#FFD700}
+.rf-emo{width:42px;text-align:center;border:1px solid #ddd;border-radius:7px;padding:7px;font-size:16px;outline:none;background:#fff}
+.perms{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.pchip{background:#fff;border:1px solid #e0e0dc;border-radius:20px;font-size:11px;padding:3px 9px;cursor:pointer;color:#666;user-select:none;transition:all .12s}
+.pchip.on{background:#1a1a2e;border-color:#1a1a2e;color:#FFD700}
+.rf-btns{display:flex;gap:6px}
+.rf-save{background:#1a1a2e;border:none;border-radius:7px;color:#FFD700;font-size:12px;font-weight:700;padding:7px 16px;cursor:pointer}
+.rf-cancel{background:#f5f4ef;border:1px solid #ddd;border-radius:7px;font-size:12px;padding:7px 12px;cursor:pointer}
+
+/* VOTING */
+.vcard{background:#fff;border:1px solid #e8e7e2;border-radius:12px;overflow:hidden;margin-bottom:12px}
+.vcard-head{padding:13px 15px 0;display:flex;align-items:flex-start;gap:9px}
+.vtype{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;flex-shrink:0;margin-top:2px}
+.vt-elect{background:#FFF8DC;color:#8a6a00}
+.vt-poll{background:#E6F1FB;color:#185FA5}
+.vt-rule{background:#EEEDFE;color:#3C3489}
+.vt-closed{background:#f5f4ef;color:#888}
+.vtitle{font-size:14px;font-weight:700;flex:1}
+.vmeta{font-size:11px;color:#888;margin-top:2px}
+.vbody{padding:10px 15px 14px}
+.vdesc{font-size:13px;color:#555;line-height:1.55;margin-bottom:10px}
+.vopts{display:flex;flex-direction:column;gap:6px}
+.vopt{position:relative;background:#f5f4ef;border:1px solid #e8e7e2;border-radius:8px;padding:9px 12px;cursor:pointer;display:flex;align-items:center;gap:9px;overflow:hidden;transition:border-color .12s}
+.vopt:hover:not(.locked){border-color:#FFD700}
+.vopt.locked{cursor:default}
+.vopt.voted{border-color:#FFD700;background:#FFFDF0}
+.vopt.winner{border-color:#22c55e;background:#F0FBF4}
+.vbar{position:absolute;inset:0 auto 0 0;background:rgba(255,215,0,.13);transition:width .5s ease;z-index:0}
+.vbar.w{background:rgba(34,197,94,.13)}
+.vchk{width:17px;height:17px;border-radius:50%;border:2px solid #ddd;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;z-index:1;transition:all .15s}
+.vopt.voted .vchk,.vopt.winner .vchk{background:#FFD700;border-color:#FFD700;color:#1a1a2e}
+.vopt-name{font-size:13px;font-weight:600;z-index:1;flex:1}
+.vopt-pct{font-size:12px;font-weight:700;color:#888;z-index:1;flex-shrink:0}
+.vopt.winner .vopt-pct{color:#22c55e}
+.vfoot{padding:9px 15px 13px;border-top:1px solid #f5f4ef;display:flex;align-items:center;gap:10px;font-size:12px;color:#888}
+.vfoot strong{color:#1a1a1a}
+.vvbtn{margin-left:auto;background:#FFD700;border:none;border-radius:7px;font-size:12px;font-weight:700;color:#1a1a2e;padding:5px 14px;cursor:pointer}
+.vvbtn:disabled{background:#f5f4ef;color:#aaa;cursor:default}
+
+/* 52% THRESHOLD NOTICE */
+.threshold-notice{background:#FFF8DC;border:1px solid #E6B800;border-radius:8px;padding:10px 12px;font-size:12px;color:#8a6a00;margin-bottom:12px;display:flex;align-items:flex-start;gap:7px}
+
+/* NEW VOTE FORM */
+.nvform{display:none;background:#f8f8f6;border:1px solid #e8e7e2;border-radius:12px;padding:16px;margin-bottom:14px}
+.nvinp{width:100%;border:1px solid #ddd;border-radius:7px;padding:8px 11px;font-size:13px;outline:none;background:#fff;margin-bottom:8px}
+.nvinp:focus{border-color:#FFD700}
+.nvoptrow{display:flex;gap:6px;margin-bottom:6px}
+.nvoptinp{flex:1;border:1px solid #ddd;border-radius:7px;padding:7px 10px;font-size:13px;outline:none;background:#fff}
+.nvoptinp:focus{border-color:#FFD700}
+.nvadd{width:100%;background:none;border:1px dashed #ccc;border-radius:7px;font-size:12px;padding:6px;cursor:pointer;color:#888;margin-bottom:8px}
+.nvadd:hover{border-color:#FFD700;color:#8a6a00}
+.nvrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12px;color:#555;margin-bottom:10px}
+.nvsel{border:1px solid #ddd;border-radius:6px;padding:6px 8px;font-size:12px;outline:none;background:#fff}
+.nvbtns{display:flex;gap:7px}
+.nvsave{background:#1a1a2e;border:none;border-radius:7px;color:#FFD700;font-size:13px;font-weight:700;padding:8px 18px;cursor:pointer}
+.nvcancel{background:#f5f4ef;border:1px solid #ddd;border-radius:7px;font-size:13px;padding:8px 12px;cursor:pointer}
+
+/* GALLERY */
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.gitem{border-radius:9px;overflow:hidden;background:#f5f4ef;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:40px;cursor:pointer;border:1px solid transparent;transition:all .15s}
+.gitem:hover{border-color:#ddd;transform:scale(1.02)}
+.gitem.wide{grid-column:span 2;font-size:54px}
+
+/* EVENTS */
+.ecard{background:#f5f4ef;border-radius:10px;padding:13px;display:flex;gap:13px;cursor:pointer;border:1px solid transparent;transition:all .15s;margin-bottom:8px}
+.ecard:hover{background:#fff;border-color:#ddd}
+.edate{background:#1a1a2e;color:#FFD700;border-radius:8px;padding:9px;text-align:center;min-width:50px;flex-shrink:0}
+.edate-d{font-size:20px;font-weight:800;line-height:1}
+.edate-m{font-size:10px;font-weight:600;opacity:.7}
+.etitle{font-size:13px;font-weight:700;margin-bottom:3px}
+.emeta{font-size:11px;color:#888;margin-bottom:5px}
+.etags{display:flex;gap:4px;flex-wrap:wrap}
+.etag{background:#fff;border:1px solid #e0e0dc;color:#555;font-size:10px;padding:2px 6px;border-radius:20px}
+.ereg{margin-left:auto;background:#FFD700;border:none;border-radius:6px;font-size:12px;font-weight:700;color:#1a1a2e;padding:5px 11px;cursor:pointer;align-self:flex-start;flex-shrink:0}
+
+/* LEAVE / TRANSFER MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.48);display:none;align-items:center;justify-content:center;z-index:300;padding:16px}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:14px;max-width:460px;width:100%;padding:22px;position:relative;max-height:90vh;overflow-y:auto}
+.modal h3{font-size:17px;font-weight:700;margin-bottom:4px}
+.modal-sub{font-size:12px;color:#888;margin-bottom:16px}
+.modal-close{position:absolute;top:13px;right:13px;background:none;border:none;font-size:18px;cursor:pointer;color:#888}
+.modal-close:hover{color:#1a1a1a}
+.transfer-option{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid #e8e7e2;border-radius:9px;cursor:pointer;margin-bottom:7px;transition:all .13s}
+.transfer-option:hover{border-color:#FFD700;background:#FFFDF0}
+.transfer-option.selected{border-color:#FFD700;background:#FFFDF0}
+.to-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+.ballot-opt{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid #e8e7e2;border-radius:9px;cursor:pointer;margin-bottom:7px;position:relative;overflow:hidden;transition:border-color .13s}
+.ballot-opt:hover{border-color:#FFD700}
+.ballot-opt.selected{border-color:#FFD700;background:#FFFDF0}
+.ballot-opt .bav{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0}
+.bname{font-size:13px;font-weight:700}
+.bsub{font-size:11px;color:#888}
+.bchk{width:18px;height:18px;border-radius:50%;border:2px solid #ddd;margin-left:auto;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;transition:all .15s}
+.ballot-opt.selected .bchk{background:#FFD700;border-color:#FFD700;color:#1a1a2e}
+.modal-actions{display:flex;gap:8px;margin-top:14px}
+.modal-btn{flex:1;border:none;border-radius:8px;font-size:13px;font-weight:700;padding:9px;cursor:pointer}
+.modal-btn.primary{background:#1a1a2e;color:#FFD700}
+.modal-btn.primary:disabled{background:#f5f4ef;color:#aaa;cursor:default}
+.modal-btn.ghost{background:#f5f4ef;border:1px solid #ddd;color:#555}
+.modal-btn.danger{background:#FCEBEB;border:1px solid #E24B4A;color:#791F1F}
+
+/* SIDE */
+.join-card{background:#1a1a2e;border-radius:12px;padding:16px;text-align:center}
+.jt{color:#FFD700;font-size:14px;font-weight:700;margin-bottom:5px}
+.js{color:rgba(255,255,255,.5);font-size:12px;margin-bottom:12px;line-height:1.5}
+.jbtn{width:100%;background:#FFD700;border:none;border-radius:8px;font-size:13px;font-weight:700;color:#1a1a2e;padding:9px;cursor:pointer}
+.sponsors{display:flex;gap:8px;flex-wrap:wrap;margin-top:2px}
+.spon{background:#f5f4ef;border-radius:7px;padding:7px 10px;font-size:11px;font-weight:600;color:#555}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#1a1a2e;color:#FFD700;font-size:13px;font-weight:700;padding:10px 20px;border-radius:8px;z-index:999;box-shadow:0 4px 16px rgba(0,0,0,.22);transition:opacity .35s;white-space:nowrap}
+
+/* SECTION DIVIDER */
+.sdiv{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#bbb;margin:16px 0 9px;display:flex;align-items:center;gap:8px}
+.sdiv::after{content:'';flex:1;height:1px;background:#f0f0ec}
+
+/* TAGS */
+.themes{display:flex;gap:5px;flex-wrap:wrap}
+.theme-tag{font-size:12px;padding:4px 10px;border-radius:20px}
+
+/* ── PUBLIC / PRIVATE VISIBILITY ── */
+.vis-banner{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:var(--radius-md);font-size:12px;font-weight:600;margin-bottom:12px}
+.vis-public{background:#E1F5EE;color:#085041;border:1px solid #1D9E75}
+.vis-private{background:#FCEBEB;color:#791F1F;border:1px solid #E24B4A}
+.vis-members{background:#E6F1FB;color:#185FA5;border:1px solid #378ADD}
+.lock-icon{font-size:14px}
+.private-gate{background:#f8f8f6;border:2px dashed var(--border2);border-radius:var(--radius-lg);padding:32px;text-align:center}
+.private-gate h3{font-size:15px;font-weight:700;margin-bottom:6px}
+.private-gate p{font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="../../index.html" class="nav-logo">Studs<span>Up</span></a>
+  <div class="nav-links">
+    <a href="home.html"          class="nav-link">Marketplace</a>
+    <a href="lugbulk.html"       class="nav-link">📦 Parts catalogue</a>
+    <a href="search.html"        class="nav-link">Search</a>
+    <a href="collection.html"    class="nav-link">My Collection</a>
+    <a href="lug.html"           class="nav-link">LUGs</a>
+    <a href="stream.html"        class="nav-link">Streams</a>
+    <a href="profile-blog.html"  class="nav-link">Profile</a>
+    <a href="instructions.html"  class="nav-link">Instructions</a>
+  </div>
+  <div class="nav-right" id="navRight">
+    <div id="navSellArea"></div>
+    <div id="navUserArea"></div>
+  </div>
+</nav>
+<script>
+(function(){
+  var u=null;
+  try{u=JSON.parse(sessionStorage.getItem('su_user'));}catch(e){}
+  // Sell button
+  var sa=document.getElementById('navSellArea');
+  if(sa){
+    if(u&&u.name){
+      sa.innerHTML='<button class="nav-sell" onclick="window.location.href='profile-blog.html'">+ Sell parts</button>';
+    } else {
+      sa.innerHTML='<button class="nav-sell" onclick="window.location.href='login.html'">+ Sell parts</button>';
+    }
+  }
+  // User area
+  var el=document.getElementById('navUserArea');
+  if(!el)return;
+  if(u&&u.name){
+    el.innerHTML='<a href="profile-blog.html" style="display:flex;align-items:center;gap:7px;text-decoration:none">'
+      +'<div class="nav-avatar" style="font-size:12px;flex-shrink:0">'+u.avatar+'</div>'
+      +'<span style="font-size:12px;color:rgba(255,255,255,.75);white-space:nowrap">'+u.name+'</span></a>';
+  } else {
+    el.innerHTML='<a href="login.html" class="nav-sell" style="background:var(--yellow);color:var(--dark);text-decoration:none;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap">Sign in</a>';
+  }
+})();
+</script>
+
+<div class="cover">
+  <div class="cover-inner">
+    <div class="bc"><a>LUGs</a> › <a>Europe</a> › <a>Latvia</a> › BrickBaltic LUG</div>
+    <div class="lug-top">
+      <div style="flex:1">
+        <div class="lug-logo" style="margin-bottom:14px">🇱🇻</div>
+        <div class="lug-name">BrickBaltic LUG</div>
+        <div class="lug-sub">
+          <span>📍 Riga, Latvia</span>
+          <span>🌐 brickbaltic.lv</span>
+          <span>Founded 2012</span>
+        </div>
+        <div class="lug-badges">
+          <span class="lbadge">✓ Verified LUG</span>
+          <span class="lbadge">🏆 LEGO Recognized</span>
+          <span class="lbadge">🌍 Baltic Region</span>
+        </div>
+      </div>
+      <div class="lug-actions" id="lugActions">
+        <!-- Rendered by JS based on membership state -->
+      </div>
+    </div>
+    <div class="stats-bar">
+      <div class="lstat"><strong id="statMembers">284</strong><span>Members</span></div>
+      <div class="lstat"><strong>12</strong><span>Events/year</span></div>
+      <div class="lstat"><strong>4.9★</strong><span>Rating</span></div>
+      <div class="lstat"><strong>3</strong><span>Countries</span></div>
+      <div class="lstat"><strong>48</strong><span>MOC builds</span></div>
+      <div class="lstat"><strong>2012</strong><span>Founded</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="rule-banner">
+  ℹ️ &nbsp;<strong>LUG rules:</strong> Members can only belong to one LUG at a time · Changing Head requires <strong>52% member vote</strong> · LUG is dissolved automatically when all members leave
+</div>
+
+<div class="tab-nav">
+  <div class="tab-inner">
+    <button class="tnav on"  onclick="showTab('about',this)">About</button>
+    <button class="tnav"     onclick="showTab('members',this)">Members (284)</button>
+    <button class="tnav"     onclick="showTab('roles',this)">Roles</button>
+    <button class="tnav"     onclick="showTab('voting',this)">🗳️ Voting<span class="badge">2</span></button>
+    <button class="tnav"     onclick="showTab('gallery',this)">Gallery (48)</button>
+    <button class="tnav"     onclick="showTab('events',this)">Events (4)</button>
+    <button class="tnav"     onclick="showTab('blog',this)">Blog (12)</button>
+    <button class="tnav"     onclick="showTab('settings',this)" id="settingsTab" style="display:none">⚙️ Settings</button>
+  </div>
+</div>
+
+<div class="content">
+<div class="main">
+
+<!-- ABOUT -->
+<div id="tab-about">
+  <div class="card">
+    <div class="sec-h">About BrickBaltic LUG</div>
+    <p style="font-size:13px;color:#444;line-height:1.7;margin-bottom:14px">BrickBaltic LUG is the largest LEGO User Group in the Baltic states, welcoming builders of all ages and skill levels since 2012. We meet monthly in Riga and host three major public exhibitions per year, including the annual BrickFest Baltic which draws 2,000+ visitors.</p>
+    <p style="font-size:13px;color:#444;line-height:1.7;margin-bottom:14px">Our members specialize in everything from large-scale city layouts and Technic builds to intricate castle MOCs and Space dioramas.</p>
+    <div class="about-grid">
+      <div class="arow"><span style="font-size:16px">📅</span><div><div class="arow-lbl">Meetings</div><div class="arow-val">First Saturday monthly</div></div></div>
+      <div class="arow"><span style="font-size:16px">📍</span><div><div class="arow-lbl">Location</div><div class="arow-val">Riga Maker Space</div></div></div>
+      <div class="arow"><span style="font-size:16px">🌍</span><div><div class="arow-lbl">Languages</div><div class="arow-val">LV / RU / EN</div></div></div>
+      <div class="arow"><span style="font-size:16px">💰</span><div><div class="arow-lbl">Membership</div><div class="arow-val">Free</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MEMBERS -->
+<div id="tab-members" style="display:none">
+  <div class="card">
+
+    <!-- LEADERSHIP -->
+    <div class="sdiv">👑 Leadership</div>
+    <div class="leader-grid" id="leaderGrid">
+      <div class="lcard head-card">
+        <div class="lhead-row">
+          <div class="lav" style="background:#1a1a2e"><span class="lav-badge">👑</span>MK</div>
+          <div><div class="lcard-name">Maris Kalniņš</div><div class="lcard-handle">@maris_k · Latvia 🇱🇻</div></div>
+        </div>
+        <div class="role-pill rp-head">👑 Head of LUG</div>
+        <div class="lcard-bio">Founder & Head. Castle builder, 20+ years experience. Registered BrickBaltic LUG in 2012.</div>
+        <div style="font-size:11px;color:#aaa;margin-bottom:8px">📌 First registrant · cannot be removed by admin</div>
+        <div class="lcard-acts">
+          <button class="la">✉ Message</button>
+          <button class="la">👤 Profile</button>
+          <button class="la y" onclick="openTransfer()">👑 Transfer role</button>
+        </div>
+      </div>
+      <div class="lcard amb-card">
+        <div class="lhead-row">
+          <div class="lav" style="background:#3b82f6"><span class="lav-badge">🌍</span>LP</div>
+          <div><div class="lcard-name">Liga Puriņa</div><div class="lcard-handle">@liga_p · Latvia 🇱🇻</div></div>
+        </div>
+        <div class="role-pill rp-amb">🌍 Ambassador</div>
+        <div class="lcard-bio">LEGO Community liaison. Handles LEGO Recognized status and external Baltic LUG relations.</div>
+        <div class="lcard-acts">
+          <button class="la">✉ Message</button>
+          <button class="la">👤 Profile</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- OFFICERS -->
+    <div class="sdiv" style="margin-top:18px">🏅 Officers</div>
+    <div class="leader-grid">
+      <div class="lcard">
+        <div class="lhead-row">
+          <div class="lav" style="background:#22c55e">RB</div>
+          <div><div class="lcard-name">Rolands Bērziņš</div><div class="lcard-handle">@rolands_b · Latvia</div></div>
+        </div>
+        <div class="role-pill rp-custom">🛠️ Technic Lead</div>
+        <div class="lcard-bio">Leads Technic workshops and annual Technic build challenge.</div>
+        <div class="lcard-acts"><button class="la">✉ Message</button><button class="la">👤 Profile</button></div>
+      </div>
+      <div class="lcard">
+        <div class="lhead-row">
+          <div class="lav" style="background:#f59e0b">AZ</div>
+          <div><div class="lcard-name">Anna Zariņa</div><div class="lcard-handle">@anna_z · Estonia</div></div>
+        </div>
+        <div class="role-pill rp-custom">📸 Media & Gallery</div>
+        <div class="lcard-bio">Photo gallery, social media and event coverage.</div>
+        <div class="lcard-acts"><button class="la">✉ Message</button><button class="la">👤 Profile</button></div>
+      </div>
+    </div>
+
+    <!-- ALL MEMBERS -->
+    <div class="sdiv" style="margin-top:18px">👥 All members <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:11px;color:#aaa">(284)</span></div>
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+      <input style="flex:1;min-width:160px;border:1px solid #ddd;border-radius:8px;padding:7px 11px;font-size:13px;outline:none" placeholder="Search members…" oninput="filterMembers(this.value)">
+      <select style="border:1px solid #ddd;border-radius:8px;padding:7px 9px;font-size:12px;outline:none;background:#fff">
+        <option>All roles</option><option>Head of LUG</option><option>Ambassador</option><option>Technic Lead</option><option>Media & Gallery</option><option>Member</option>
+      </select>
+      <select style="border:1px solid #ddd;border-radius:8px;padding:7px 9px;font-size:12px;outline:none;background:#fff">
+        <option>All countries</option><option>🇱🇻 Latvia</option><option>🇪🇪 Estonia</option><option>🇱🇹 Lithuania</option>
+      </select>
+      <button id="inviteBtn" style="display:none;background:#FFD700;border:none;border-radius:8px;font-size:12px;font-weight:700;color:#1a1a2e;padding:7px 14px;cursor:pointer" onclick="openInvite()">+ Invite member</button>
+    </div>
+    <div class="members-grid" id="memberGrid">
+      <div class="mcard" data-name="Georgs T"><div class="mav2" style="background:#FF4444">GT</div><div class="mname">Georgs T.</div><div class="mctry">🇱🇻 Latvia</div><div class="mbadge rp-member">Member</div></div>
+      <div class="mcard" data-name="Maris K"><div class="mav2" style="background:#1a1a2e">MK</div><div class="mname">Maris K.</div><div class="mctry">🇱🇻 Latvia</div><div class="mbadge rp-head">👑 Head</div></div>
+      <div class="mcard" data-name="Liga P"><div class="mav2" style="background:#3b82f6">LP</div><div class="mname">Liga P.</div><div class="mctry">🇱🇻 Latvia</div><div class="mbadge rp-amb">🌍 Ambassador</div></div>
+      <div class="mcard" data-name="Rolands B"><div class="mav2" style="background:#22c55e">RB</div><div class="mname">Rolands B.</div><div class="mctry">🇱🇻 Latvia</div><div class="mbadge rp-custom">🛠️ Technic</div></div>
+      <div class="mcard" data-name="Anna Z"><div class="mav2" style="background:#f59e0b">AZ</div><div class="mname">Anna Z.</div><div class="mctry">🇪🇪 Estonia</div><div class="mbadge rp-custom">📸 Media</div></div>
+      <div class="mcard" data-name="Jānis K"><div class="mav2" style="background:#8b5cf6">JK</div><div class="mname">Jānis K.</div><div class="mctry">🇱🇻 Latvia</div><div class="mbadge rp-member">Member</div></div>
+      <div class="mcard" data-name="Inga S"><div class="mav2" style="background:#ec4899">IS</div><div class="mname">Inga S.</div><div class="mctry">🇱🇻 Latvia</div><div class="mbadge rp-member">Member</div></div>
+      <div class="mcard" data-name="Tomas D"><div class="mav2" style="background:#06b6d4">TD</div><div class="mname">Tomas D.</div><div class="mctry">🇱🇹 Lithuania</div><div class="mbadge rp-member">Member</div></div>
+      <div class="mcard" data-name="Valdis P"><div class="mav2" style="background:#ef4444">VP</div><div class="mname">Valdis P.</div><div class="mctry">🇱🇻 Latvia</div><div class="mbadge rp-member">Member</div></div>
+      <div class="mcard" data-name="Sandra K"><div class="mav2" style="background:#10b981">SK</div><div class="mname">Sandra K.</div><div class="mctry">🇱🇻 Latvia</div><div class="mbadge rp-member">Member</div></div>
+    </div>
+    <div style="text-align:center;margin-top:12px">
+      <button style="background:#f5f4ef;border:1px solid #ddd;border-radius:8px;font-size:13px;padding:7px 18px;cursor:pointer">Load more (274)</button>
+    </div>
+
+    <!-- MY MEMBERSHIP STATUS -->
+    <div id="myMembershipBlock" style="margin-top:16px;padding-top:14px;border-top:1px solid #f0f0ec">
+      <div style="font-size:13px;font-weight:700;margin-bottom:8px;color:#555">Your membership</div>
+      <div id="myMembershipInfo"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ROLES -->
+<div id="tab-roles" style="display:none">
+  <div class="card">
+    <div class="sec-h">Roles & positions <small>Core roles are system-fixed</small></div>
+
+    <!-- CORE -->
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#bbb;margin-bottom:8px">🔒 Core roles (system)</div>
+    <div class="rm-row"><span class="rm-ico">👑</span><div style="flex:1"><div class="rm-name">Head of LUG</div><div class="rm-sub">Full admin rights · Set by first registration · Transfer requires voluntary hand-off or 52% member vote</div></div><span class="rm-cnt">1 member</span><span style="font-size:10px;background:#f5f4ef;color:#aaa;padding:2px 7px;border-radius:20px">System</span></div>
+    <div class="rm-row"><span class="rm-ico">🌍</span><div style="flex:1"><div class="rm-name">Ambassador</div><div class="rm-sub">LEGO Community liaison · Appointed by Head of LUG</div></div><span class="rm-cnt">1 member</span><span style="font-size:10px;background:#f5f4ef;color:#aaa;padding:2px 7px;border-radius:20px">System</span></div>
+    <div class="rm-row"><span class="rm-ico">👥</span><div style="flex:1"><div class="rm-name">Member</div><div class="rm-sub">Default for all approved members · Can create votes, participate in votes</div></div><span class="rm-cnt">279</span><span style="font-size:10px;background:#f5f4ef;color:#aaa;padding:2px 7px;border-radius:20px">System</span></div>
+
+    <!-- CUSTOM -->
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#bbb;margin:16px 0 8px">✏️ Custom roles</div>
+    <div id="customRoles">
+      <div class="rm-row"><span class="rm-ico">🛠️</span><div style="flex:1"><div class="rm-name">Technic Lead</div><div class="rm-sub">Manage events · Post announcements · Manage gallery</div></div><span class="rm-cnt">1</span><button class="rbtn" onclick="openEditRole('Technic Lead','🛠️',this)">Edit</button><button class="rbtn del" onclick="confirmDelRole(this)">🗑</button></div>
+      <div class="rm-row"><span class="rm-ico">📸</span><div style="flex:1"><div class="rm-name">Media & Gallery</div><div class="rm-sub">Upload gallery · Post blog · Manage gallery</div></div><span class="rm-cnt">1</span><button class="rbtn" onclick="openEditRole('Media & Gallery','📸',this)">Edit</button><button class="rbtn del" onclick="confirmDelRole(this)">🗑</button></div>
+      <div class="rm-row"><span class="rm-ico">📦</span><div style="flex:1"><div class="rm-name">Parts Coordinator</div><div class="rm-sub">Manage parts library · Post announcements</div></div><span class="rm-cnt">1</span><button class="rbtn" onclick="openEditRole('Parts Coordinator','📦',this)">Edit</button><button class="rbtn del" onclick="confirmDelRole(this)">🗑</button></div>
+    </div>
+
+    <button id="addRoleBtn" style="margin-top:10px;background:#1a1a2e;border:none;border-radius:8px;color:#FFD700;font-size:13px;font-weight:700;padding:8px 16px;cursor:pointer" onclick="toggleRoleForm()">➕ Create new role</button>
+
+    <div class="role-form" id="roleForm">
+      <div style="font-size:13px;font-weight:700;margin-bottom:10px" id="rfTitle">Create new role</div>
+      <div class="rf-row">
+        <input class="rf-emo" id="rfEmoji" value="🏅" maxlength="2">
+        <input class="rf-inp" id="rfName" placeholder="Role name">
+        <input type="color" value="#8b5cf6" style="width:36px;height:36px;border:1px solid #ddd;border-radius:7px;cursor:pointer;padding:2px">
+      </div>
+      <input class="rf-inp" id="rfDesc" placeholder="Role description…" style="width:100%;margin-bottom:10px">
+      <div style="font-size:11px;font-weight:700;color:#555;margin-bottom:6px">Permissions</div>
+      <div class="perms">
+        <span class="pchip" onclick="this.classList.toggle('on')">📅 Manage events</span>
+        <span class="pchip on" onclick="this.classList.toggle('on')">📢 Announcements</span>
+        <span class="pchip" onclick="this.classList.toggle('on')">📷 Gallery</span>
+        <span class="pchip" onclick="this.classList.toggle('on')">👥 Invite members</span>
+        <span class="pchip" onclick="this.classList.toggle('on')">📝 Blog</span>
+        <span class="pchip" onclick="this.classList.toggle('on')">🗳️ Create votes</span>
+        <span class="pchip" onclick="this.classList.toggle('on')">📦 Parts library</span>
+        <span class="pchip" onclick="this.classList.toggle('on')">⚙️ Edit LUG info</span>
+      </div>
+      <div class="rf-btns">
+        <button class="rf-save" onclick="saveRole()">Save role</button>
+        <button class="rf-cancel" onclick="toggleRoleForm()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VOTING -->
+<div id="tab-voting" style="display:none">
+
+  <div class="threshold-notice">
+    ⚖️ <div><strong>Voting rules:</strong> Any member can create a vote. Replacing the Head of LUG requires <strong>52% of all members</strong> (≥148 votes of 284). Regular polls require simple majority. Head can voluntarily transfer without a vote.</div>
+  </div>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+    <div style="font-size:15px;font-weight:700">Active & past votes</div>
+    <button style="background:#1a1a2e;border:none;border-radius:8px;color:#FFD700;font-size:13px;font-weight:700;padding:8px 16px;cursor:pointer;display:flex;align-items:center;gap:6px" onclick="toggleNVForm()">🗳️ Create vote</button>
+  </div>
+
+  <!-- NEW VOTE FORM -->
+  <div class="nvform" id="nvForm">
+    <div style="font-size:14px;font-weight:700;margin-bottom:10px">New vote / poll</div>
+    <select class="nvinp" id="nvType" style="cursor:pointer;padding:8px 10px" onchange="updateVoteType()">
+      <option value="poll">📊 Poll — multiple choice</option>
+      <option value="elect">🏛️ Election — replace Head of LUG (requires 52%)</option>
+      <option value="rule">📋 Rule change — yes/no</option>
+    </select>
+    <div id="nvElectNotice" style="display:none;background:#FFF8DC;border:1px solid #E6B800;border-radius:7px;padding:9px 12px;font-size:12px;color:#8a6a00;margin-bottom:8px">⚖️ This vote will replace the Head of LUG. It passes only if <strong>≥52% of all 284 members vote YES</strong> (148+ votes needed). The current head retains the role until threshold is reached.</div>
+    <input class="nvinp" placeholder="Vote title…">
+    <textarea class="nvinp" rows="2" placeholder="Context for voters…" style="resize:none"></textarea>
+    <div style="font-size:11px;font-weight:700;color:#555;margin-bottom:6px" id="nvOptsLabel">Options</div>
+    <div id="nvOptsList">
+      <div class="nvoptrow"><input class="nvoptinp" placeholder="Option 1" value="Riga Exhibition Centre"><button onclick="this.parentElement.remove()" style="background:none;border:none;color:#ccc;font-size:16px;cursor:pointer;padding:0 4px">×</button></div>
+      <div class="nvoptrow"><input class="nvoptinp" placeholder="Option 2" value="Riga Maker Space"><button onclick="this.parentElement.remove()" style="background:none;border:none;color:#ccc;font-size:16px;cursor:pointer;padding:0 4px">×</button></div>
+    </div>
+    <button class="nvadd" id="nvAddOpt" onclick="addNVOpt()">+ Add option</button>
+    <div class="nvrow">
+      <span>Deadline:</span><input type="date" class="nvsel" value="2026-07-15">
+      <span>Voters:</span>
+      <select class="nvsel"><option>All members</option><option>Officers only</option><option>Head + Ambassador</option></select>
+      <label style="display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox"> Anonymous</label>
+    </div>
+    <div class="nvbtns">
+      <button class="nvsave" onclick="submitNV()">Launch vote</button>
+      <button class="nvcancel" onclick="toggleNVForm()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- ACTIVE: ELECTION -->
+  <div class="vcard">
+    <div class="vcard-head">
+      <span class="vtype vt-elect">🏛️ Election</span>
+      <div style="flex:1">
+        <div class="vtitle">Replace Head of LUG — nominate new leader</div>
+        <div class="vmeta">Started by Rolands B. · Ends July 15, 2026 · <strong style="color:#ef4444">48/284 voted</strong> · Needs 148 to pass</div>
+      </div>
+    </div>
+    <div class="vbody">
+      <div class="vdesc">A proposal to change the Head of LUG. This vote passes only if 52% of all 284 members (≥148 votes) vote for the same candidate. Current progress: 48 votes cast.</div>
+      <div style="background:#f5f4ef;border-radius:8px;padding:10px;margin-bottom:10px;font-size:12px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-weight:700">Progress to 52% threshold</span><span style="color:#ef4444;font-weight:700">17% (need 52%)</span></div>
+        <div style="height:7px;background:#e0e0dc;border-radius:4px;overflow:hidden"><div style="height:7px;background:#FFD700;border-radius:4px;width:17%;transition:width .5s"></div></div>
+        <div style="display:flex;justify-content:space-between;margin-top:4px;color:#aaa"><span>0</span><span style="color:#ef4444">148 needed</span><span>284</span></div>
+      </div>
+      <div class="vopts" id="electOpts">
+        <div class="vopt" data-v="28" onclick="castElectVote(this,'electOpts')">
+          <div class="vbar" style="width:58%"></div>
+          <div class="vchk"></div>
+          <div style="width:32px;height:32px;border-radius:50%;background:#22c55e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;z-index:1">RB</div>
+          <div style="z-index:1;flex:1"><div class="vopt-name">Rolands Bērziņš</div><div style="font-size:11px;color:#888">Technic Lead · 8 years</div></div>
+          <span class="vopt-pct">28 votes · 10%</span>
+        </div>
+        <div class="vopt" data-v="14" onclick="castElectVote(this,'electOpts')">
+          <div class="vbar" style="width:29%"></div>
+          <div class="vchk"></div>
+          <div style="width:32px;height:32px;border-radius:50%;background:#3b82f6;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;z-index:1">LP</div>
+          <div style="z-index:1;flex:1"><div class="vopt-name">Liga Puriņa</div><div style="font-size:11px;color:#888">Ambassador · 8 years</div></div>
+          <span class="vopt-pct">14 votes · 5%</span>
+        </div>
+        <div class="vopt" data-v="6" onclick="castElectVote(this,'electOpts')">
+          <div class="vbar" style="width:13%"></div>
+          <div class="vchk"></div>
+          <div style="width:32px;height:32px;border-radius:50%;background:#8b5cf6;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;z-index:1">JK</div>
+          <div style="z-index:1;flex:1"><div class="vopt-name">Jānis Krūmiņš</div><div style="font-size:11px;color:#888">Parts Coordinator · 5 years</div></div>
+          <span class="vopt-pct">6 votes · 2%</span>
+        </div>
+      </div>
+    </div>
+    <div class="vfoot">
+      <strong>48</strong> votes · <strong>236</strong> haven't voted · Threshold: <strong style="color:#ef4444">148 needed</strong>
+      <button class="vvbtn" id="electVoteBtn" onclick="openElectBallot()">Cast vote</button>
+    </div>
+  </div>
+
+  <!-- ACTIVE: POLL -->
+  <div class="vcard">
+    <div class="vcard-head">
+      <span class="vtype vt-poll">📊 Poll</span>
+      <div style="flex:1">
+        <div class="vtitle">BrickFest Baltic 2027 — preferred venue?</div>
+        <div class="vmeta">Created by Liga P. · Ends June 30, 2026 · 112 of 284 voted</div>
+      </div>
+    </div>
+    <div class="vbody">
+      <div class="vopts" id="venueOpts">
+        <div class="vopt" onclick="castPollVote('venueOpts','venueDoneBtn',this)"><div class="vbar" style="width:42%"></div><div class="vchk"></div><div class="vopt-name">Riga Exhibition Centre</div><span class="vopt-pct">42%</span></div>
+        <div class="vopt" onclick="castPollVote('venueOpts','venueDoneBtn',this)"><div class="vbar" style="width:28%"></div><div class="vchk"></div><div class="vopt-name">Riga Maker Space (large hall)</div><span class="vopt-pct">28%</span></div>
+        <div class="vopt" onclick="castPollVote('venueOpts','venueDoneBtn',this)"><div class="vbar" style="width:20%"></div><div class="vchk"></div><div class="vopt-name">Tallinn — joint with EstBrick</div><span class="vopt-pct">20%</span></div>
+        <div class="vopt" onclick="castPollVote('venueOpts','venueDoneBtn',this)"><div class="vbar" style="width:10%"></div><div class="vchk"></div><div class="vopt-name">Online only</div><span class="vopt-pct">10%</span></div>
+      </div>
+    </div>
+    <div class="vfoot"><strong>112</strong> votes · Ends June 30<button class="vvbtn" id="venueDoneBtn">Vote</button></div>
+  </div>
+
+  <!-- CLOSED -->
+  <div class="vcard" style="opacity:.75">
+    <div class="vcard-head">
+      <span class="vtype vt-closed">✅ Closed</span>
+      <div style="flex:1">
+        <div class="vtitle">Introduce €5/year membership fee?</div>
+        <div class="vmeta">Closed May 31, 2026 · 198 votes · Rule change · <strong style="color:#22c55e">PASSED</strong></div>
+      </div>
+    </div>
+    <div class="vbody">
+      <div class="vopts">
+        <div class="vopt winner locked"><div class="vbar w" style="width:72%"></div><div class="vchk" style="background:#22c55e;border-color:#22c55e;color:#fff">✓</div><div class="vopt-name">Yes — introduce fee</div><span class="vopt-pct">72% 🏆</span></div>
+        <div class="vopt locked" style="cursor:default"><div class="vbar" style="width:28%"></div><div class="vchk"></div><div class="vopt-name">No — keep free</div><span class="vopt-pct">28%</span></div>
+      </div>
+    </div>
+    <div class="vfoot"><strong>198</strong> total votes · Result: <strong>Fee introduced from Aug 2026</strong></div>
+  </div>
+</div>
+
+<!-- GALLERY -->
+<div id="tab-gallery" style="display:none">
+  <div class="card">
+    <div class="sec-h">Gallery (48 items) <button style="background:#FFD700;border:none;border-radius:7px;font-size:12px;font-weight:700;color:#1a1a2e;padding:5px 12px;cursor:pointer">+ Upload</button></div>
+    <div class="gallery">
+      <div class="gitem wide" style="background:#E1F5EE">🏰</div><div class="gitem" style="background:#E6F1FB">🚂</div>
+      <div class="gitem" style="background:#FFF8DC">🏙️</div><div class="gitem" style="background:#EEEDFE">⚙️</div>
+      <div class="gitem wide" style="background:#FAEEDA">🌌</div><div class="gitem" style="background:#FCEBEB">🚀</div>
+      <div class="gitem" style="background:#E1F5EE">🦁</div><div class="gitem" style="background:#FFF8DC">🤖</div>
+      <div class="gitem wide" style="background:#E6F1FB">🏯</div>
+    </div>
+  </div>
+</div>
+
+<!-- EVENTS -->
+<div id="tab-events" style="display:none">
+  <div class="card">
+    <div class="sec-h">Upcoming events</div>
+    <div class="ecard"><div class="edate"><div class="edate-d">05</div><div class="edate-m">JUL</div></div><div style="flex:1"><div class="etitle">Monthly meeting — City & Trains</div><div class="emeta">📍 Riga Maker Space · 14:00–18:00 · Free</div><div class="etags"><span class="etag">City</span><span class="etag">Trains</span><span class="etag">All ages</span></div></div><button class="ereg">Register</button></div>
+    <div class="ecard"><div class="edate"><div class="edate-d">19</div><div class="edate-m">JUL</div></div><div style="flex:1"><div class="etitle">BrickFest Baltic 2026 — public exhibition</div><div class="emeta">📍 Riga Exhibition Centre · 10:00–18:00</div><div class="etags"><span class="etag">Exhibition</span><span class="etag">Public</span></div></div><button class="ereg">Register</button></div>
+    <div class="ecard"><div class="edate"><div class="edate-d">02</div><div class="edate-m">AUG</div></div><div style="flex:1"><div class="etitle">Technic workshop — pneumatics & gearboxes</div><div class="emeta">📍 Riga Maker Space · 11:00–16:00 · Members only</div><div class="etags"><span class="etag">Technic</span><span class="etag">Workshop</span></div></div><button class="ereg">Register</button></div>
+  </div>
+</div>
+
+<!-- BLOG -->
+<div id="tab-blog" style="display:none">
+  <div class="card">
+    <div class="sec-h">LUG Blog (12 posts)</div>
+    <div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #f5f4ef;cursor:pointer"><div style="width:64px;height:64px;background:#E1F5EE;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0">🏰</div><div><div style="font-size:13px;font-weight:700;margin-bottom:3px">BrickFest Baltic 2025 — recap & photos</div><div style="font-size:12px;color:#888">2,000+ visitors, 48 builds, 3 countries.</div><div style="font-size:11px;color:#aaa;margin-top:4px">Maris K. · June 2025 · ❤️ 128</div></div></div>
+    <div style="display:flex;gap:12px;padding:10px 0;cursor:pointer"><div style="width:64px;height:64px;background:#EEEDFE;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0">⚙️</div><div><div style="font-size:13px;font-weight:700;margin-bottom:3px">Technic pneumatic engine — build showcase</div><div style="font-size:12px;color:#888">Rolands built a 1,400-part pneumatic V8.</div><div style="font-size:11px;color:#aaa;margin-top:4px">Rolands B. · May 2025 · ❤️ 94</div></div></div>
+  </div>
+</div>
+
+<!-- SETTINGS (Head only) -->
+<div id="tab-settings" style="display:none">
+  <div class="card">
+    <div class="sec-h">⚙️ LUG Settings <small>Head of LUG only</small></div>
+
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#bbb;margin-bottom:10px">General information</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
+      <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">LUG name</label><input style="width:100%;border:1px solid #ddd;border-radius:7px;padding:8px 10px;font-size:13px;outline:none" value="BrickBaltic LUG"></div>
+      <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Short description</label><input style="width:100%;border:1px solid #ddd;border-radius:7px;padding:8px 10px;font-size:13px;outline:none" value="Largest LEGO club in the Baltics"></div>
+      <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Website</label><input style="width:100%;border:1px solid #ddd;border-radius:7px;padding:8px 10px;font-size:13px;outline:none" value="https://brickbaltic.lv"></div>
+      <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Country</label><input style="width:100%;border:1px solid #ddd;border-radius:7px;padding:8px 10px;font-size:13px;outline:none" value="Latvia"></div>
+      <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">City</label><input style="width:100%;border:1px solid #ddd;border-radius:7px;padding:8px 10px;font-size:13px;outline:none" value="Riga"></div>
+      <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Meeting schedule</label><input style="width:100%;border:1px solid #ddd;border-radius:7px;padding:8px 10px;font-size:13px;outline:none" value="First Saturday of the month"></div>
+    </div>
+
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#bbb;margin-bottom:10px">📬 Official postal address</div>
+    <div style="background:#FFF8DC;border:1px solid #E6B800;border-radius:8px;padding:10px 12px;font-size:12px;color:#8a6a00;margin-bottom:10px">This address is used for official LEGO correspondence, recognition letters, and community mail. It is visible only to the Head of LUG and Ambassador.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
+      <div style="grid-column:span 2"><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Recipient / organisation name</label><input style="width:100%;border:1px solid #ddd;border-radius:7px;padding:8px 10px;font-size:13px;outline:none" value="BrickBaltic LUG — Maris Kalniņš"></div>
+      <div style="grid-column:span 2"><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Street address</label><input style="width:100%;border:1px solid #ddd;border-radius:7px;padding:8px 10px;font-size:13px;outline:none" value="Krišjāņa Barona iela 7"></div>
+      <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">City / municipality</label><input style="width:100%;border:1px solid #ddd;border-radius:7px;padding:8px 10px;font-size:13px;outline:none" value="Riga"></div>
+      <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Postal code</label><input style="width:100%;border:1px solid #ddd;border-radius:7px;padding:8px 10px;font-size:13px;outline:none" value="LV-1011"></div>
+      <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Country</label><input style="width:100%;border:1px solid #ddd;border-radius:7px;padding:8px 10px;font-size:13px;outline:none" value="Latvia"></div>
+      <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Contact email</label><input style="width:100%;border:1px solid #ddd;border-radius:7px;padding:8px 10px;font-size:13px;outline:none" value="head@brickbaltic.lv"></div>
+      <div style="grid-column:span 2"><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Contact phone</label><input style="width:100%;border:1px solid #ddd;border-radius:7px;padding:8px 10px;font-size:13px;outline:none" value="+371 2000 0000"></div>
+    </div>
+
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#bbb;margin-bottom:10px">🔒 Danger zone</div>
+    <div style="background:#FCEBEB;border:1px solid #E24B4A;border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <div><div style="font-size:13px;font-weight:700;color:#791F1F">Dissolve this LUG</div><div style="font-size:12px;color:#A32D2D;margin-top:2px">This permanently removes the LUG. All members will be notified. This cannot be undone.</div></div>
+      <button style="background:#CC0000;border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:700;padding:8px 16px;cursor:pointer" onclick="confirmDissolve()">Dissolve LUG</button>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button style="background:#1a1a2e;border:none;border-radius:8px;color:#FFD700;font-size:13px;font-weight:700;padding:9px 20px;cursor:pointer" onclick="toast('Settings saved ✓')">Save changes</button>
+      <button style="background:#f5f4ef;border:1px solid #ddd;border-radius:8px;font-size:13px;padding:9px 14px;cursor:pointer">Cancel</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+<div class="side">
+
+  <!-- MY STATUS / JOIN -->
+  <div id="sideStatusCard"></div>
+
+  <!-- LEADERSHIP QUICK VIEW -->
+  <div class="card">
+    <div class="sec-h">Leadership</div>
+    <div style="display:flex;flex-direction:column;gap:7px">
+      <div style="display:flex;align-items:center;gap:9px;padding:8px;background:#FFF8DC;border:1px solid #E6B800;border-radius:8px;cursor:pointer">
+        <div style="width:32px;height:32px;border-radius:50%;background:#1a1a2e;color:#FFD700;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">MK</div>
+        <div><div style="font-size:12px;font-weight:700">Maris Kalniņš</div><div style="font-size:10px;color:#8a6a00">👑 Head of LUG</div></div>
+        <button style="margin-left:auto;background:none;border:1px solid #E6B800;border-radius:5px;font-size:10px;padding:2px 7px;cursor:pointer;color:#8a6a00">✉</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:9px;padding:8px;background:#E6F1FB;border:1px solid #378ADD;border-radius:8px;cursor:pointer">
+        <div style="width:32px;height:32px;border-radius:50%;background:#3b82f6;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">LP</div>
+        <div><div style="font-size:12px;font-weight:700">Liga Puriņa</div><div style="font-size:10px;color:#185FA5">🌍 Ambassador</div></div>
+        <button style="margin-left:auto;background:none;border:1px solid #378ADD;border-radius:5px;font-size:10px;padding:2px 7px;cursor:pointer;color:#185FA5">✉</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIVE VOTES WIDGET -->
+  <div class="card" style="border-color:#FFD700;background:#FFFDF0">
+    <div class="sec-h" style="color:#8a6a00">🗳️ Active votes (2)</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="background:#fff;border:1px solid #e8e7e2;border-radius:8px;padding:9px;cursor:pointer" onclick="showTab('voting',document.querySelectorAll('.tnav')[3])">
+        <div style="font-size:12px;font-weight:700;margin-bottom:2px">Replace Head of LUG</div>
+        <div style="font-size:11px;color:#ef4444;margin-bottom:4px">48/284 · needs 148</div>
+        <div style="height:4px;background:#eee;border-radius:2px;overflow:hidden"><div style="height:4px;background:#FFD700;border-radius:2px;width:17%"></div></div>
+      </div>
+      <div style="background:#fff;border:1px solid #e8e7e2;border-radius:8px;padding:9px;cursor:pointer" onclick="showTab('voting',document.querySelectorAll('.tnav')[3])">
+        <div style="font-size:12px;font-weight:700;margin-bottom:2px">BrickFest 2027 venue poll</div>
+        <div style="font-size:11px;color:#888;margin-bottom:4px">112/284 voted</div>
+        <div style="height:4px;background:#eee;border-radius:2px;overflow:hidden"><div style="height:4px;background:#3b82f6;border-radius:2px;width:39%"></div></div>
+      </div>
+    </div>
+    <button style="width:100%;margin-top:9px;background:#FFD700;border:none;border-radius:7px;font-size:12px;font-weight:700;color:#1a1a2e;padding:7px;cursor:pointer" onclick="showTab('voting',document.querySelectorAll('.tnav')[3])">Vote now →</button>
+  </div>
+
+  <!-- INFO -->
+  <div class="card">
+    <div class="sec-h">Club info</div>
+    <div class="info-row"><span class="info-lbl">Founded</span><span class="info-val">2012</span></div>
+    <div class="info-row"><span class="info-lbl">Country</span><span class="info-val">🇱🇻 Latvia</span></div>
+    <div class="info-row"><span class="info-lbl">Members</span><span class="info-val" id="sideMembers">284</span></div>
+    <div class="info-row"><span class="info-lbl">LEGO Recognized</span><span class="info-val" style="color:#22c55e">✓ Since 2016</span></div>
+    <div class="info-row"><span class="info-lbl">Membership</span><span class="info-val">Free</span></div>
+    <div class="info-row"><span class="info-lbl">Meetings</span><span class="info-val">1st Saturday</span></div>
+  </div>
+
+  <div class="card">
+    <div class="sec-h">Themes</div>
+    <div class="themes">
+      <span class="theme-tag" style="background:#FFF8DC;border:1px solid #E6B800;color:#8a6a00">🏰 Castle</span>
+      <span class="theme-tag" style="background:#E6F1FB;border:1px solid #378ADD;color:#185FA5">🚗 City</span>
+      <span class="theme-tag" style="background:#EEEDFE;border:1px solid #7F77DD;color:#3C3489">⚙️ Technic</span>
+      <span class="theme-tag" style="background:#E1F5EE;border:1px solid #1D9E75;color:#085041">🏆 MOC</span>
+      <span class="theme-tag" style="background:#FCEBEB;border:1px solid #E24B4A;color:#791F1F">🚀 Space</span>
+      <span class="theme-tag" style="background:#f5f4ef;border:1px solid #ddd;color:#555">🚂 Trains</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sec-h">Sponsors</div>
+    <div class="sponsors">
+      <div class="spon">🏪 BrickStore Riga</div>
+      <div class="spon">🛠️ TechnicParts.eu</div>
+      <div class="spon">📸 StudsUp.com</div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- TRANSFER HEAD MODAL -->
+<div class="modal-bg" id="transferModal" onclick="if(event.target===this)closeModal('transferModal')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('transferModal')">✕</button>
+    <h3>👑 Transfer Head of LUG</h3>
+    <div class="modal-sub">You are voluntarily handing over your Head role. This takes effect immediately and cannot be reversed without another vote or mutual agreement.</div>
+    <div style="font-size:12px;font-weight:700;color:#555;margin-bottom:8px">Select new Head of LUG:</div>
+    <div id="transferOptions">
+      <div class="transfer-option" onclick="selectTransfer(this)"><div class="to-av" style="background:#22c55e">RB</div><div><div style="font-size:13px;font-weight:700">Rolands Bērziņš</div><div style="font-size:11px;color:#888">Technic Lead · 8 years member</div></div><div class="bchk" style="width:17px;height:17px;border-radius:50%;border:2px solid #ddd;margin-left:auto;flex-shrink:0"></div></div>
+      <div class="transfer-option" onclick="selectTransfer(this)"><div class="to-av" style="background:#3b82f6">LP</div><div><div style="font-size:13px;font-weight:700">Liga Puriņa</div><div style="font-size:11px;color:#888">Ambassador · 8 years member</div></div><div class="bchk" style="width:17px;height:17px;border-radius:50%;border:2px solid #ddd;margin-left:auto;flex-shrink:0"></div></div>
+      <div class="transfer-option" onclick="selectTransfer(this)"><div class="to-av" style="background:#f59e0b">AZ</div><div><div style="font-size:13px;font-weight:700">Anna Zariņa</div><div style="font-size:11px;color:#888">Media & Gallery · 5 years member</div></div><div class="bchk" style="width:17px;height:17px;border-radius:50%;border:2px solid #ddd;margin-left:auto;flex-shrink:0"></div></div>
+    </div>
+    <div style="background:#FCEBEB;border:1px solid #E24B4A;border-radius:8px;padding:10px;font-size:12px;color:#791F1F;margin-top:12px">⚠️ This action is permanent. You will become a regular Member after transfer.</div>
+    <div class="modal-actions">
+      <button class="modal-btn primary" id="confirmTransferBtn" disabled onclick="confirmTransfer()">Confirm transfer</button>
+      <button class="modal-btn ghost" onclick="closeModal('transferModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- BALLOT MODAL -->
+<div class="modal-bg" id="ballotModal" onclick="if(event.target===this)closeModal('ballotModal')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('ballotModal')">✕</button>
+    <h3>🏛️ Vote: Replace Head of LUG</h3>
+    <div class="modal-sub">Your vote is anonymous. This passes only if 148+ members (52%) choose the same candidate. Select one:</div>
+    <div id="ballotOptions">
+      <div class="ballot-opt" onclick="selectBallot(this)"><div class="bav" style="background:#22c55e">RB</div><div><div class="bname">Rolands Bērziņš</div><div class="bsub">Technic Lead · 8 years · 28 votes so far</div></div><div class="bchk"></div></div>
+      <div class="ballot-opt" onclick="selectBallot(this)"><div class="bav" style="background:#3b82f6">LP</div><div><div class="bname">Liga Puriņa</div><div class="bsub">Ambassador · 8 years · 14 votes so far</div></div><div class="bchk"></div></div>
+      <div class="ballot-opt" onclick="selectBallot(this)"><div class="bav" style="background:#8b5cf6">JK</div><div><div class="bname">Jānis Krūmiņš</div><div class="bsub">Parts Coordinator · 5 years · 6 votes so far</div></div><div class="bchk"></div></div>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn primary" id="submitBallotBtn" disabled onclick="submitBallot()">Submit vote</button>
+      <button class="modal-btn ghost" onclick="closeModal('ballotModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- INVITE MODAL -->
+<div class="modal-bg" id="inviteModal" onclick="if(event.target===this)closeModal('inviteModal')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('inviteModal')">✕</button>
+    <h3>+ Invite member</h3>
+    <div class="modal-sub">Members can only belong to one LUG. The invitee must not already be in another LUG. They will receive a notification and can accept or decline.</div>
+    <input style="width:100%;border:1px solid #ddd;border-radius:8px;padding:9px 12px;font-size:13px;outline:none;margin-bottom:8px" placeholder="Username or email address">
+    <select style="width:100%;border:1px solid #ddd;border-radius:8px;padding:9px 10px;font-size:13px;outline:none;background:#fff;margin-bottom:8px">
+      <option>Assign role: Member (default)</option>
+      <option>Technic Lead</option><option>Media & Gallery</option><option>Parts Coordinator</option>
+    </select>
+    <textarea style="width:100%;border:1px solid #ddd;border-radius:8px;padding:9px 12px;font-size:13px;outline:none;resize:none" rows="2" placeholder="Personal message (optional)…"></textarea>
+    <div class="modal-actions">
+      <button class="modal-btn primary" onclick="closeModal('inviteModal');toast('Invite sent! ✓')">Send invite</button>
+      <button class="modal-btn ghost" onclick="closeModal('inviteModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────
+// 0 = not a member, 1 = member, 2 = head
+const STATE = { membership: 1, isHead: false };
+
+// ── INIT ───────────────────────────────────────────────
+(function init(){
+  renderActions();
+  renderSideCard();
+  renderMembershipBlock();
+  if(STATE.isHead){
+    document.getElementById('settingsTab').style.display='';
+    document.getElementById('inviteBtn').style.display='';
+  }
+})();
+
+function renderActions(){
+  const el=document.getElementById('lugActions');
+  if(STATE.membership===0){
+    el.innerHTML=`<button class="btn-primary" onclick="joinLUG()">Join LUG</button><button class="btn-ghost">♡ Follow</button>`;
+  } else if(STATE.isHead){
+    el.innerHTML=`<button class="btn-primary" onclick="showTab('settings',document.querySelectorAll('.tnav')[7])">⚙️ Manage LUG</button><button class="btn-primary" onclick="openTransfer()">👑 Transfer Head role</button><button class="btn-danger" onclick="confirmLeave()">Leave LUG</button>`;
+  } else {
+    el.innerHTML=`<button class="btn-ghost" style="color:#22c55e;border-color:#22c55e">✓ Member</button><button class="btn-ghost">♡ Follow</button><button class="btn-danger" onclick="confirmLeave()">Leave LUG</button>`;
+  }
+}
+
+function renderSideCard(){
+  const el=document.getElementById('sideStatusCard');
+  if(STATE.membership===0){
+    el.innerHTML=`<div class="join-card"><div class="jt">Join BrickBaltic LUG</div><div class="js">Free membership. Monthly meetings in Riga. All skill levels welcome.<br><br><strong style="color:#FFD700">⚠️ You can only be in one LUG at a time.</strong></div><button class="jbtn" onclick="joinLUG()">Request to join</button></div>`;
+  } else if(STATE.isHead){
+    el.innerHTML=`<div class="card" style="border-color:#FFD700;background:#FFFDF0"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><div style="width:36px;height:36px;border-radius:50%;background:#1a1a2e;color:#FFD700;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700">GT</div><div><div style="font-size:13px;font-weight:700">You are Head of LUG</div><div style="font-size:11px;color:#888">Since 2012 · Founder</div></div></div><div style="font-size:12px;color:#8a6a00;background:#FFF8DC;border-radius:7px;padding:8px;margin-bottom:8px">You have full admin rights. To step down, transfer your role or wait for a 52% member vote.</div><button style="width:100%;background:#1a1a2e;border:none;border-radius:7px;color:#FFD700;font-size:12px;font-weight:700;padding:8px;cursor:pointer" onclick="showTab('settings',document.querySelectorAll('.tnav')[7])">⚙️ LUG Settings</button></div>`;
+  } else {
+    el.innerHTML=`<div class="card" style="border-color:#22c55e"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><div style="width:36px;height:36px;border-radius:50%;background:#FF4444;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700">GT</div><div><div style="font-size:13px;font-weight:700">Georgs T. — Member</div><div style="font-size:11px;color:#888">Joined 2019 · 🇱🇻 Latvia</div></div></div><div style="font-size:12px;color:#555;margin-bottom:8px">You are a member of this LUG. You can create votes and participate in all activities.</div><button style="width:100%;background:#FCEBEB;border:1px solid #E24B4A;border-radius:7px;color:#791F1F;font-size:12px;font-weight:700;padding:7px;cursor:pointer" onclick="confirmLeave()">Leave LUG</button></div>`;
+  }
+}
+
+function renderMembershipBlock(){
+  const el=document.getElementById('myMembershipInfo');
+  if(STATE.membership===0){
+    el.innerHTML=`<div style="font-size:13px;color:#888">You are not a member of this LUG. <button onclick="joinLUG()" style="background:none;border:none;color:#1a73e8;cursor:pointer;font-size:13px;padding:0">Join →</button></div>`;
+  } else if(STATE.isHead){
+    el.innerHTML=`<div style="background:#FFF8DC;border:1px solid #E6B800;border-radius:8px;padding:10px;font-size:12px;color:#8a6a00">👑 You are the <strong>Head of LUG</strong>. You have full administrative access. You can transfer this role to another member voluntarily, or it can be changed by a 52% member vote.</div>`;
+  } else {
+    el.innerHTML=`<div style="background:#E1F5EE;border:1px solid #1D9E75;border-radius:8px;padding:10px;display:flex;align-items:center;justify-content:space-between;gap:10px"><div style="font-size:12px;color:#085041">✓ You are a member. You can create votes, join events, and post in the gallery and blog.</div><button onclick="confirmLeave()" style="background:#FCEBEB;border:1px solid #E24B4A;border-radius:6px;font-size:11px;font-weight:700;color:#791F1F;padding:5px 10px;cursor:pointer;flex-shrink:0">Leave LUG</button></div>`;
+  }
+}
+
+// ── TAB NAVIGATION ─────────────────────────────────────
+const TABS=['about','members','roles','voting','gallery','events','blog','settings'];
+function showTab(name,btn){
+  TABS.forEach(t=>{const el=document.getElementById('tab-'+t);if(el)el.style.display=t===name?'':'none';});
+  document.querySelectorAll('.tnav').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+}
+
+// ── MEMBER FILTER ──────────────────────────────────────
+function filterMembers(v){
+  v=v.toLowerCase();
+  document.querySelectorAll('#memberGrid .mcard').forEach(c=>{
+    c.style.display=!v||c.dataset.name.toLowerCase().includes(v)?'':'none';
+  });
+}
+
+// ── JOIN / LEAVE ───────────────────────────────────────
+function joinLUG(){
+  STATE.membership=1;
+  toast('Welcome to BrickBaltic LUG! 🎉');
+  renderActions();renderSideCard();renderMembershipBlock();
+  document.getElementById('statMembers').textContent='285';
+  document.getElementById('sideMembers').textContent='285';
+}
+
+function confirmLeave(){
+  if(STATE.isHead){
+    if(!confirm('You are the Head of LUG. Before leaving you must transfer your role to another member. Go to the Transfer Head page?'))return;
+    openTransfer();return;
+  }
+  if(!confirm('Leave BrickBaltic LUG? You can rejoin later if the LUG still exists.'))return;
+  STATE.membership=0;STATE.isHead=false;
+  toast('You have left BrickBaltic LUG');
+  renderActions();renderSideCard();renderMembershipBlock();
+  document.getElementById('inviteBtn').style.display='none';
+  document.getElementById('settingsTab').style.display='none';
+  const cnt=parseInt(document.getElementById('statMembers').textContent)-1;
+  document.getElementById('statMembers').textContent=cnt;
+  document.getElementById('sideMembers').textContent=cnt;
+  if(cnt===0){ setTimeout(()=>alert('⚠️ LUG dissolved — no members remaining. BrickBaltic LUG has been automatically removed.'),600); }
+}
+
+// ── TRANSFER HEAD ──────────────────────────────────────
+let selectedTransferEl=null;
+function openTransfer(){ document.getElementById('transferModal').classList.add('open'); }
+function selectTransfer(el){
+  document.querySelectorAll('#transferOptions .transfer-option').forEach(o=>{
+    o.classList.remove('selected');
+    o.querySelector('.bchk').style.cssText='width:17px;height:17px;border-radius:50%;border:2px solid #ddd;margin-left:auto;flex-shrink:0';
+  });
+  el.classList.add('selected');
+  const chk=el.querySelector('.bchk');
+  chk.style.cssText='width:17px;height:17px;border-radius:50%;border:2px solid #FFD700;background:#FFD700;margin-left:auto;flex-shrink:0';
+  selectedTransferEl=el;
+  document.getElementById('confirmTransferBtn').disabled=false;
+}
+function confirmTransfer(){
+  const name=selectedTransferEl.querySelector('.bname,.rm-name,[style*="font-weight:700"]').textContent;
+  closeModal('transferModal');
+  STATE.isHead=false;
+  toast('👑 Head of LUG transferred to '+name);
+  renderActions();renderSideCard();renderMembershipBlock();
+  document.getElementById('settingsTab').style.display='none';
+  document.getElementById('inviteBtn').style.display='none';
+}
+
+// ── ROLES ──────────────────────────────────────────────
+function toggleRoleForm(){
+  const f=document.getElementById('roleForm');
+  document.getElementById('rfTitle').textContent='Create new role';
+  document.getElementById('rfName').value='';
+  document.getElementById('rfEmoji').value='🏅';
+  document.getElementById('rfDesc').value='';
+  document.querySelectorAll('.pchip').forEach(c=>c.classList.remove('on'));
+  f.style.display=f.style.display==='block'?'none':'block';
+  if(f.style.display==='block')f.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function openEditRole(name,emoji,btn){
+  document.getElementById('rfTitle').textContent='Edit: '+name;
+  document.getElementById('rfName').value=name;
+  document.getElementById('rfEmoji').value=emoji;
+  const f=document.getElementById('roleForm');
+  f.style.display='block';
+  f.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function saveRole(){
+  const name=document.getElementById('rfName').value.trim();
+  const emoji=document.getElementById('rfEmoji').value.trim()||'🏅';
+  if(!name){alert('Enter a role name');return;}
+  const perms=[...document.querySelectorAll('.pchip.on')].map(c=>c.textContent).join(', ')||'No permissions';
+  const list=document.getElementById('customRoles');
+  const row=document.createElement('div');row.className='rm-row';
+  row.innerHTML=`<span class="rm-ico">${emoji}</span><div style="flex:1"><div class="rm-name">${name}</div><div class="rm-sub">${perms}</div></div><span class="rm-cnt">0</span><button class="rbtn" onclick="openEditRole('${name}','${emoji}',this)">Edit</button><button class="rbtn del" onclick="confirmDelRole(this)">🗑</button>`;
+  list.appendChild(row);
+  document.getElementById('roleForm').style.display='none';
+  toast('Role "'+name+'" created ✓');
+}
+function confirmDelRole(btn){
+  const name=btn.closest('.rm-row').querySelector('.rm-name').textContent;
+  if(confirm('Remove role "'+name+'"? Members will revert to Member.')){btn.closest('.rm-row').remove();toast('Role removed');}
+}
+
+// ── VOTING ─────────────────────────────────────────────
+function toggleNVForm(){
+  const f=document.getElementById('nvForm');
+  f.style.display=f.style.display==='block'?'none':'block';
+  if(f.style.display==='block')f.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function updateVoteType(){
+  const t=document.getElementById('nvType').value;
+  document.getElementById('nvElectNotice').style.display=t==='elect'?'block':'none';
+  document.getElementById('nvOptsLabel').textContent=t==='rule'?'This is a Yes/No vote — options are fixed':'Options';
+  document.getElementById('nvAddOpt').style.display=t==='rule'?'none':'block';
+}
+function addNVOpt(){
+  const list=document.getElementById('nvOptsList');
+  const n=list.children.length+1;
+  const row=document.createElement('div');row.className='nvoptrow';
+  row.innerHTML=`<input class="nvoptinp" placeholder="Option ${n}"><button onclick="this.parentElement.remove()" style="background:none;border:none;color:#ccc;font-size:16px;cursor:pointer;padding:0 4px">×</button>`;
+  list.appendChild(row);row.querySelector('input').focus();
+}
+function submitNV(){document.getElementById('nvForm').style.display='none';toast('Vote launched! Members notified 🗳️');}
+
+// Cast election vote (ballot modal)
+function openElectBallot(){document.getElementById('ballotModal').classList.add('open');}
+let selectedBallotEl=null;
+function selectBallot(el){
+  document.querySelectorAll('#ballotOptions .ballot-opt').forEach(o=>{
+    o.classList.remove('selected');o.querySelector('.bchk').textContent='';
+    o.querySelector('.bchk').style.cssText='';
+  });
+  el.classList.add('selected');
+  const chk=el.querySelector('.bchk');chk.textContent='✓';
+  chk.style.cssText='background:#FFD700;border-color:#FFD700;color:#1a1a2e';
+  selectedBallotEl=el;
+  const btn=document.getElementById('submitBallotBtn');btn.disabled=false;
+}
+function submitBallot(){
+  closeModal('ballotModal');
+  document.getElementById('electVoteBtn').textContent='Voted ✓';
+  document.getElementById('electVoteBtn').disabled=true;
+  document.getElementById('electVoteBtn').style.cssText='background:#22c55e;color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:700;padding:5px 14px;cursor:default;margin-left:auto';
+  toast('Vote cast ✓');
+}
+
+// Cast poll vote
+function castPollVote(container,btnId,opt){
+  const opts=document.querySelectorAll('#'+container+' .vopt');
+  if([...opts].some(o=>o.classList.contains('voted')))return;
+  opts.forEach(o=>{o.classList.add('locked');o.style.cursor='default';});
+  opt.classList.add('voted');opt.querySelector('.vchk').textContent='✓';
+  const btn=document.getElementById(btnId);
+  btn.textContent='Voted ✓';btn.disabled=true;btn.style.cssText='background:#22c55e;color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:700;padding:5px 14px;cursor:default;margin-left:auto';
+  toast('Vote recorded ✓');
+}
+function castElectVote(opt,container){
+  const opts=document.querySelectorAll('#'+container+' .vopt');
+  if([...opts].some(o=>o.classList.contains('voted')))return;
+  openElectBallot();
+}
+
+// ── INVITE ─────────────────────────────────────────────
+function openInvite(){document.getElementById('inviteModal').classList.add('open');}
+
+// ── SETTINGS ───────────────────────────────────────────
+function confirmDissolve(){
+  if(prompt('Type DISSOLVE to confirm permanent deletion of this LUG:')==='DISSOLVE'){
+    toast('LUG dissolution initiated. All members notified.');
+  }
+}
+
+// ── MODALS ─────────────────────────────────────────────
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+// ── TOAST ──────────────────────────────────────────────
+function toast(msg){
+  const t=document.createElement('div');t.className='toast';t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.remove(),380)},2400);
+}
+</script>
+<script src="../js/shared.js">
+// ── PRIVACY / ACCESS CONTROL ──
+(function applyPrivacy(){
+  var u=null;
+  try{u=JSON.parse(sessionStorage.getItem('su_user'));}catch(e){}
+  var isMember = u && STATE.membership > 0;
+
+  // Voting — always members only
+  var vg=document.getElementById('votingGate');
+  var vc=document.getElementById('votingContent');
+  if(vg&&vc){vg.style.display=isMember?'none':'';vc.style.display=isMember?'':'none';}
+
+  // Members list
+  var mg=document.getElementById('membersGate');
+  var mc=document.getElementById('membersContent');
+  if(mg&&mc){mg.style.display=isMember?'none':'';mc.style.display=isMember?'':'none';}
+
+  // Settings tab — head only (already handled by STATE.isHead)
+  // If not logged in, hide invite button
+  if(!u){var ib=document.getElementById('inviteBtn');if(ib)ib.style.display='none';}
+})();
+</script>
+</body>
+</html>

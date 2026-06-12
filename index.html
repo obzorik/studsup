@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudsUp — LEGO Community Platform</title>
+<link rel="stylesheet" href="frontend/css/shared.css">
+<style>
+body{background:#f5f4ef;min-height:100vh}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 55%,#0f3460 100%);padding:52px 32px 44px;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;right:-80px;top:-80px;width:400px;height:400px;background:rgba(255,215,0,.04);border-radius:50%;pointer-events:none}
+.hero-inner{max-width:1060px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:32px;align-items:start}
+.hero-logo{font-size:42px;font-weight:800;color:#FFD700;letter-spacing:-1.5px;margin-bottom:8px}
+.hero-logo span{color:#FF4444}
+.hero-tagline{font-size:16px;color:rgba(255,255,255,.6);margin-bottom:20px;line-height:1.65;max-width:520px}
+.hero-btns{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px}
+.btn-y{background:#FFD700;color:#1a1a2e;border:none;border-radius:8px;font-size:14px;font-weight:700;padding:11px 22px;cursor:pointer;text-decoration:none;display:inline-block;transition:all .15s}
+.btn-y:hover{background:#E6B800;transform:translateY(-1px)}
+.btn-g{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:8px;font-size:14px;color:#fff;padding:11px 22px;cursor:pointer;text-decoration:none;display:inline-block;transition:all .15s}
+.btn-g:hover{background:rgba(255,255,255,.18)}
+
+/* Version card */
+.version-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,215,0,.2);border-radius:14px;padding:18px 22px;min-width:220px;flex-shrink:0}
+.vc-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:rgba(255,255,255,.4);margin-bottom:6px}
+.vc-ver{font-size:28px;font-weight:800;color:#FFD700;margin-bottom:4px}
+.vc-date{font-size:12px;color:rgba(255,255,255,.45);margin-bottom:14px}
+.vc-link{display:block;background:rgba(255,215,0,.12);border:1px solid rgba(255,215,0,.25);border-radius:7px;color:#FFD700;font-size:12px;font-weight:700;padding:7px 12px;text-decoration:none;text-align:center;transition:all .15s;margin-bottom:6px}
+.vc-link:hover{background:rgba(255,215,0,.22)}
+.vc-link.sm{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:rgba(255,255,255,.6);font-weight:500}
+.vc-link.sm:hover{background:rgba(255,255,255,.12);color:#fff}
+
+/* STAT BAR */
+.stat-bar{display:flex;gap:28px;flex-wrap:wrap}
+.hstat{color:rgba(255,255,255,.4);font-size:12px}
+.hstat strong{color:#FFD700;font-size:18px;font-weight:800;display:block}
+
+/* CONTENT */
+.content{max-width:1060px;margin:32px auto;padding:0 20px 60px}
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#aaa;margin:28px 0 14px;display:flex;align-items:center;gap:10px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* PAGE CARDS */
+.pages-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.page-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;transition:all .17s;text-decoration:none;display:flex;flex-direction:column;color:inherit}
+.page-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.1);border-color:#d0d0ca}
+.pc-thumb{height:90px;display:flex;align-items:center;justify-content:center;font-size:44px;position:relative}
+.pc-badge{position:absolute;top:8px;right:8px;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
+.pb-new{background:#E1F5EE;color:#085041}
+.pb-updated{background:#FFF8DC;color:#8a6a00}
+.pb-backend{background:#EEEDFE;color:#3C3489}
+.pc-body{padding:14px 16px;flex:1}
+.pc-name{font-size:15px;font-weight:700;margin-bottom:4px}
+.pc-desc{font-size:12px;color:var(--muted);line-height:1.55;margin-bottom:10px}
+.pc-features{display:flex;gap:4px;flex-wrap:wrap}
+.pcf{background:var(--bg);border:1px solid var(--border2);color:var(--text2);font-size:10px;padding:2px 7px;border-radius:20px}
+.pc-open{display:block;text-align:center;background:var(--dark);color:var(--yellow);font-size:12px;font-weight:700;padding:8px;transition:background .15s}
+.page-card:hover .pc-open{background:#2d2d4e}
+
+/* BACKEND SETUP */
+.setup-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px}
+.setup-card h3{font-size:16px;font-weight:700;margin-bottom:14px}
+.code-block{background:#1a1a2e;border-radius:var(--radius-md);padding:14px 16px;font-family:'Courier New',monospace;font-size:13px;color:#e0e0e0;line-height:1.8;overflow-x:auto;margin-bottom:10px}
+.code-block .comment{color:rgba(255,255,255,.3)}
+.code-block .cmd{color:#FFD700}
+.steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:14px}
+.step{background:var(--bg);border-radius:var(--radius-md);padding:12px;display:flex;gap:10px;align-items:flex-start}
+.step-num{width:24px;height:24px;border-radius:50%;background:var(--dark);color:var(--yellow);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-text{font-size:12px;color:var(--text2);line-height:1.5}
+.step-text strong{color:var(--text);display:block;margin-bottom:2px}
+
+/* FILE TREE */
+.tree{background:#1a1a2e;border-radius:var(--radius-md);padding:16px;font-family:'Courier New',monospace;font-size:13px;line-height:2;overflow-x:auto;margin-top:14px}
+.tree .dir{color:#FFD700;font-weight:700}
+.tree .file{color:rgba(255,255,255,.7)}
+.tree .note{color:rgba(255,255,255,.3);font-style:italic}
+.tree .highlight{color:#22c55e}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Studs<span>Up</span></a>
+  <div class="nav-links">
+    <a href="frontend/pages/home.html"         class="nav-link">Marketplace</a>
+    <a href="frontend/pages/lugbulk.html"      class="nav-link">📦 Parts</a>
+    <a href="frontend/pages/search.html"       class="nav-link">Search</a>
+    <a href="frontend/pages/collection.html"   class="nav-link">My Collection</a>
+    <a href="frontend/pages/lug.html"          class="nav-link">LUGs</a>
+    <a href="frontend/pages/stream.html"       class="nav-link">Streams</a>
+    <a href="frontend/pages/profile-blog.html" class="nav-link">Profile</a>
+    <a href="frontend/pages/login.html"        class="nav-link">Sign in</a>
+  </div>
+  <div class="nav-right">
+    <a href="frontend/pages/changelog.html" style="background:rgba(255,215,0,.15);border:1px solid rgba(255,215,0,.3);border-radius:20px;color:#FFD700;font-size:11px;font-weight:700;padding:4px 12px;text-decoration:none">v6.0</a>
+    <a href="frontend/pages/login.html" class="nav-sell" style="text-decoration:none">Sign in</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-logo">Studs<span>Up</span>.com</div>
+      <div class="hero-tagline">LEGO community platform — marketplace, collection tracker, LUG clubs, live streams, LUGBULK catalogue, instructions library and full-text search with real backend.</div>
+      <div class="hero-btns">
+        <a href="frontend/pages/home.html"   class="btn-y">Open marketplace →</a>
+        <a href="frontend/pages/search.html" class="btn-g">🔍 Try search</a>
+        <a href="frontend/pages/changelog.html" class="btn-g">📋 Changelog</a>
+      </div>
+      <div class="stat-bar">
+        <div class="hstat"><strong>12</strong>Pages</div>
+        <div class="hstat"><strong>12,658</strong>Parts in DB</div>
+        <div class="hstat"><strong>15</strong>API endpoints</div>
+        <div class="hstat"><strong>8</strong>Search categories</div>
+        <div class="hstat"><strong>4.3 MB</strong>Database</div>
+      </div>
+    </div>
+    <div class="version-card">
+      <div class="vc-label">Current version</div>
+      <div class="vc-ver">v6.0</div>
+      <div class="vc-date">June 12, 2026</div>
+      <a href="frontend/pages/changelog.html" class="vc-link">📋 Full changelog →</a>
+      <a href="frontend/pages/login.html"     class="vc-link sm">🔐 Sign in / Register</a>
+      <a href="frontend/pages/search.html"    class="vc-link sm">🔍 Search</a>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- FRONTEND PAGES -->
+  <div class="section-label">🖥️ Frontend pages</div>
+  <div class="pages-grid">
+
+    <a href="frontend/pages/home.html" class="page-card">
+      <div class="pc-thumb" style="background:#1a1a2e">🧱<div class="pc-badge pb-new">Main</div></div>
+      <div class="pc-body">
+        <div class="pc-name">Homepage</div>
+        <div class="pc-desc">Hero with search, category browse, featured parts, live stream preview, LUG spotlight, blog feed.</div>
+        <div class="pc-features"><span class="pcf">Search</span><span class="pcf">Categories</span><span class="pcf">Live now</span></div>
+      </div>
+      <div class="pc-open">Open →</div>
+    </a>
+
+    <a href="frontend/pages/search.html" class="page-card">
+      <div class="pc-thumb" style="background:#f5f4ef">🔍<div class="pc-badge pb-updated">v6 — API</div></div>
+      <div class="pc-body">
+        <div class="pc-name">Search</div>
+        <div class="pc-desc">Real search across Parts, Sets, Stores, Discounts, Users, LUGs, Streams, Videos. Falls back to demo when API is offline.</div>
+        <div class="pc-features"><span class="pcf">8 categories</span><span class="pcf">FTS</span><span class="pcf">Pagination</span></div>
+      </div>
+      <div class="pc-open">Open →</div>
+    </a>
+
+    <a href="frontend/pages/lugbulk.html" class="page-card">
+      <div class="pc-thumb" style="background:#E6F1FB">📦<div class="pc-badge pb-updated">12,658 parts</div></div>
+      <div class="pc-body">
+        <div class="pc-name">Parts catalogue</div>
+        <div class="pc-desc">Full LUGBULK 2026 catalogue. Filter by color, price, availability. Cart, wishlist, CSV export.</div>
+        <div class="pc-features"><span class="pcf">Filters</span><span class="pcf">Cart</span><span class="pcf">Images</span></div>
+      </div>
+      <div class="pc-open">Open →</div>
+    </a>
+
+    <a href="frontend/pages/part-detail.html" class="page-card">
+      <div class="pc-thumb" style="background:#f5f4ef">🟥</div>
+      <div class="pc-body">
+        <div class="pc-name">Part detail</div>
+        <div class="pc-desc">Price history chart (4 ranges), sellers with Buy buttons, login-aware cart, PDF/XML/CSV download.</div>
+        <div class="pc-features"><span class="pcf">Chart.js</span><span class="pcf">Buy</span><span class="pcf">Download</span></div>
+      </div>
+      <div class="pc-open">Open →</div>
+    </a>
+
+    <a href="frontend/pages/collection.html" class="page-card">
+      <div class="pc-thumb" style="background:#E1F5EE">📋</div>
+      <div class="pc-body">
+        <div class="pc-name">My Collection</div>
+        <div class="pc-desc">Parts table, sets ROI, wishlist, build checker, value charts, trade offers, LUGBULK order history.</div>
+        <div class="pc-features"><span class="pcf">Charts</span><span class="pcf">LUGBULK</span><span class="pcf">Trades</span></div>
+      </div>
+      <div class="pc-open">Open →</div>
+    </a>
+
+    <a href="frontend/pages/lug.html" class="page-card">
+      <div class="pc-thumb" style="background:#1a1a2e">🇱🇻<div class="pc-badge pb-updated">Governance</div></div>
+      <div class="pc-body">
+        <div class="pc-name">LUG club page</div>
+        <div class="pc-desc">Head/Ambassador/roles, 52% voting, custom permissions, postal address, members, events, gallery.</div>
+        <div class="pc-features"><span class="pcf">Voting</span><span class="pcf">Roles</span><span class="pcf">Privacy</span></div>
+      </div>
+      <div class="pc-open">Open →</div>
+    </a>
+
+    <a href="frontend/pages/stream.html" class="page-card">
+      <div class="pc-thumb" style="background:#0d0d1a">🎥</div>
+      <div class="pc-body">
+        <div class="pc-name">Live streams</div>
+        <div class="pc-desc">Featured stream with live chat simulation, stream grid with live/VOD badges, Go Live button.</div>
+        <div class="pc-features"><span class="pcf">Live chat</span><span class="pcf">VODs</span></div>
+      </div>
+      <div class="pc-open">Open →</div>
+    </a>
+
+    <a href="frontend/pages/profile-blog.html" class="page-card">
+      <div class="pc-thumb" style="background:#EEEDFE">✍️</div>
+      <div class="pc-body">
+        <div class="pc-name">Profile + Blog</div>
+        <div class="pc-desc">Profile cover, blog posts, full blog editor, gallery, shop, activity, LUGBULK year history table.</div>
+        <div class="pc-features"><span class="pcf">Blog editor</span><span class="pcf">LUGBULK</span></div>
+      </div>
+      <div class="pc-open">Open →</div>
+    </a>
+
+    <a href="frontend/pages/instructions.html" class="page-card">
+      <div class="pc-thumb" style="background:#f5f4ef">📖<div class="pc-badge pb-new">New</div></div>
+      <div class="pc-body">
+        <div class="pc-name">Instructions library</div>
+        <div class="pc-desc">Download LEGO instructions (PDF/XML/CSV/LDR). Build checker cross-references your collection.</div>
+        <div class="pc-features"><span class="pcf">Build checker</span><span class="pcf">Download</span></div>
+      </div>
+      <div class="pc-open">Open →</div>
+    </a>
+
+    <a href="frontend/pages/login.html" class="page-card">
+      <div class="pc-thumb" style="background:#1a1a2e">🔐</div>
+      <div class="pc-body">
+        <div class="pc-name">Sign in / Register</div>
+        <div class="pc-desc">Login, registration with password strength, social login, forgot password. Demo: georgs@studsup.com / demo1234</div>
+        <div class="pc-features"><span class="pcf">Session</span><span class="pcf">Social</span></div>
+      </div>
+      <div class="pc-open">Open →</div>
+    </a>
+
+    <a href="frontend/pages/profile-setup.html" class="page-card">
+      <div class="pc-thumb" style="background:#FFF8DC">👤</div>
+      <div class="pc-body">
+        <div class="pc-name">Profile setup wizard</div>
+        <div class="pc-desc">4-step onboarding: avatar, LEGO themes, build skill sliders, granular privacy settings.</div>
+        <div class="pc-features"><span class="pcf">4 steps</span><span class="pcf">Privacy</span></div>
+      </div>
+      <div class="pc-open">Open →</div>
+    </a>
+
+    <a href="frontend/pages/changelog.html" class="page-card" style="border-color:var(--yellow)">
+      <div class="pc-thumb" style="background:var(--yellow-bg)">📋</div>
+      <div class="pc-body">
+        <div class="pc-name">Changelog</div>
+        <div class="pc-desc">Full version history from v1.0 to v6.0. Every feature, fix and improvement listed by version.</div>
+        <div class="pc-features"><span class="pcf">v1.0 → v6.0</span><span class="pcf">All changes</span></div>
+      </div>
+      <div class="pc-open" style="background:var(--yellow);color:var(--dark)">Open →</div>
+    </a>
+
+  </div>
+
+  <!-- BACKEND SETUP -->
+  <div class="section-label" style="margin-top:36px">⚙️ Backend — quick start</div>
+  <div class="setup-card">
+    <h3>Start the API server (required for live search)</h3>
+    <div class="code-block">
+      <span class="comment"># Install dependencies (one time)</span><br>
+      <span class="cmd">pip install fastapi uvicorn pandas openpyxl</span><br><br>
+      <span class="comment"># Start API on port 8000</span><br>
+      <span class="cmd">cd backend</span><br>
+      <span class="cmd">uvicorn main:app --reload --port 8000</span><br><br>
+      <span class="comment"># Then open frontend/pages/search.html in browser</span>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-text"><strong>Install Python 3.10+</strong>Download from python.org</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text"><strong>Install deps</strong><code>pip install fastapi uvicorn</code></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Start server</strong><code>uvicorn main:app --reload</code> in /backend</div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-text"><strong>Open search</strong>frontend/pages/search.html connects automatically</div></div>
+    </div>
+    <div style="font-size:12px;color:var(--muted);margin-top:12px">
+      ℹ️ All pages work without the backend. The search page shows a banner and demo results when the API is offline.
+      The parts catalogue (lugbulk.html) uses its own static data file and works fully offline.
+    </div>
+  </div>
+
+  <!-- FILE TREE -->
+  <div class="section-label" style="margin-top:28px">📁 Project structure</div>
+  <div class="tree">
+    <span class="dir">studsup_platform/</span><br>
+    ├── <span class="highlight">index.html</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">← start here</span><br>
+    ├── <span class="dir">frontend/</span><br>
+    │ &nbsp;&nbsp;├── <span class="dir">css/</span><br>
+    │ &nbsp;&nbsp;│ &nbsp;&nbsp;└── <span class="file">shared.css</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">global styles, CSS vars, nav, buttons</span><br>
+    │ &nbsp;&nbsp;├── <span class="dir">js/</span><br>
+    │ &nbsp;&nbsp;│ &nbsp;&nbsp;└── <span class="file">shared.js</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">toast, modal, tabs, download helper</span><br>
+    │ &nbsp;&nbsp;└── <span class="dir">pages/</span><br>
+    │ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">home.html</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">Marketplace homepage</span><br>
+    │ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">search.html</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">Global search (API-powered)</span><br>
+    │ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">lugbulk.html</span> &nbsp;&nbsp;&nbsp;&nbsp;<span class="note">Parts catalogue (12,658 parts)</span><br>
+    │ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">lugbulk_data.js</span> &nbsp;<span class="note">Static parts data (offline fallback)</span><br>
+    │ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">part-detail.html</span> <span class="note">Part page + price chart + buy</span><br>
+    │ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">collection.html</span> &nbsp;<span class="note">My Collection + LUGBULK history</span><br>
+    │ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">lug.html</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">LUG governance + voting</span><br>
+    │ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">stream.html</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">Live streams + chat</span><br>
+    │ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">profile-blog.html</span> <span class="note">User profile + blog editor</span><br>
+    │ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">instructions.html</span> <span class="note">Instructions + build checker</span><br>
+    │ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">login.html</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">Sign in / Register</span><br>
+    │ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">profile-setup.html</span> <span class="note">Onboarding wizard</span><br>
+    │ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="highlight">changelog.html</span> &nbsp;&nbsp;<span class="note">Version history</span><br>
+    └── <span class="dir">backend/</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">main.py</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">FastAPI — 15 REST endpoints</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;└── <span class="dir">db/</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file">studsup.db</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">SQLite — 4.3 MB, 12,658 parts</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="file">init_db.py</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="note">Re-seed DB from LUGBULK_2026.xlsx</span>
+  </div>
+
+</div>
+
+<footer style="background:#1a1a2e;padding:24px 32px;text-align:center">
+  <div style="color:rgba(255,255,255,.3);font-size:12px">
+    © 2026 StudsUp.com &nbsp;·&nbsp; v6.0 &nbsp;·&nbsp; Not affiliated with the LEGO Group &nbsp;·&nbsp;
+    <a href="frontend/pages/changelog.html" style="color:rgba(255,215,0,.5);text-decoration:none">Changelog</a>
+  </div>
+</footer>
+
+<script>
+// Highlight active nav link
+document.querySelectorAll('.nav-link').forEach(a => {
+  if(window.location.href.endsWith(a.getAttribute('href'))) a.classList.add('active');
+});
+</script>
+</body>
+</html>

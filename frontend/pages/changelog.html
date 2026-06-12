@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudsUp — Version history</title>
+<link rel="stylesheet" href="../css/shared.css">
+<style>
+body{background:#f5f4ef}
+.hero{background:var(--dark);padding:36px 32px 30px}
+.hero-inner{max-width:900px;margin:0 auto}
+.hero h1{color:var(--yellow);font-size:28px;font-weight:800;margin-bottom:6px;letter-spacing:-.5px}
+.hero h1 span{color:#FF4444}
+.hero p{color:rgba(255,255,255,.5);font-size:14px}
+
+.content{max-width:900px;margin:32px auto;padding:0 20px 60px}
+
+/* Current version badge */
+.current-badge{background:var(--yellow);color:var(--dark);font-size:11px;font-weight:800;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px;vertical-align:middle;margin-left:10px}
+.latest-badge{background:#22c55e;color:#fff;font-size:11px;font-weight:800;padding:3px 10px;border-radius:20px;margin-left:8px}
+
+/* Timeline */
+.timeline{position:relative;padding-left:28px}
+.timeline::before{content:'';position:absolute;left:7px;top:0;bottom:0;width:2px;background:var(--border)}
+
+.version-block{position:relative;margin-bottom:32px}
+.version-block::before{content:'';position:absolute;left:-25px;top:6px;width:14px;height:14px;border-radius:50%;background:var(--border);border:2px solid #fff}
+.version-block.current::before{background:var(--yellow);border-color:var(--yellow-dark)}
+.version-block.major::before{background:var(--dark);border-color:var(--dark)}
+
+.vcard{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 22px}
+.vcard.current{border-color:var(--yellow);box-shadow:0 4px 16px rgba(230,184,0,.12)}
+
+.v-head{display:flex;align-items:center;gap:10px;margin-bottom:4px;flex-wrap:wrap}
+.v-num{font-size:18px;font-weight:800;color:var(--text)}
+.v-date{font-size:12px;color:var(--muted);margin-left:auto}
+.v-title{font-size:14px;color:var(--text2);margin-bottom:14px;line-height:1.5}
+
+.changes{display:flex;flex-direction:column;gap:4px}
+.change{display:flex;align-items:flex-start;gap:9px;font-size:13px;padding:5px 0;border-bottom:1px solid #f5f4ef;line-height:1.5}
+.change:last-child{border-bottom:none}
+.change-ico{font-size:14px;flex-shrink:0;margin-top:1px}
+.change-text{flex:1;color:var(--text2)}
+.change-text strong{color:var(--text)}
+
+.tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px;vertical-align:middle;flex-shrink:0}
+.tag-new{background:#E1F5EE;color:#085041}
+.tag-fix{background:#FCEBEB;color:#791F1F}
+.tag-improve{background:#E6F1FB;color:#185FA5}
+.tag-backend{background:#EEEDFE;color:#3C3489}
+.tag-break{background:#FFF8DC;color:#8a6a00}
+
+.section-divider{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--hint);margin-bottom:14px;margin-top:8px;display:flex;align-items:center;gap:8px}
+.section-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+.pages-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-top:14px}
+.pg{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-md);padding:10px 12px;display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;transition:all .13s;text-decoration:none;color:var(--text)}
+.pg:hover{background:#fff;border-color:#ccc}
+.pg-ico{font-size:18px;flex-shrink:0}
+.pg-name{font-weight:600;font-size:12px}
+.pg-file{font-size:10px;color:var(--hint)}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="../../index.html" class="nav-logo">Studs<span>Up</span></a>
+  <div class="nav-links">
+    <a href="home.html"         class="nav-link">Marketplace</a>
+    <a href="lugbulk.html"      class="nav-link">📦 Parts catalogue</a>
+    <a href="search.html"       class="nav-link">Search</a>
+    <a href="collection.html"   class="nav-link">My Collection</a>
+    <a href="lug.html"          class="nav-link">LUGs</a>
+    <a href="stream.html"       class="nav-link">Streams</a>
+    <a href="profile-blog.html" class="nav-link">Profile</a>
+    <a href="instructions.html" class="nav-link">Instructions</a>
+  </div>
+  <div class="nav-right" id="navRight">
+    <div id="navSellArea"></div>
+    <div id="navUserArea"></div>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <h1>Studs<span>Up</span> — Version history</h1>
+    <p>Every change, fix and new feature tracked here. Current version: <strong style="color:var(--yellow)">v6.0</strong></p>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- ── v6.0 ── -->
+  <div class="version-block current">
+    <div class="vcard current">
+      <div class="v-head">
+        <span class="v-num">v6.0</span>
+        <span class="current-badge">Current</span>
+        <span class="latest-badge">Latest</span>
+        <span class="v-date">June 12, 2026</span>
+      </div>
+      <div class="v-title">Real backend + full-text search across all categories</div>
+      <div class="changes">
+        <div class="change"><span class="change-ico">🗄️</span><span class="change-text"><strong>SQLite database</strong> — 4.3 MB, 12,658 parts from LUGBULK_2026.xlsx, FTS5 full-text indexes on all tables <span class="tag tag-backend">Backend</span></span></div>
+        <div class="change"><span class="change-ico">🚀</span><span class="change-text"><strong>FastAPI REST backend</strong> — 15 endpoints, paginated results, &lt;20ms query time <span class="tag tag-backend">Backend</span> <span class="tag tag-new">New</span></span></div>
+        <div class="change"><span class="change-ico">🔍</span><span class="change-text"><strong>Global search page</strong> rebuilt — searches Parts, Sets, Stores, Discounts, Users, LUGs, Streams, Videos simultaneously <span class="tag tag-new">New</span></span></div>
+        <div class="change"><span class="change-ico">📦</span><span class="change-text"><strong>Parts catalogue</strong> — removed 3.5 MB JS file, API serves paginated parts on demand <span class="tag tag-improve">Improved</span></span></div>
+        <div class="change"><span class="change-ico">🏷️</span><span class="change-text"><strong>Discounts</strong> as a separate search category with promo codes, min order, validity dates <span class="tag tag-new">New</span></span></div>
+        <div class="change"><span class="change-ico">⚡</span><span class="change-text"><strong>Search fallback</strong> — if backend is not running, search page shows demo results with a warning banner <span class="tag tag-improve">Improved</span></span></div>
+        <div class="change"><span class="change-ico">📋</span><span class="change-text"><strong>This page</strong> — version history added <span class="tag tag-new">New</span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── v5.0 ── -->
+  <div class="version-block major">
+    <div class="vcard">
+      <div class="v-head">
+        <span class="v-num">v5.0</span>
+        <span class="v-date">June 11, 2026</span>
+      </div>
+      <div class="v-title">Stream chat fixed, buy buttons wired, LUGBULK in global nav</div>
+      <div class="changes">
+        <div class="change"><span class="change-ico">🔴</span><span class="change-text"><strong>Stream live chat</strong> — fixed DOM timing bug (autoChat ran before page loaded), Enter key works, user name shown from session <span class="tag tag-fix">Fix</span></span></div>
+        <div class="change"><span class="change-ico">💰</span><span class="change-text"><strong>Buy buttons</strong> — fully wired on part detail page: confirm panel, order confirmation, Add to cart with mini summary <span class="tag tag-new">New</span></span></div>
+        <div class="change"><span class="change-ico">🔐</span><span class="change-text"><strong>Login-aware buy panel</strong> — shows sign-in prompt for guests, full buy/cart/wishlist for signed-in users <span class="tag tag-new">New</span></span></div>
+        <div class="change"><span class="change-ico">🏪</span><span class="change-text"><strong>Seller rows</strong> — each seller now has a Buy button, clicking selects that seller and updates buy panel <span class="tag tag-new">New</span></span></div>
+        <div class="change"><span class="change-ico">📦</span><span class="change-text"><strong>Parts catalogue</strong> added to main navigation on all pages <span class="tag tag-improve">Improved</span></span></div>
+        <div class="change"><span class="change-ico">🔑</span><span class="change-text"><strong>"+ Sell parts"</strong> button — redirects to login for guests, to profile/shop for signed-in users <span class="tag tag-fix">Fix</span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── v4.0 ── -->
+  <div class="version-block">
+    <div class="vcard">
+      <div class="v-head">
+        <span class="v-num">v4.0</span>
+        <span class="v-date">June 10, 2026</span>
+      </div>
+      <div class="v-title">LUGBULK catalogue from real Excel data + LUGBULK history in profile</div>
+      <div class="changes">
+        <div class="change"><span class="change-ico">📊</span><span class="change-text"><strong>LUGBULK_2026.xlsx imported</strong> — 12,658 parts with BrickLink price data (sold/available min/avg/max) <span class="tag tag-new">New</span></span></div>
+        <div class="change"><span class="change-ico">🖼️</span><span class="change-text"><strong>Part images</strong> — lazy-loaded from BrickLink CDN using Element ID + BL Color ID pattern <span class="tag tag-new">New</span></span></div>
+        <div class="change"><span class="change-ico">🛒</span><span class="change-text"><strong>Cart panel</strong> — slide-in cart, qty adjust, CSV export, running total <span class="tag tag-new">New</span></span></div>
+        <div class="change"><span class="change-ico">📋</span><span class="change-text"><strong>LUGBULK history tab</strong> in profile — year-by-year order table (2000→present), qty input per year, localStorage save, CSV export/import <span class="tag tag-new">New</span></span></div>
+        <div class="change"><span class="change-ico">🎨</span><span class="change-text"><strong>147 color swatches</strong> in sidebar filter — searchable, multi-select <span class="tag tag-new">New</span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── v3.0 ── -->
+  <div class="version-block">
+    <div class="vcard">
+      <div class="v-head">
+        <span class="v-num">v3.0</span>
+        <span class="v-date">June 10, 2026</span>
+      </div>
+      <div class="v-title">Login system, profile setup wizard, LUG public/private separation</div>
+      <div class="changes">
+        <div class="change"><span class="change-ico">🔐</span><span class="change-text"><strong>Login page</strong> — sign in, register, forgot password, social login (Google/Facebook/Apple), password strength meter <span class="tag tag-new">New</span></span></div>
+        <div class="change"><span class="change-ico">👤</span><span class="change-text"><strong>Profile setup wizard</strong> — 4 steps: avatar colour, LEGO interests (12 themes), build skill sliders, privacy toggles <span class="tag tag-new">New</span></span></div>
+        <div class="change"><span class="change-ico">🔒</span><span class="change-text"><strong>LUG privacy</strong> — voting always private/anonymous, full member list members-only, about/events/gallery public <span class="tag tag-new">New</span></span></div>
+        <div class="change"><span class="change-ico">🌐</span><span class="change-text"><strong>Nav login-awareness</strong> — shows user name/avatar when signed in, Sign in button for guests on all pages <span class="tag tag-improve">Improved</span></span></div>
+        <div class="change"><span class="change-ico">🏠</span><span class="change-text"><strong>Project index</strong> (index.html) — cards for all pages with features listed <span class="tag tag-new">New</span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── v2.0 ── -->
+  <div class="version-block">
+    <div class="vcard">
+      <div class="v-head">
+        <span class="v-num">v2.0</span>
+        <span class="v-date">June 9, 2026</span>
+      </div>
+      <div class="v-title">LUG governance, voting system, custom roles, postal address</div>
+      <div class="changes">
+        <div class="change"><span class="change-ico">👑</span><span class="change-text"><strong>LUG governance rules</strong> — first registrant = Head, one LUG per user, leave/dissolve logic, LUG auto-dissolves when empty <span class="tag tag-new">New</span></span></div>
+        <div class="change"><span class="change-ico">🗳️</span><span class="change-text"><strong>Voting system</strong> — elections (52% threshold), polls, rule changes; anonymous votes, active/closed states <span class="tag tag-new">New</span></span></div>
+        <div class="change"><span class="change-ico">🏅</span><span class="change-text"><strong>Custom roles</strong> — create/edit/delete roles with granular permissions (8 permission types) <span class="tag tag-new">New</span></span></div>
+        <div class="change"><span class="change-ico">📬</span><span class="change-text"><strong>Postal address</strong> in LUG settings — official shipping/letter address, visible only to Head and Ambassador <span class="tag tag-new">New</span></span></div>
+        <div class="change"><span class="change-ico">👑</span><span class="change-text"><strong>Head transfer</strong> — voluntary transfer modal + 52% member vote path <span class="tag tag-new">New</span></span></div>
+        <div class="change"><span class="change-ico">📄</span><span class="change-text"><strong>PDF download</strong> on part detail — datasheet, XML parts list, CSV, LDR 3D model with progress animation <span class="tag tag-new">New</span></span></div>
+        <div class="change"><span class="change-ico">📖</span><span class="change-text"><strong>Instructions library page</strong> — 5 tabs, build checker (cross-reference collection vs set parts), download modal <span class="tag tag-new">New</span></span></div>
+        <div class="change"><span class="change-ico">🔧</span><span class="change-text"><strong>Shared CSS + JS</strong> — global variables, nav, buttons, modals, toast, tabs extracted to css/shared.css + js/shared.js <span class="tag tag-improve">Improved</span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── v1.0 ── -->
+  <div class="version-block">
+    <div class="vcard">
+      <div class="v-head">
+        <span class="v-num">v1.0</span>
+        <span class="v-date">June 8, 2026</span>
+      </div>
+      <div class="v-title">Initial prototype — all core pages designed and built</div>
+      <div class="changes">
+        <div class="change"><span class="change-ico">🏠</span><span class="change-text"><strong>Homepage</strong> — hero, category grid, featured listings, feature cards, live stream preview, LUG spotlight, blog feed, footer <span class="tag tag-new">New</span></span></div>
+        <div class="change"><span class="change-ico">🧱</span><span class="change-text"><strong>Part detail page</strong> — price history chart (Chart.js, 4 time ranges), sellers tab, reviews, in-sets tab, color picker, price alert <span class="tag tag-new">New</span></span></div>
+        <div class="change"><span class="change-ico">🔍</span><span class="change-text"><strong>Search results</strong> — sidebar filters (category, condition, price, location, rating, color), sort, list/grid view, pagination <span class="tag tag-new">New</span></span></div>
+        <div class="change"><span class="change-ico">📦</span><span class="change-text"><strong>My Collection</strong> — parts table with qty editing, sets with ROI, wishlist, build checker, value charts (Chart.js), trade offers <span class="tag tag-new">New</span></span></div>
+        <div class="change"><span class="change-ico">🏛️</span><span class="change-text"><strong>LUG club page</strong> — cover, stats bar, gallery, events, members grid, tabs, join/follow/leave actions <span class="tag tag-new">New</span></span></div>
+        <div class="change"><span class="change-ico">🎥</span><span class="change-text"><strong>Live streams page</strong> — featured stream with live chat, stream grid with live/VOD badges, filters, Go Live button <span class="tag tag-new">New</span></span></div>
+        <div class="change"><span class="change-ico">✍️</span><span class="change-text"><strong>User profile + blog</strong> — cover, stats, blog posts, blog editor, gallery, shop, activity feed, build skill bars <span class="tag tag-new">New</span></span></div>
+        <div class="change"><span class="change-ico">🎨</span><span class="change-text"><strong>Design system</strong> — dark navy + gold LEGO palette, StudsUp brand, responsive layout <span class="tag tag-new">New</span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- All pages list -->
+  <div class="section-divider" style="margin-top:8px">📄 All pages in this release</div>
+  <div class="pages-grid">
+    <a href="home.html"          class="pg"><span class="pg-ico">🏠</span><div><div class="pg-name">Homepage</div><div class="pg-file">home.html</div></div></a>
+    <a href="search.html"        class="pg"><span class="pg-ico">🔍</span><div><div class="pg-name">Search</div><div class="pg-file">search.html</div></div></a>
+    <a href="lugbulk.html"       class="pg"><span class="pg-ico">📦</span><div><div class="pg-name">Parts catalogue</div><div class="pg-file">lugbulk.html</div></div></a>
+    <a href="part-detail.html"   class="pg"><span class="pg-ico">🧱</span><div><div class="pg-name">Part detail</div><div class="pg-file">part-detail.html</div></div></a>
+    <a href="collection.html"    class="pg"><span class="pg-ico">📋</span><div><div class="pg-name">My Collection</div><div class="pg-file">collection.html</div></div></a>
+    <a href="lug.html"           class="pg"><span class="pg-ico">🏛️</span><div><div class="pg-name">LUG club</div><div class="pg-file">lug.html</div></div></a>
+    <a href="stream.html"        class="pg"><span class="pg-ico">🎥</span><div><div class="pg-name">Streams</div><div class="pg-file">stream.html</div></div></a>
+    <a href="profile-blog.html"  class="pg"><span class="pg-ico">👤</span><div><div class="pg-name">Profile + Blog</div><div class="pg-file">profile-blog.html</div></div></a>
+    <a href="instructions.html"  class="pg"><span class="pg-ico">📖</span><div><div class="pg-name">Instructions</div><div class="pg-file">instructions.html</div></div></a>
+    <a href="login.html"         class="pg"><span class="pg-ico">🔐</span><div><div class="pg-name">Sign in</div><div class="pg-file">login.html</div></div></a>
+    <a href="profile-setup.html" class="pg"><span class="pg-ico">⚙️</span><div><div class="pg-name">Profile setup</div><div class="pg-file">profile-setup.html</div></div></a>
+    <a href="changelog.html"     class="pg" style="border-color:var(--yellow);background:var(--yellow-bg)"><span class="pg-ico">📝</span><div><div class="pg-name">Changelog</div><div class="pg-file">changelog.html</div></div></a>
+  </div>
+
+</div>
+
+<script src="../js/shared.js"></script>
+<script>
+(function(){
+  var u=null;try{u=JSON.parse(sessionStorage.getItem('su_user'));}catch(e){}
+  var sa=document.getElementById('navSellArea');
+  if(sa) sa.innerHTML=u&&u.name
+    ?'<button class="nav-sell" onclick="location.href=\'profile-blog.html\'">+ Sell parts</button>'
+    :'<button class="nav-sell" onclick="location.href=\'login.html\'">+ Sell parts</button>';
+  var el=document.getElementById('navUserArea');if(!el)return;
+  if(u&&u.name){
+    el.innerHTML='<a href="profile-blog.html" style="display:flex;align-items:center;gap:7px;text-decoration:none"><div class="nav-avatar" style="font-size:12px">'+u.avatar+'</div><span style="font-size:12px;color:rgba(255,255,255,.75)">'+u.name+'</span></a>';
+  }else{
+    el.innerHTML='<a href="login.html" class="nav-sell" style="text-decoration:none">Sign in</a>';
+  }
+})();
+</script>
+</body>
+</html>

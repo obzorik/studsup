@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudsUp — Live Streams</title>
+<link rel="stylesheet" href="../css/shared.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0d0d1a;color:#e0e0e0}
+.nav{background:#1a1a2e;padding:0 32px;display:flex;align-items:center;height:56px;gap:8px;border-bottom:1px solid rgba(255,255,255,.06)}
+.logo{font-size:20px;font-weight:800;color:#FFD700;margin-right:20px}.logo span{color:#FF4444}
+.nl{color:rgba(255,255,255,.45);font-size:13px;padding:6px 11px;border-radius:6px;cursor:pointer;border:none;background:none}
+.nl:hover,.nl.on{color:#FFD700;background:rgba(255,255,255,.08)}
+.nav-r{display:flex;align-items:center;gap:8px;margin-left:auto}
+.nb{background:#FFD700;color:#1a1a2e;border:none;border-radius:20px;font-size:12px;font-weight:700;padding:5px 14px;cursor:pointer}
+.avatar{width:32px;height:32px;border-radius:50%;background:#FF4444;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700}
+
+/* FEATURED STREAM */
+.featured{background:#1a1a2e;padding:24px 32px}
+.feat-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 320px;gap:16px}
+.player{background:#000;border-radius:12px;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;overflow:hidden;border:1px solid rgba(255,255,255,.08)}
+.player-emoji{font-size:80px;opacity:.6}
+.player-overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;padding:14px}
+.player-top{display:flex;align-items:flex-start;justify-content:space-between}
+.live-pill{background:#FF4444;color:#fff;font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;display:flex;align-items:center;gap:5px}
+.ldot{width:7px;height:7px;background:#fff;border-radius:50%;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.view-count{background:rgba(0,0,0,.65);color:#fff;font-size:12px;padding:4px 9px;border-radius:6px}
+.player-bottom{background:linear-gradient(transparent,rgba(0,0,0,.75));margin:-14px;padding:14px}
+.stream-name{font-size:16px;font-weight:700;color:#fff;margin-bottom:4px}
+.stream-meta{font-size:12px;color:rgba(255,255,255,.55)}
+.play-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:60px;height:60px;background:rgba(255,215,0,.9);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;transition:all .2s}
+.play-btn:hover{transform:translate(-50%,-50%) scale(1.1);background:#FFD700}
+
+/* CHAT PANEL */
+.chat-panel{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;display:flex;flex-direction:column;height:100%}
+.chat-hd{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.08);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:space-between}
+.chat-hd span{font-size:11px;color:rgba(255,255,255,.4);font-weight:400}
+.chat-msgs{flex:1;overflow-y:auto;padding:10px 14px;display:flex;flex-direction:column;gap:6px;max-height:280px}
+.msg{font-size:12px;line-height:1.5}
+.msg-name{font-weight:700;margin-right:4px}
+.chat-input-row{padding:10px;border-top:1px solid rgba(255,255,255,.08);display:flex;gap:6px}
+.chat-inp{flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px 10px;color:#fff;font-size:13px;outline:none}
+.chat-inp::placeholder{color:rgba(255,255,255,.3)}
+.chat-inp:focus{border-color:rgba(255,215,0,.4)}
+.chat-send{background:#FFD700;border:none;border-radius:8px;color:#1a1a2e;font-size:13px;font-weight:700;padding:8px 14px;cursor:pointer}
+
+/* STREAM CONTROLS */
+.controls{padding:10px 0;display:flex;align-items:center;gap:10px;color:rgba(255,255,255,.6);font-size:13px}
+.ctrl-btn{background:rgba(255,255,255,.08);border:none;border-radius:6px;color:rgba(255,255,255,.7);padding:6px 12px;cursor:pointer;font-size:12px;transition:all .12s}
+.ctrl-btn:hover{background:rgba(255,255,255,.15);color:#fff}
+.ctrl-btn.on{background:rgba(255,215,0,.15);color:#FFD700}
+
+/* STREAMER INFO */
+.streamer-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid rgba(255,255,255,.06)}
+.str-av{width:44px;height:44px;border-radius:50%;background:#22c55e;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff}
+.str-name{font-size:14px;font-weight:700;color:#fff}
+.str-sub{font-size:12px;color:rgba(255,255,255,.45)}
+.btn-sub{background:#FF4444;border:none;border-radius:6px;color:#fff;font-size:12px;font-weight:700;padding:6px 14px;cursor:pointer;margin-left:auto}
+
+/* GRID */
+.page{max-width:1100px;margin:24px auto;padding:0 20px}
+.filter-bar{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;align-items:center}
+.fb-chip{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.6);font-size:12px;padding:5px 12px;border-radius:20px;cursor:pointer;transition:all .12s}
+.fb-chip:hover,.fb-chip.on{background:rgba(255,215,0,.15);border-color:rgba(255,215,0,.3);color:#FFD700}
+.fb-search{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:7px 12px;color:#fff;font-size:13px;outline:none;margin-left:auto;width:200px}
+.fb-search::placeholder{color:rgba(255,255,255,.3)}
+.fb-search:focus{border-color:rgba(255,215,0,.3)}
+.sec-lbl{font-size:15px;font-weight:700;color:#fff;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.sec-lbl small{font-size:12px;font-weight:400;color:rgba(255,255,255,.4)}
+
+/* STREAM CARDS */
+.streams-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:32px}
+.scard{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;cursor:pointer;transition:all .15s}
+.scard:hover{border-color:rgba(255,215,0,.2);transform:translateY(-2px)}
+.sthumb{height:130px;display:flex;align-items:center;justify-content:center;font-size:44px;position:relative;background:rgba(255,255,255,.03)}
+.sthumb.t1{background:#0f172a}.sthumb.t2{background:#1c1c1c}.sthumb.t3{background:#0d1117}.sthumb.t4{background:#1a0a00}.sthumb.t5{background:#001a1a}
+.live-b{position:absolute;top:8px;left:8px;background:#FF4444;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px;display:flex;align-items:center;gap:4px}
+.vod-b{position:absolute;top:8px;left:8px;background:rgba(0,0,0,.7);color:rgba(255,255,255,.7);font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px}
+.vc{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.65);color:#fff;font-size:10px;padding:3px 7px;border-radius:5px}
+.sinfo{padding:12px}
+.stitle{font-size:13px;font-weight:600;color:#fff;margin-bottom:4px;line-height:1.3}
+.smeta{font-size:11px;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:6px}
+.sdot{width:6px;height:6px;border-radius:50%;background:#22c55e;flex-shrink:0}
+
+/* START STREAM CARD */
+.start-card{background:rgba(255,215,0,.06);border:1px dashed rgba(255,215,0,.25);border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:all .15s}
+.start-card:hover{background:rgba(255,215,0,.1)}
+.start-card h3{color:#FFD700;font-size:15px;font-weight:700;margin-bottom:6px}
+.start-card p{font-size:13px;color:rgba(255,255,255,.45);margin-bottom:14px}
+.btn-go-live{background:#FF4444;border:none;border-radius:8px;color:#fff;font-size:14px;font-weight:700;padding:10px 24px;cursor:pointer}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="../../index.html" class="nav-logo">Studs<span>Up</span></a>
+  <div class="nav-links">
+    <a href="home.html"          class="nav-link">Marketplace</a>
+    <a href="lugbulk.html"       class="nav-link">📦 Parts catalogue</a>
+    <a href="search.html"        class="nav-link">Search</a>
+    <a href="collection.html"    class="nav-link">My Collection</a>
+    <a href="lug.html"           class="nav-link">LUGs</a>
+    <a href="stream.html"        class="nav-link">Streams</a>
+    <a href="profile-blog.html"  class="nav-link">Profile</a>
+    <a href="instructions.html"  class="nav-link">Instructions</a>
+  </div>
+  <div class="nav-right" id="navRight">
+    <div id="navSellArea"></div>
+    <div id="navUserArea"></div>
+  </div>
+</nav>
+<script>
+(function(){
+  var u=null;
+  try{u=JSON.parse(sessionStorage.getItem('su_user'));}catch(e){}
+  // Sell button
+  var sa=document.getElementById('navSellArea');
+  if(sa){
+    if(u&&u.name){
+      sa.innerHTML='<button class="nav-sell" onclick="window.location.href='profile-blog.html'">+ Sell parts</button>';
+    } else {
+      sa.innerHTML='<button class="nav-sell" onclick="window.location.href='login.html'">+ Sell parts</button>';
+    }
+  }
+  // User area
+  var el=document.getElementById('navUserArea');
+  if(!el)return;
+  if(u&&u.name){
+    el.innerHTML='<a href="profile-blog.html" style="display:flex;align-items:center;gap:7px;text-decoration:none">'
+      +'<div class="nav-avatar" style="font-size:12px;flex-shrink:0">'+u.avatar+'</div>'
+      +'<span style="font-size:12px;color:rgba(255,255,255,.75);white-space:nowrap">'+u.name+'</span></a>';
+  } else {
+    el.innerHTML='<a href="login.html" class="nav-sell" style="background:var(--yellow);color:var(--dark);text-decoration:none;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap">Sign in</a>';
+  }
+})();
+</script>
+
+<!-- FEATURED LIVE STREAM -->
+<div class="featured">
+  <div class="feat-inner">
+    <div>
+      <div class="player" onclick="togglePlay(this)">
+        <div class="player-emoji">🏗️</div>
+        <div class="player-overlay">
+          <div class="player-top">
+            <div class="live-pill"><div class="ldot"></div>LIVE</div>
+            <div class="view-count">👁 1,240 watching</div>
+          </div>
+          <div class="player-bottom">
+            <div class="stream-name">Building Hogwarts Castle live — day 3 of 5!</div>
+            <div class="stream-meta">BrickMasterPaul · Castle · BrickBaltic LUG</div>
+          </div>
+        </div>
+        <div class="play-btn" id="playBtn">▶</div>
+      </div>
+      <div class="controls">
+        <button class="ctrl-btn on" id="btnMute" onclick="toggleMute(this)">🔊 Mute</button>
+        <button class="ctrl-btn" onclick="this.classList.toggle('on')">📺 Theatre</button>
+        <button class="ctrl-btn" onclick="this.classList.toggle('on')">❤️ 284</button>
+        <button class="ctrl-btn" onclick="this.classList.toggle('on')">🔔 Notify</button>
+        <button class="ctrl-btn" onclick="alert('Link copied!')">🔗 Share</button>
+        <span style="margin-left:auto;font-size:12px;color:rgba(255,255,255,.3)">3:14:22</span>
+      </div>
+      <div class="streamer-row">
+        <div class="str-av">BP</div>
+        <div>
+          <div class="str-name">BrickMasterPaul</div>
+          <div class="str-sub">4,820 followers · Castle · Riga, Latvia</div>
+        </div>
+        <button class="btn-sub" onclick="this.textContent='✓ Subscribed';this.style.background='#22c55e'">Subscribe</button>
+      </div>
+    </div>
+    <div class="chat-panel">
+      <div class="chat-hd">Live chat <span id="chatCount">1,240 watching</span></div>
+      <div class="chat-msgs" id="chatMsgs"></div>
+      <div class="chat-input-row">
+        <input class="chat-inp" id="chatInp" placeholder="Send a message…" onkeydown="if(event.key==='Enter')sendChat()">
+        <button class="chat-send" onclick="sendChat()">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+  <div class="filter-bar">
+    <button class="fb-chip on" onclick="toggleFb(this)">All</button>
+    <button class="fb-chip" onclick="toggleFb(this)">🔴 Live now (48)</button>
+    <button class="fb-chip" onclick="toggleFb(this)">📼 VOD</button>
+    <button class="fb-chip" onclick="toggleFb(this)">🏗️ Building</button>
+    <button class="fb-chip" onclick="toggleFb(this)">📦 Unboxing</button>
+    <button class="fb-chip" onclick="toggleFb(this)">⚙️ Technic</button>
+    <button class="fb-chip" onclick="toggleFb(this)">🏰 Castle</button>
+    <button class="fb-chip" onclick="toggleFb(this)">🎨 Custom</button>
+    <input class="fb-search" placeholder="Search streams…">
+  </div>
+
+  <div class="sec-lbl">🔴 Live now <small>48 streams</small></div>
+  <div class="streams-grid">
+    <div class="scard">
+      <div class="sthumb t1">🤖<div class="live-b"><div class="ldot"></div>LIVE</div><div class="vc">👁 430</div></div>
+      <div class="sinfo"><div class="stitle">Technic supercar MOC — gearbox reveal</div><div class="smeta"><div class="sdot"></div>RobotBricks_LV</div></div>
+    </div>
+    <div class="scard">
+      <div class="sthumb t2">📦<div class="live-b"><div class="ldot"></div>LIVE</div><div class="vc">👁 218</div></div>
+      <div class="sinfo"><div class="stitle">Sorting 50K bulk parts haul together</div><div class="smeta"><div class="sdot"></div>LegoSorterPro</div></div>
+    </div>
+    <div class="scard">
+      <div class="sthumb t3">🏯<div class="live-b"><div class="ldot"></div>LIVE</div><div class="vc">👁 182</div></div>
+      <div class="sinfo"><div class="stitle">Japanese castle MOC — roofing techniques</div><div class="smeta"><div class="sdot"></div>AsianBrickArts</div></div>
+    </div>
+    <div class="scard">
+      <div class="sthumb t4">🎨<div class="live-b"><div class="ldot"></div>LIVE</div><div class="vc">👁 94</div></div>
+      <div class="sinfo"><div class="stitle">Custom minifig painting — Mandalorian</div><div class="smeta"><div class="sdot"></div>FigPainterDE</div></div>
+    </div>
+    <div class="scard">
+      <div class="sthumb t5">🚀<div class="live-b"><div class="ldot"></div>LIVE</div><div class="vc">👁 76</div></div>
+      <div class="sinfo"><div class="stitle">Galaxy Explorer MOC speed run</div><div class="smeta"><div class="sdot"></div>SpaceBricks88</div></div>
+    </div>
+    <div class="start-card">
+      <h3>Start your own stream</h3>
+      <p>Share your builds live with the StudsUp community</p>
+      <button class="btn-go-live">🔴 Go Live now</button>
+    </div>
+  </div>
+
+  <div class="sec-lbl">📼 Recent VODs <small>Top watched this week</small></div>
+  <div class="streams-grid">
+    <div class="scard">
+      <div class="sthumb" style="background:#1a1a2e">🏙️<div class="vod-b">📼 VOD</div><div class="vc">👁 12.4K</div></div>
+      <div class="sinfo"><div class="stitle">Building a full LEGO city from scratch — 12 hour marathon</div><div class="smeta">CityBuilderMax · 3 days ago</div></div>
+    </div>
+    <div class="scard">
+      <div class="sthumb" style="background:#0f2800">🌳<div class="vod-b">📼 VOD</div><div class="vc">👁 8.1K</div></div>
+      <div class="sinfo"><div class="stitle">AFOL nature diorama — forest and river scene</div><div class="smeta">NatureMOC_PL · 5 days ago</div></div>
+    </div>
+    <div class="scard">
+      <div class="sthumb" style="background:#1a0000">🐉<div class="vod-b">📼 VOD</div><div class="vc">👁 6.2K</div></div>
+      <div class="sinfo"><div class="stitle">Dragon MOC critique and redesign — viewer submitted build</div><div class="smeta">BrickCritic · 1 week ago</div></div>
+    </div>
+    <div class="scard">
+      <div class="sthumb" style="background:#00001a">🌌<div class="vod-b">📼 VOD</div><div class="vc">👁 4.8K</div></div>
+      <div class="sinfo"><div class="stitle">Deep space station — SNOT techniques tutorial</div><div class="smeta">TechBrickEU · 1 week ago</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── CHAT ─────────────────────────────────────────────────────────────────────
+const chatColors=['#FFD700','#22c55e','#3b82f6','#f59e0b','#ec4899','#8b5cf6'];
+const chatNames=['BrickFan99','CastleKing','StudsCollector','TechnicGuru','MinifigLover',
+                 'MOCmaster_LV','AFOLforever','PlateStacker','BrickBuilderDE','LegoFanEE'];
+const chatLines=[
+  'this build is insane!! 🔥',
+  'how many parts is this set?',
+  'been watching for 2 hours lol',
+  '🔥🔥🔥',
+  'love the detailing on the towers',
+  'question: what adhesive do you use?',
+  'no adhesive — pure SNOT techniques only!',
+  'first time here, amazing channel',
+  'greetings from Germany! 🇩🇪',
+  'where can I buy those dark grey plates?',
+  'check studsup for part #3020!',
+  '❤️❤️❤️',
+  'how long has this taken so far?',
+  'that SNOT technique is wild',
+  'subscribed! 🎉',
+  'can you show the underside?',
+  'what scale is this build?',
+  'amazing texture work on the walls',
+  '👏👏👏',
+  'what BL color is that dark grey?',
+];
+let chatIdx = 0;
+let chatTimer = null;
+
+function addMsg(name, text, color) {
+  const msgs = document.getElementById('chatMsgs');
+  if (!msgs) return;
+  const d = document.createElement('div');
+  d.className = 'msg';
+  d.innerHTML = `<span class="msg-name" style="color:${color}">${name}:</span> ${text}`;
+  msgs.appendChild(d);
+  msgs.scrollTop = msgs.scrollHeight;
+  while (msgs.children.length > 50) msgs.removeChild(msgs.firstChild);
+}
+
+function sendChat() {
+  const inp = document.getElementById('chatInp');
+  if (!inp || !inp.value.trim()) return;
+  // Get user name from session or fallback
+  let userName = 'You';
+  try { const u = JSON.parse(sessionStorage.getItem('su_user')); if(u&&u.name) userName = u.name; } catch(e){}
+  addMsg(userName, inp.value.trim(), '#FF4444');
+  inp.value = '';
+  inp.focus();
+}
+
+function startAutoChat() {
+  if (chatTimer) return;
+  function tick() {
+    const n = chatNames[Math.floor(Math.random() * chatNames.length)];
+    const t = chatLines[chatIdx % chatLines.length];
+    const c = chatColors[Math.floor(Math.random() * chatColors.length)];
+    addMsg(n, t, c);
+    chatIdx++;
+    chatTimer = setTimeout(tick, 1400 + Math.random() * 2200);
+  }
+  tick();
+}
+
+function togglePlay(el) {
+  const btn = document.getElementById('playBtn');
+  if (!btn) return;
+  btn.textContent = btn.textContent === '▶' ? '⏸' : '▶';
+}
+function toggleMute(btn) {
+  btn.classList.toggle('on');
+  btn.textContent = btn.classList.contains('on') ? '🔊 Mute' : '🔇 Unmute';
+}
+function toggleFb(btn) {
+  document.querySelectorAll('.fb-chip').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+// Start chat only after page is fully loaded
+document.addEventListener('DOMContentLoaded', function() {
+  startAutoChat();
+  // Allow Enter key to send
+  const inp = document.getElementById('chatInp');
+  if (inp) inp.addEventListener('keydown', e => { if(e.key==='Enter') sendChat(); });
+});
+</script>
+<script src="../js/shared.js"></script>
+</body>
+</html>

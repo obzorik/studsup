@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudsUp — User Profile & Blog</title>
+<link rel="stylesheet" href="../css/shared.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f4ef;color:#1a1a1a}
+.nav{background:#1a1a2e;padding:0 32px;display:flex;align-items:center;height:56px;gap:8px}
+.logo{font-size:20px;font-weight:800;color:#FFD700;margin-right:20px}.logo span{color:#FF4444}
+.nl{color:rgba(255,255,255,.55);font-size:13px;padding:6px 11px;border-radius:6px;cursor:pointer;border:none;background:none}
+.nl:hover,.nl.on{color:#FFD700;background:rgba(255,255,255,.08)}
+.nav-r{display:flex;align-items:center;gap:8px;margin-left:auto}
+.nb{background:#FFD700;color:#1a1a2e;border:none;border-radius:20px;font-size:12px;font-weight:700;padding:5px 14px;cursor:pointer}
+.avatar{width:32px;height:32px;border-radius:50%;background:#FF4444;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700}
+
+/* COVER */
+.cover-bg{height:160px;background:linear-gradient(135deg,#1a1a2e,#0f3460);position:relative}
+.cover-pattern{position:absolute;inset:0;opacity:.15;background-image:radial-gradient(#FFD700 1px,transparent 1px);background-size:24px 24px}
+.cover-content{max-width:1060px;margin:0 auto;padding:0 20px;position:relative}
+.profile-row{display:flex;align-items:flex-end;gap:16px;margin-top:-50px;margin-bottom:16px}
+.profile-av{width:100px;height:100px;border-radius:50%;background:#FF4444;display:flex;align-items:center;justify-content:center;color:#fff;font-size:36px;font-weight:700;border:4px solid #f5f4ef;flex-shrink:0}
+.profile-info{padding-bottom:4px;flex:1}
+.profile-name{font-size:22px;font-weight:800;margin-bottom:2px}
+.profile-handle{font-size:14px;color:#888;margin-bottom:8px}
+.profile-badges{display:flex;gap:6px;flex-wrap:wrap}
+.pbadge{background:#FFF8DC;border:1px solid #E6B800;color:#8a6a00;font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px}
+.pbadge.blue{background:#E6F1FB;border-color:#378ADD;color:#185FA5}
+.pbadge.green{background:#E1F5EE;border-color:#1D9E75;color:#085041}
+.profile-actions{display:flex;gap:8px;padding-bottom:4px}
+.btn-msg{background:#1a1a2e;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;padding:8px 16px;cursor:pointer}
+.btn-follow{background:#FFD700;border:none;border-radius:8px;font-size:13px;font-weight:700;color:#1a1a2e;padding:8px 16px;cursor:pointer}
+.profile-stats{display:flex;gap:24px;padding:12px 0;border-top:1px solid #e8e7e2;border-bottom:1px solid #e8e7e2;margin-bottom:20px}
+.pst{font-size:12px;color:#888}
+.pst strong{font-size:16px;font-weight:800;color:#1a1a1a;display:block}
+
+/* LAYOUT */
+.page{max-width:1060px;margin:0 auto;padding:0 20px 32px;display:grid;grid-template-columns:1fr 300px;gap:16px}
+.main{display:flex;flex-direction:column;gap:14px}
+.side{display:flex;flex-direction:column;gap:14px}
+.card{background:#fff;border:1px solid #e8e7e2;border-radius:12px;padding:16px}
+
+/* TABS */
+.tabs{display:flex;border-bottom:1px solid #eee;margin-bottom:16px}
+.tab{font-size:13px;color:#888;padding:9px 16px;border-bottom:2px solid transparent;cursor:pointer;border:none;background:none;font-weight:500}
+.tab.on{color:#1a1a1a;border-bottom:2px solid #FFD700}
+
+/* ── LUGBULK TABLE ── */
+.lb-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+.lb-header-left h2{font-size:17px;font-weight:800;margin-bottom:3px}
+.lb-header-left p{font-size:13px;color:#666;line-height:1.5}
+.lb-stats-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.lb-stat{background:#f5f4ef;border-radius:8px;padding:10px 14px;text-align:center;min-width:90px}
+.lb-stat strong{font-size:18px;font-weight:800;display:block;color:#1a1a1a}
+.lb-stat span{font-size:11px;color:#888}
+
+/* Scrollable table wrapper */
+.lb-table-wrap{overflow-x:auto;border:1px solid #e8e7e2;border-radius:12px}
+.lb-table{width:100%;border-collapse:collapse;font-size:13px;min-width:700px}
+.lb-table thead th{
+  background:#1a1a2e;color:rgba(255,255,255,.85);
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;
+  padding:10px 12px;text-align:left;position:sticky;top:0;white-space:nowrap}
+.lb-table thead th.num{text-align:right}
+.lb-table thead th.year-th{background:#0f3460;color:#FFD700;text-align:center;min-width:88px}
+.lb-table tbody tr{border-bottom:1px solid #f0f0ec;transition:background .1s}
+.lb-table tbody tr:last-child{border-bottom:none}
+.lb-table tbody tr:hover{background:#fafaf8}
+.lb-table td{padding:9px 12px;vertical-align:middle}
+.lb-table td.num{text-align:right;font-weight:600}
+.lb-table td.year-cell{text-align:center;padding:5px 8px;background:#fafaf8}
+.lb-table tfoot td{background:#f5f4ef;font-weight:700;padding:10px 12px;font-size:12px;border-top:2px solid #e0e0dc}
+.lb-table tfoot td.num{text-align:right}
+.lb-table tfoot td.year-cell{text-align:center;background:#FFF8DC;font-weight:700;font-size:12px}
+
+/* Year cell input / display */
+.yr-wrap{display:flex;flex-direction:column;align-items:center;gap:3px}
+.yr-qty{
+  width:68px;border:1.5px solid #e0e0dc;border-radius:6px;
+  padding:5px 6px;font-size:13px;font-weight:600;text-align:center;
+  outline:none;background:#fff;transition:border-color .15s;-moz-appearance:textfield}
+.yr-qty::-webkit-inner-spin-button,.yr-qty::-webkit-outer-spin-button{-webkit-appearance:none}
+.yr-qty:focus{border-color:#FFD700}
+.yr-qty.has-value{background:#FFF8DC;border-color:#E6B800;color:#8a6a00}
+.yr-price{font-size:10px;color:#aaa}
+.yr-price.has-value{color:#8a6a00}
+
+/* Year totals row */
+.yr-total-wrap{display:flex;flex-direction:column;align-items:center;gap:1px}
+.yr-total-qty{font-size:13px;font-weight:800;color:#1a1a2e}
+.yr-total-eur{font-size:10px;color:#888}
+
+/* Part image thumbnail in table */
+.lb-part-img{width:38px;height:38px;object-fit:contain;border-radius:5px;border:1px solid #eee;background:#f5f4ef;flex-shrink:0}
+.lb-part-fb{width:38px;height:38px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+.lb-part-cell{display:flex;align-items:center;gap:9px}
+.lb-part-info{}
+.lb-part-name{font-size:12px;font-weight:700;color:#1a1a1a;line-height:1.3}
+.lb-part-sub{font-size:10px;color:#aaa;margin-top:1px}
+.color-swatch-sm{width:10px;height:10px;border-radius:50%;border:1px solid rgba(0,0,0,.1);display:inline-block;margin-right:3px;vertical-align:middle;flex-shrink:0}
+
+/* Action bar */
+.lb-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+.lb-btn{border:none;border-radius:7px;font-size:12px;font-weight:700;padding:7px 14px;cursor:pointer;transition:all .13s;display:inline-flex;align-items:center;gap:5px}
+.lb-btn-y{background:#FFD700;color:#1a1a2e}
+.lb-btn-y:hover{background:#E6B800}
+.lb-btn-dark{background:#1a1a2e;color:#FFD700}
+.lb-btn-dark:hover{background:#2d2d4e}
+.lb-btn-out{background:#f5f4ef;border:1px solid #ddd;color:#555}
+.lb-btn-out:hover{background:#fff}
+
+/* Add-part panel */
+.lb-add-panel{display:none;background:#f8f8f6;border:1px solid #e8e7e2;border-radius:10px;padding:14px;margin-bottom:14px}
+.lb-add-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.lb-add-inp{border:1px solid #ddd;border-radius:7px;padding:8px 10px;font-size:13px;outline:none;background:#fff}
+.lb-add-inp:focus{border-color:#FFD700}
+.lb-add-inp.wide{flex:1;min-width:160px}
+.lb-add-btns{display:flex;gap:6px}
+.lb-save{background:#1a1a2e;border:none;border-radius:7px;color:#FFD700;font-size:13px;font-weight:700;padding:7px 16px;cursor:pointer}
+.lb-cancel{background:#f5f4ef;border:1px solid #ddd;border-radius:7px;font-size:13px;padding:7px 12px;cursor:pointer}
+
+/* Year total footer highlight */
+.ft-highlight{background:#FFF8DC!important}
+.ft-total-grand{background:#1a1a2e!important;color:#FFD700!important}
+
+/* Filter / search bar */
+.lb-search{border:1px solid #ddd;border-radius:7px;padding:7px 11px;font-size:13px;outline:none;width:200px;margin-left:auto}
+.lb-search:focus{border-color:#FFD700}
+
+/* Year toggle chips */
+.yr-toggles{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px}
+.yr-chip{background:#f5f4ef;border:1px solid #e0e0dc;border-radius:20px;font-size:11px;font-weight:600;padding:3px 9px;cursor:pointer;color:#666;transition:all .12s;white-space:nowrap}
+.yr-chip:hover{background:#fff;border-color:#ccc}
+.yr-chip.on{background:#1a1a2e;border-color:#1a1a2e;color:#FFD700}
+
+/* BLOG EDITOR */
+.editor-card{background:#fff;border:1px solid #FFD700;border-radius:12px;padding:16px;margin-bottom:14px}
+.editor-toolbar{display:flex;gap:4px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #f5f4ef;flex-wrap:wrap}
+.et{background:none;border:1px solid #e0e0dc;border-radius:5px;padding:4px 8px;font-size:12px;cursor:pointer;color:#555;transition:all .12s}
+.et:hover{background:#f5f4ef}
+.et.on{background:#1a1a2e;color:#FFD700;border-color:#1a1a2e}
+.ed-title{width:100%;border:none;font-size:20px;font-weight:700;outline:none;margin-bottom:8px;color:#1a1a1a;background:transparent}
+.ed-title::placeholder{color:#ccc}
+.ed-body{width:100%;border:none;outline:none;font-size:14px;line-height:1.7;resize:none;min-height:140px;color:#444;background:transparent}
+.ed-body::placeholder{color:#ccc}
+.ed-footer{display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid #f5f4ef}
+.ed-tag{background:#FFF8DC;border:1px solid #E6B800;color:#8a6a00;font-size:12px;padding:3px 10px;border-radius:20px}
+.ed-pub{background:#1a1a2e;border:none;border-radius:8px;color:#FFD700;font-size:13px;font-weight:700;padding:8px 18px;cursor:pointer;margin-left:auto}
+.ed-draft{background:#f5f4ef;border:1px solid #ddd;border-radius:8px;font-size:13px;padding:8px 14px;cursor:pointer}
+
+/* POSTS */
+.post-card{background:#fff;border:1px solid #e8e7e2;border-radius:12px;overflow:hidden;cursor:pointer;transition:all .15s}
+.post-card:hover{box-shadow:0 4px 18px rgba(0,0,0,.08)}
+.post-cover{height:160px;display:flex;align-items:center;justify-content:center;font-size:60px;position:relative}
+.post-body{padding:16px}
+.post-tag{display:inline-block;background:#FFF8DC;border:1px solid #E6B800;color:#8a6a00;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-bottom:8px}
+.post-title{font-size:16px;font-weight:700;margin-bottom:6px;line-height:1.35}
+.post-excerpt{font-size:13px;color:#666;line-height:1.6;margin-bottom:10px}
+.post-footer{display:flex;align-items:center;gap:12px;font-size:12px;color:#999}
+.post-footer strong{color:#1a1a1a;font-weight:600}
+.post-likes{display:flex;align-items:center;gap:4px;cursor:pointer;transition:color .12s}
+.post-likes:hover{color:#ef4444}
+.post-likes.liked{color:#ef4444}
+
+/* GALLERY GRID */
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.gi{border-radius:8px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:36px;cursor:pointer;border:1px solid #e8e7e2;transition:all .15s;background:#f5f4ef}
+.gi:hover{transform:scale(1.02);border-color:#ddd}
+
+/* SIDEBAR */
+.bio-text{font-size:13px;color:#555;line-height:1.65;margin-bottom:12px}
+.skill-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:12px}
+.skill-lbl{width:80px;color:#888}
+.skill-bar{flex:1;height:5px;background:#e8e7e2;border-radius:3px;overflow:hidden}
+.skill-fill{height:5px;border-radius:3px}
+.lugs-row{display:flex;flex-direction:column;gap:6px}
+.lug-row{display:flex;align-items:center;gap:8px;padding:8px;background:#f5f4ef;border-radius:8px;cursor:pointer}
+.lug-row:hover{background:#fff;border:1px solid #ddd;margin:-1px}
+.lug-row-av{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.lug-row-name{font-size:13px;font-weight:600}
+.lug-row-sub{font-size:11px;color:#888}
+.sec-h{font-size:14px;font-weight:700;margin-bottom:12px}
+.info-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f5f4ef;font-size:13px}
+.info-row:last-child{border-bottom:none}
+.info-lbl{color:#888}
+.info-val{font-weight:600}
+.activity-row{display:flex;gap:8px;padding:8px 0;border-bottom:1px solid #f5f4ef;font-size:12px;color:#555}
+.act-ico{font-size:16px;flex-shrink:0}
+.act-time{margin-left:auto;color:#aaa;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="../../index.html" class="nav-logo">Studs<span>Up</span></a>
+  <div class="nav-links">
+    <a href="home.html"          class="nav-link">Marketplace</a>
+    <a href="lugbulk.html"       class="nav-link">📦 Parts catalogue</a>
+    <a href="search.html"        class="nav-link">Search</a>
+    <a href="collection.html"    class="nav-link">My Collection</a>
+    <a href="lug.html"           class="nav-link">LUGs</a>
+    <a href="stream.html"        class="nav-link">Streams</a>
+    <a href="profile-blog.html"  class="nav-link">Profile</a>
+    <a href="instructions.html"  class="nav-link">Instructions</a>
+  </div>
+  <div class="nav-right" id="navRight">
+    <div id="navSellArea"></div>
+    <div id="navUserArea"></div>
+  </div>
+</nav>
+<script>
+(function(){
+  var u=null;
+  try{u=JSON.parse(sessionStorage.getItem('su_user'));}catch(e){}
+  // Sell button
+  var sa=document.getElementById('navSellArea');
+  if(sa){
+    if(u&&u.name){
+      sa.innerHTML='<button class="nav-sell" onclick="window.location.href='profile-blog.html'">+ Sell parts</button>';
+    } else {
+      sa.innerHTML='<button class="nav-sell" onclick="window.location.href='login.html'">+ Sell parts</button>';
+    }
+  }
+  // User area
+  var el=document.getElementById('navUserArea');
+  if(!el)return;
+  if(u&&u.name){
+    el.innerHTML='<a href="profile-blog.html" style="display:flex;align-items:center;gap:7px;text-decoration:none">'
+      +'<div class="nav-avatar" style="font-size:12px;flex-shrink:0">'+u.avatar+'</div>'
+      +'<span style="font-size:12px;color:rgba(255,255,255,.75);white-space:nowrap">'+u.name+'</span></a>';
+  } else {
+    el.innerHTML='<a href="login.html" class="nav-sell" style="background:var(--yellow);color:var(--dark);text-decoration:none;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap">Sign in</a>';
+  }
+})();
+</script>
+
+<div class="cover-bg"><div class="cover-pattern"></div></div>
+<div class="cover-content">
+  <div class="profile-row">
+    <div class="profile-av">GT</div>
+    <div class="profile-info">
+      <div class="profile-name">Georgs Trupins</div>
+      <div class="profile-handle">@georgs_bricks · Riga, Latvia 🇱🇻</div>
+      <div class="profile-badges">
+        <span class="pbadge">⚙️ Technic enthusiast</span>
+        <span class="pbadge blue">🏪 Verified seller</span>
+        <span class="pbadge green">✓ AFOL since 2004</span>
+        <span class="pbadge">🏆 LUG organiser</span>
+      </div>
+    </div>
+    <div class="profile-actions">
+      <button class="btn-msg">✉ Message</button>
+      <button class="btn-follow" onclick="this.textContent='✓ Following';this.style.background='#22c55e'">Follow</button>
+    </div>
+  </div>
+  <div class="profile-stats">
+    <div class="pst"><strong>284</strong>Followers</div>
+    <div class="pst"><strong>48</strong>Following</div>
+    <div class="pst"><strong>14,820</strong>Parts owned</div>
+    <div class="pst"><strong>4.9★</strong>Seller rating</div>
+    <div class="pst"><strong>12</strong>Blog posts</div>
+    <div class="pst"><strong>€2,340</strong>Collection value</div>
+  </div>
+</div>
+
+<div class="page">
+<div class="main">
+  <div class="card" style="padding:0;overflow:hidden">
+    <div class="tabs" style="padding:0 16px;margin-bottom:0">
+      <button class="tab on" onclick="showPT('blog',this)">Blog</button>
+      <button class="tab" onclick="showPT('write',this)">✏️ Write post</button>
+      <button class="tab" onclick="showPT('gallery',this)">Gallery</button>
+      <button class="tab" onclick="showPT('shop',this)">Shop (48 lots)</button>
+      <button class="tab" onclick="showPT('lugbulk',this)">📦 LUGBULK history</button>
+      <button class="tab" onclick="showPT('activity',this)">Activity</button>
+    </div>
+  </div>
+
+  <!-- BLOG -->
+  <div id="pt-blog">
+    <div class="post-card">
+      <div class="post-cover" style="background:#EEEDFE">⚙️</div>
+      <div class="post-body">
+        <div class="post-tag">Technic build</div>
+        <div class="post-title">Building a pneumatic V8 engine from LEGO Technic — full process breakdown</div>
+        <div class="post-excerpt">After 3 months of design iterations and 2,400 Technic parts, I finally got all 8 pistons firing in sequence. Here's every technique, failure and breakthrough.</div>
+        <div class="post-footer">
+          <strong>June 12, 2026</strong>
+          <span>14 min read</span>
+          <span class="post-likes" onclick="toggleLike(this)">❤️ 342</span>
+          <span>💬 28 comments</span>
+        </div>
+      </div>
+    </div>
+    <div class="post-card" style="margin-top:12px">
+      <div class="post-cover" style="background:#E1F5EE">🏰</div>
+      <div class="post-body">
+        <div class="post-tag">MOC showcase</div>
+        <div class="post-title">My biggest castle build yet — 4,800 parts, 3 months, and one very patient spouse</div>
+        <div class="post-excerpt">The BrickBaltic LUG exhibition was in two weeks and I was nowhere near finished. This is how I powered through the endgame and got it to the show on time.</div>
+        <div class="post-footer">
+          <strong>April 3, 2026</strong>
+          <span>9 min read</span>
+          <span class="post-likes" onclick="toggleLike(this)">❤️ 218</span>
+          <span>💬 41 comments</span>
+        </div>
+      </div>
+    </div>
+    <div class="post-card" style="margin-top:12px">
+      <div class="post-cover" style="background:#FFF8DC">💡</div>
+      <div class="post-body">
+        <div class="post-tag">Tips & tricks</div>
+        <div class="post-title">5 SNOT techniques every AFOL should know — with step-by-step photo guides</div>
+        <div class="post-excerpt">Studs Not On Top opens up a completely different dimension of building. I use these 5 methods constantly and they'll change how you approach any MOC.</div>
+        <div class="post-footer">
+          <strong>February 18, 2026</strong>
+          <span>7 min read</span>
+          <span class="post-likes liked" onclick="toggleLike(this)">❤️ 491</span>
+          <span>💬 63 comments</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WRITE POST -->
+  <div id="pt-write" style="display:none">
+    <div class="editor-card">
+      <div class="editor-toolbar">
+        <button class="et on">📝 Blog post</button>
+        <button class="et">📸 Photo post</button>
+        <button class="et">🎥 Video</button>
+        <div style="margin-left:8px;width:1px;background:#e0e0dc;height:20px;align-self:center"></div>
+        <button class="et" onclick="this.classList.toggle('on')"><strong>B</strong></button>
+        <button class="et" onclick="this.classList.toggle('on')"><em>I</em></button>
+        <button class="et">H1</button>
+        <button class="et">H2</button>
+        <button class="et">🔗</button>
+        <button class="et">📷</button>
+        <button class="et">—</button>
+        <button class="et">• List</button>
+      </div>
+      <input class="ed-title" placeholder="Post title…">
+      <textarea class="ed-body" placeholder="Write your post… share your build process, tips, reviews, or anything LEGO!"></textarea>
+      <div class="ed-footer">
+        <select style="border:1px solid #ddd;border-radius:6px;padding:5px 8px;font-size:12px;outline:none">
+          <option>MOC showcase</option>
+          <option>Build tips</option>
+          <option>Review</option>
+          <option>Guide</option>
+          <option>News</option>
+          <option>Investing</option>
+        </select>
+        <button class="ed-draft">Save draft</button>
+        <button class="ed-pub" onclick="alert('Post published! 🎉')">Publish →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GALLERY -->
+  <div id="pt-gallery" style="display:none">
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div class="sec-h" style="margin-bottom:0">Photo & video gallery</div>
+        <button style="background:#FFD700;border:none;border-radius:8px;font-size:13px;font-weight:700;color:#1a1a2e;padding:7px 14px;cursor:pointer">+ Upload</button>
+      </div>
+      <div class="gal">
+        <div class="gi" style="background:#EEEDFE">⚙️</div>
+        <div class="gi" style="background:#E1F5EE">🏰</div>
+        <div class="gi" style="background:#FFF8DC">💡</div>
+        <div class="gi" style="background:#E6F1FB">🚂</div>
+        <div class="gi" style="background:#FCEBEB">🚀</div>
+        <div class="gi" style="background:#f5f4ef;border:2px dashed #ddd;font-size:24px;color:#ccc">+</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHOP -->
+  <div id="pt-shop" style="display:none">
+    <div class="card">
+      <div class="sec-h">Shop — Georgs's store (48 active lots)</div>
+      <table style="width:100%;border-collapse:collapse;font-size:13px">
+        <thead><tr style="border-bottom:1px solid #f0f0ec">
+          <th style="text-align:left;padding:8px;font-size:11px;color:#888;font-weight:700;text-transform:uppercase"></th>
+          <th style="text-align:left;padding:8px;font-size:11px;color:#888;font-weight:700;text-transform:uppercase">Part</th>
+          <th style="text-align:left;padding:8px;font-size:11px;color:#888;font-weight:700;text-transform:uppercase">Qty</th>
+          <th style="text-align:left;padding:8px;font-size:11px;color:#888;font-weight:700;text-transform:uppercase">Price</th>
+          <th style="text-align:left;padding:8px;font-size:11px;color:#888;font-weight:700;text-transform:uppercase">Condition</th>
+          <th style="padding:8px"></th>
+        </tr></thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #f8f8f6"><td style="padding:8px"><span style="font-size:22px">🟥</span></td><td style="padding:8px"><div style="font-weight:600">Plate 2×4 Red</div><div style="font-size:11px;color:#888">#3020</div></td><td style="padding:8px">×500</td><td style="padding:8px;font-weight:700">€0.03</td><td style="padding:8px"><span style="background:#E1F5EE;color:#085041;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px">New</span></td><td style="padding:8px"><button style="background:#FFD700;border:none;border-radius:6px;font-size:12px;font-weight:700;padding:4px 12px;cursor:pointer">Buy</button></td></tr>
+          <tr style="border-bottom:1px solid #f8f8f6"><td style="padding:8px"><span style="font-size:22px">⚙️</span></td><td style="padding:8px"><div style="font-weight:600">Technic Axle 6</div><div style="font-size:11px;color:#888">#3706</div></td><td style="padding:8px">×120</td><td style="padding:8px;font-weight:700">€0.18</td><td style="padding:8px"><span style="background:#E1F5EE;color:#085041;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px">New</span></td><td style="padding:8px"><button style="background:#FFD700;border:none;border-radius:6px;font-size:12px;font-weight:700;padding:4px 12px;cursor:pointer">Buy</button></td></tr>
+          <tr><td style="padding:8px"><span style="font-size:22px">🔵</span></td><td style="padding:8px"><div style="font-weight:600">Plate 1×2 Blue</div><div style="font-size:11px;color:#888">#3023</div></td><td style="padding:8px">×200</td><td style="padding:8px;font-weight:700">€0.02</td><td style="padding:8px"><span style="background:#FAEEDA;color:#633806;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px">Used</span></td><td style="padding:8px"><button style="background:#FFD700;border:none;border-radius:6px;font-size:12px;font-weight:700;padding:4px 12px;cursor:pointer">Buy</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- LUGBULK HISTORY -->
+  <div id="pt-lugbulk" style="display:none">
+    <div class="card" style="padding:18px">
+
+      <div class="lb-header">
+        <div class="lb-header-left">
+          <h2>📦 LUGBULK order history</h2>
+          <p>Track how many of each part you ordered each year through your LUG bulk orders. Data is saved locally in your browser.</p>
+        </div>
+        <div style="display:flex;gap:7px;flex-shrink:0;flex-wrap:wrap">
+          <button class="lb-btn lb-btn-y" onclick="toggleAddPanel()">+ Add part</button>
+          <button class="lb-btn lb-btn-dark" onclick="exportLB()">⬇ Export CSV</button>
+          <button class="lb-btn lb-btn-out" onclick="importLB()">⬆ Import CSV</button>
+        </div>
+      </div>
+
+      <!-- SUMMARY STATS -->
+      <div class="lb-stats-row" id="lbStats"></div>
+
+      <!-- ADD PART PANEL -->
+      <div class="lb-add-panel" id="lbAddPanel">
+        <div style="font-size:13px;font-weight:700;margin-bottom:10px" id="lbAddTitle">Add part to LUGBULK history</div>
+        <div class="lb-add-row">
+          <input class="lb-add-inp" id="apBLPart"  placeholder="BL Part ID  e.g. 3020" style="width:130px">
+          <input class="lb-add-inp" id="apColor"   placeholder="Color name  e.g. Red" style="width:150px">
+          <input class="lb-add-inp" id="apColorId" placeholder="BL Color ID  e.g. 4" style="width:110px">
+          <input class="lb-add-inp" id="apElemId"  placeholder="Element ID (optional)" style="width:160px">
+          <input class="lb-add-inp lb-add-inp.wide" id="apNote" placeholder="Note (optional)" style="flex:1;min-width:140px">
+        </div>
+        <div style="font-size:11px;color:#888;margin-bottom:8px">💡 Tip: Part IDs and colors can be found on the <a href="lugbulk.html" style="color:#1a73e8">LUGBULK catalogue page</a>.</div>
+        <div class="lb-add-btns">
+          <button class="lb-save" onclick="saveNewPart()">Save part</button>
+          <button class="lb-cancel" onclick="toggleAddPanel()">Cancel</button>
+        </div>
+      </div>
+
+      <!-- YEAR TOGGLE CHIPS -->
+      <div class="yr-toggles" id="yrToggles"></div>
+
+      <!-- SEARCH + ACTIONS -->
+      <div class="lb-actions">
+        <button class="lb-btn lb-btn-out" onclick="clearAllQtys()" style="font-size:11px">🗑 Clear all quantities</button>
+        <button class="lb-btn lb-btn-out" onclick="showOnlyFilled()" style="font-size:11px" id="filterFilledBtn">Show only filled years</button>
+        <input class="lb-search" type="text" id="lbSearch" placeholder="🔍 Search parts…" oninput="renderLBTable()">
+      </div>
+
+      <!-- TABLE -->
+      <div class="lb-table-wrap">
+        <table class="lb-table" id="lbTable">
+          <thead id="lbThead"></thead>
+          <tbody id="lbTbody"></tbody>
+          <tfoot id="lbTfoot"></tfoot>
+        </table>
+      </div>
+
+      <div style="font-size:11px;color:#aaa;margin-top:10px;line-height:1.6">
+        ℹ️ Quantities are saved in your browser (localStorage). Export to CSV to keep a backup or share with your LUG admin.
+        Prices shown are avg available USD from the LUGBULK 2026 catalogue where matched by BL Part ID.
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIVITY -->
+  <div id="pt-activity" style="display:none">
+    <div class="card">
+      <div class="sec-h">Recent activity</div>
+      <div class="activity-row"><span class="act-ico">📦</span><div>Sold <strong>500× Plate 2×4 Red</strong> to BrickFan_DE for €15.00</div><span class="act-time">2h ago</span></div>
+      <div class="activity-row"><span class="act-ico">📝</span><div>Published blog post: <strong>5 SNOT techniques every AFOL should know</strong></div><span class="act-time">3d ago</span></div>
+      <div class="activity-row"><span class="act-ico">🏛️</span><div>Joined event: <strong>BrickFest Baltic 2026</strong> in Riga</div><span class="act-time">5d ago</span></div>
+      <div class="activity-row"><span class="act-ico">📷</span><div>Added 3 photos to gallery — <strong>Technic V8 engine build</strong></div><span class="act-time">1w ago</span></div>
+      <div class="activity-row"><span class="act-ico">❤️</span><div>Liked <strong>EuroBrick Castle Guild's</strong> BrickFest 2025 recap post</div><span class="act-time">1w ago</span></div>
+      <div class="activity-row" style="border-bottom:none"><span class="act-ico">⇄</span><div>Completed trade with <strong>BrickMaster_Shop</strong> — 50× Technic Axle for 100× Plate 2×4</div><span class="act-time">2w ago</span></div>
+    </div>
+  </div>
+
+</div>
+<div class="side">
+
+  <div class="card">
+    <div class="sec-h">About</div>
+    <div class="bio-text">AFOL since 2004. Technic and Castle are my main themes — currently working on a 1:8 scale pneumatic engine and a 4,000-part medieval harbour diorama. IT infrastructure engineer by day, brick builder by night.</div>
+    <div class="info-row"><span class="info-lbl">Location</span><span class="info-val">Riga, Latvia 🇱🇻</span></div>
+    <div class="info-row"><span class="info-lbl">Member since</span><span class="info-val">January 2019</span></div>
+    <div class="info-row"><span class="info-lbl">Main themes</span><span class="info-val">Technic, Castle</span></div>
+    <div class="info-row"><span class="info-lbl">Response time</span><span class="info-val" style="color:#22c55e">Within 1 hour</span></div>
+    <div class="info-row"><span class="info-lbl">Seller rating</span><span class="info-val">4.9★ (312 sales)</span></div>
+  </div>
+
+  <div class="card">
+    <div class="sec-h">Build skills</div>
+    <div class="skill-row"><span class="skill-lbl">Technic</span><div class="skill-bar"><div class="skill-fill" style="width:95%;background:#FFD700"></div></div><span style="font-size:11px;color:#888;margin-left:4px">95</span></div>
+    <div class="skill-row"><span class="skill-lbl">Castle</span><div class="skill-bar"><div class="skill-fill" style="width:82%;background:#1a1a2e"></div></div><span style="font-size:11px;color:#888;margin-left:4px">82</span></div>
+    <div class="skill-row"><span class="skill-lbl">SNOT</span><div class="skill-bar"><div class="skill-fill" style="width:78%;background:#22c55e"></div></div><span style="font-size:11px;color:#888;margin-left:4px">78</span></div>
+    <div class="skill-row"><span class="skill-lbl">City</span><div class="skill-bar"><div class="skill-fill" style="width:55%;background:#3b82f6"></div></div><span style="font-size:11px;color:#888;margin-left:4px">55</span></div>
+    <div class="skill-row"><span class="skill-lbl">Minifigs</span><div class="skill-bar"><div class="skill-fill" style="width:40%;background:#f59e0b"></div></div><span style="font-size:11px;color:#888;margin-left:4px">40</span></div>
+  </div>
+
+  <div class="card">
+    <div class="sec-h">LUG memberships</div>
+    <div class="lugs-row">
+      <div class="lug-row"><div class="lug-row-av" style="background:#FFF8DC">🇱🇻</div><div><div class="lug-row-name">BrickBaltic LUG</div><div class="lug-row-sub">Member · Riga</div></div></div>
+      <div class="lug-row"><div class="lug-row-av" style="background:#EEEDFE">⚙️</div><div><div class="lug-row-name">TechnicMasters EU</div><div class="lug-row-sub">Member · Online</div></div></div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+// ── PROFILE TABS ──────────────────────────────────────────────────────────────
+function showPT(name,btn){
+  ['blog','write','gallery','shop','lugbulk','activity'].forEach(t=>{
+    const el=document.getElementById('pt-'+t);
+    if(el)el.style.display=t===name?'':'none';
+  });
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  if(name==='lugbulk') initLB();
+}
+function toggleLike(el){
+  el.classList.toggle('liked');
+  const n=parseInt(el.textContent.replace(/[^0-9]/g,''));
+  el.textContent='❤️ '+(el.classList.contains('liked')?n+1:n-1);
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// LUGBULK MODULE
+// ══════════════════════════════════════════════════════════════════════════════
+
+const LB_KEY      = 'studsup_lugbulk_parts';   // localStorage key for part list
+const LB_QTY_KEY  = 'studsup_lugbulk_qtys';    // localStorage key for {partId_year: qty}
+const FIRST_YEAR  = 2000;
+const LAST_YEAR   = new Date().getFullYear() + 1;   // one year ahead for planning
+const ALL_YEARS   = Array.from({length: LAST_YEAR - FIRST_YEAR + 1}, (_,i) => FIRST_YEAR + i);
+
+let lbParts      = [];   // [{id, blPart, colorName, colorId, elemId, note, ccss}]
+let lbQtys       = {};   // {"partId_year": qty}
+let visibleYears = [];   // years shown in columns
+let lbInited     = false;
+let showOnlyFill = false;
+
+// ── SEED DATA — starter parts so the table isn't empty ────────────────────────
+const SEED_PARTS = [
+  {id:'p1', blPart:'3020', colorName:'Red',              colorId:4,   elemId:'6195496', note:'', ccss:'#c91a09'},
+  {id:'p2', blPart:'3020', colorName:'Dark Bluish Gray',  colorId:69,  elemId:'6277016', note:'', ccss:'#595d60'},
+  {id:'p3', blPart:'3020', colorName:'Light Bluish Gray', colorId:71,  elemId:'6167096', note:'', ccss:'#a0a5a9'},
+  {id:'p4', blPart:'3023', colorName:'Black',             colorId:0,   elemId:'6213729', note:'', ccss:'#1a1a1a'},
+  {id:'p5', blPart:'3024', colorName:'Yellow',            colorId:14,  elemId:'6215303', note:'', ccss:'#f2cd37'},
+  {id:'p6', blPart:'3001', colorName:'White',             colorId:15,  elemId:'6243868', note:'', ccss:'#ffffff'},
+  {id:'p7', blPart:'3003', colorName:'Blue',              colorId:1,   elemId:'6270573', note:'', ccss:'#006cb7'},
+  {id:'p8', blPart:'3010', colorName:'Bright Green',      colorId:10,  elemId:'6336256', note:'', ccss:'#37ab2d'},
+  {id:'p9', blPart:'3004', colorName:'Tan',               colorId:19,  elemId:'6131098', note:'', ccss:'#f5e4bc'},
+  {id:'p10',blPart:'3039', colorName:'Dark Red',          colorId:46,  elemId:'6056588', note:'', ccss:'#720e0f'},
+];
+
+const SEED_QTYS = {
+  'p1_2022':50,'p1_2023':100,'p1_2024':80,'p1_2025':120,'p1_2026':0,
+  'p2_2022':30,'p2_2023':60, 'p2_2024':60,'p2_2025':90,
+  'p3_2021':20,'p3_2023':40, 'p3_2024':50,'p3_2025':70,
+  'p4_2020':100,'p4_2021':200,'p4_2022':150,'p4_2023':200,'p4_2024':250,'p4_2025':300,
+  'p5_2022':40,'p5_2023':40, 'p5_2025':60,
+  'p6_2021':60,'p6_2022':80, 'p6_2023':100,'p6_2024':120,'p6_2025':150,
+  'p7_2023':50,'p7_2024':70, 'p7_2025':80,
+  'p8_2024':30,'p8_2025':50,
+  'p9_2022':25,'p9_2023':50, 'p9_2024':60,
+  'p10_2021':15,'p10_2024':30,
+};
+
+function loadLB(){
+  const raw = localStorage.getItem(LB_KEY);
+  lbParts   = raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(SEED_PARTS));
+  const qraw = localStorage.getItem(LB_QTY_KEY);
+  lbQtys    = qraw ? JSON.parse(qraw) : JSON.parse(JSON.stringify(SEED_QTYS));
+}
+function saveLB(){
+  localStorage.setItem(LB_KEY,    JSON.stringify(lbParts));
+  localStorage.setItem(LB_QTY_KEY,JSON.stringify(lbQtys));
+}
+
+function getQty(pid, yr){ return lbQtys[pid+'_'+yr] || 0; }
+function setQty(pid, yr, val){
+  const v = Math.max(0, parseInt(val)||0);
+  const k = pid+'_'+yr;
+  if(v === 0) delete lbQtys[k];
+  else lbQtys[k] = v;
+  saveLB();
+  updateStats();
+  updateYearTotals();
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+function initLB(){
+  if(lbInited) return;
+  lbInited = true;
+  loadLB();
+  // Default: show last 5 years + next year
+  const cur = new Date().getFullYear();
+  visibleYears = ALL_YEARS.filter(y => y >= cur - 4 && y <= cur + 1);
+  buildYearToggles();
+  renderLBTable();
+  updateStats();
+}
+
+// ── YEAR TOGGLES ──────────────────────────────────────────────────────────────
+function buildYearToggles(){
+  const wrap = document.getElementById('yrToggles');
+  // Group: decades
+  wrap.innerHTML = ALL_YEARS.map(y =>
+    `<span class="yr-chip ${visibleYears.includes(y)?'on':''}" onclick="toggleYear(${y},this)">${y}</span>`
+  ).join('');
+}
+function toggleYear(yr, el){
+  if(visibleYears.includes(yr)){
+    if(visibleYears.length === 1) return; // keep at least one
+    visibleYears = visibleYears.filter(y=>y!==yr);
+    el.classList.remove('on');
+  } else {
+    visibleYears = [...visibleYears, yr].sort();
+    el.classList.add('on');
+  }
+  renderLBTable();
+}
+
+// ── STATS ─────────────────────────────────────────────────────────────────────
+function updateStats(){
+  const totalParts   = lbParts.length;
+  const totalOrders  = Object.values(lbQtys).reduce((s,v)=>s+v,0);
+  const activeYears  = [...new Set(Object.keys(lbQtys).map(k=>k.split('_')[1]))].length;
+  const yr           = new Date().getFullYear();
+  const thisYear     = Object.entries(lbQtys).filter(([k])=>k.endsWith('_'+yr)).reduce((s,[,v])=>s+v,0);
+
+  document.getElementById('lbStats').innerHTML = `
+    <div class="lb-stat"><strong>${totalParts}</strong><span>Tracked parts</span></div>
+    <div class="lb-stat"><strong>${totalOrders.toLocaleString()}</strong><span>Total pieces ordered</span></div>
+    <div class="lb-stat"><strong>${activeYears}</strong><span>Years with orders</span></div>
+    <div class="lb-stat"><strong>${thisYear.toLocaleString()}</strong><span>Ordered in ${yr}</span></div>`;
+}
+
+// ── TABLE RENDER ──────────────────────────────────────────────────────────────
+function renderLBTable(){
+  if(!lbInited) return;
+  const search = (document.getElementById('lbSearch').value||'').toLowerCase();
+  const parts = lbParts.filter(p =>
+    !search ||
+    p.blPart.toLowerCase().includes(search) ||
+    p.colorName.toLowerCase().includes(search) ||
+    (p.elemId||'').includes(search) ||
+    (p.note||'').toLowerCase().includes(search)
+  );
+
+  // THEAD
+  document.getElementById('lbThead').innerHTML = `<tr>
+    <th style="min-width:180px">Part</th>
+    <th class="num" style="min-width:80px">Total<br>ordered</th>
+    ${visibleYears.map(y=>`<th class="year-th">${y}</th>`).join('')}
+    <th style="min-width:80px">Note</th>
+    <th style="width:36px"></th>
+  </tr>`;
+
+  // TBODY
+  document.getElementById('lbTbody').innerHTML = parts.map(p => {
+    const total = ALL_YEARS.reduce((s,y)=>s+getQty(p.id,y),0);
+    const imgEl = p.elemId
+      ? `<img class="lb-part-img" src="https://img.bricklink.com/ItemImage/PN/${p.colorId}/${p.blPart}.png"
+           alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+      : '';
+    const fbEl = `<div class="lb-part-fb" style="background:${p.ccss||'#ccc'};${p.elemId?'display:none':''}">
+        ${(p.colorName||'').split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase()||'?'}
+      </div>`;
+    return `<tr data-pid="${p.id}">
+      <td>
+        <div class="lb-part-cell">
+          ${imgEl}${fbEl}
+          <div class="lb-part-info">
+            <div class="lb-part-name">
+              <span class="color-swatch-sm" style="background:${p.ccss||'#ccc'}"></span>BL ${p.blPart}
+            </div>
+            <div class="lb-part-sub">${p.colorName}${p.elemId?' · EID '+p.elemId:''}</div>
+          </div>
+        </div>
+      </td>
+      <td class="num">${total > 0 ? `<strong>${total.toLocaleString()}</strong>` : '<span style="color:#ccc">—</span>'}</td>
+      ${visibleYears.map(y => {
+        const q = getQty(p.id, y);
+        return `<td class="year-cell">
+          <div class="yr-wrap">
+            <input type="number" class="yr-qty ${q>0?'has-value':''}" 
+              value="${q||''}" min="0" placeholder="0"
+              data-pid="${p.id}" data-yr="${y}"
+              onchange="handleQtyChange(this)"
+              oninput="this.classList.toggle('has-value',this.value>0)">
+            ${q > 0 ? `<div class="yr-price has-value">×${q}</div>` : ''}
+          </div>
+        </td>`;
+      }).join('')}
+      <td style="font-size:11px;color:#888;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${p.note||''}">${p.note||''}</td>
+      <td>
+        <button onclick="deletePart('${p.id}')" style="background:none;border:none;color:#ddd;cursor:pointer;font-size:15px;padding:2px 4px" title="Remove part">🗑</button>
+      </td>
+    </tr>`;
+  }).join('') || `<tr><td colspan="${4+visibleYears.length}" style="text-align:center;padding:24px;color:#888;font-size:13px">
+      No parts match your search. <button onclick="toggleAddPanel()" style="background:none;border:none;color:#1a73e8;cursor:pointer;font-size:13px">Add a part →</button>
+    </td></tr>`;
+
+  // TFOOT — year totals
+  const colTotals = visibleYears.map(y =>
+    lbParts.reduce((s,p)=>s+getQty(p.id,y),0)
+  );
+  const grandTotal = colTotals.reduce((s,v)=>s+v,0);
+  document.getElementById('lbTfoot').innerHTML = `<tr>
+    <td class="ft-total-grand">Totals (all parts)</td>
+    <td class="num ft-total-grand">${grandTotal.toLocaleString()}</td>
+    ${colTotals.map(t=>`<td class="year-cell ft-highlight" style="font-weight:800;font-size:13px;color:#1a1a2e">${t>0?t.toLocaleString():'—'}</td>`).join('')}
+    <td colspan="2" class="ft-total-grand"></td>
+  </tr>`;
+}
+
+function updateYearTotals(){
+  // Re-render just the footer and total column without full rebuild
+  renderLBTable();
+}
+
+function handleQtyChange(inp){
+  const pid = inp.dataset.pid;
+  const yr  = parseInt(inp.dataset.yr);
+  setQty(pid, yr, inp.value);
+  // Update total cell for this row
+  const row  = inp.closest('tr');
+  const totalCell = row ? row.querySelector('td.num') : null;
+  if(totalCell){
+    const total = ALL_YEARS.reduce((s,y)=>s+getQty(pid,y),0);
+    totalCell.innerHTML = total > 0 ? `<strong>${total.toLocaleString()}</strong>` : '<span style="color:#ccc">—</span>';
+  }
+}
+
+// ── ADD PART ──────────────────────────────────────────────────────────────────
+function toggleAddPanel(){
+  const p = document.getElementById('lbAddPanel');
+  p.style.display = p.style.display === 'block' ? 'none' : 'block';
+  if(p.style.display === 'block'){
+    document.getElementById('apBLPart').focus();
+    p.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+}
+function saveNewPart(){
+  const blPart    = document.getElementById('apBLPart').value.trim();
+  const colorName = document.getElementById('apColor').value.trim();
+  const colorId   = parseInt(document.getElementById('apColorId').value)||0;
+  const elemId    = document.getElementById('apElemId').value.trim();
+  const note      = document.getElementById('apNote').value.trim();
+  if(!blPart || !colorName){ toast('BL Part ID and color are required','error'); return; }
+  const id = 'p'+Date.now();
+  // Simple color CSS approximation
+  const ccss = colorId > 0 ? getCssForColorId(colorId) : '#aaa';
+  lbParts.push({id, blPart, colorName, colorId, elemId, note, ccss});
+  saveLB();
+  // Clear form
+  ['apBLPart','apColor','apColorId','apElemId','apNote'].forEach(f=>document.getElementById(f).value='');
+  document.getElementById('lbAddPanel').style.display = 'none';
+  renderLBTable();
+  updateStats();
+  toast('Part added ✓');
+}
+function deletePart(id){
+  if(!confirm('Remove this part from your LUGBULK history? All order quantities will be lost.')) return;
+  lbParts = lbParts.filter(p=>p.id!==id);
+  Object.keys(lbQtys).forEach(k=>{ if(k.startsWith(id+'_')) delete lbQtys[k]; });
+  saveLB();
+  renderLBTable();
+  updateStats();
+  toast('Part removed');
+}
+
+// ── FILTERS ───────────────────────────────────────────────────────────────────
+function showOnlyFilled(){
+  showOnlyFill = !showOnlyFill;
+  const btn = document.getElementById('filterFilledBtn');
+  btn.style.background = showOnlyFill ? '#FFD700' : '';
+  btn.style.color = showOnlyFill ? '#1a1a2e' : '';
+  btn.style.borderColor = showOnlyFill ? '#FFD700' : '';
+  // filter visibleYears to only those with any qty
+  if(showOnlyFill){
+    const yr = visibleYears.filter(y => lbParts.some(p=>getQty(p.id,y)>0));
+    if(yr.length) visibleYears = yr;
+  } else {
+    // restore defaults
+    const cur = new Date().getFullYear();
+    visibleYears = ALL_YEARS.filter(y=>y>=cur-4&&y<=cur+1);
+    buildYearToggles();
+  }
+  renderLBTable();
+}
+function clearAllQtys(){
+  if(!confirm('Clear ALL order quantities? Part names will remain but all year entries will be deleted.')) return;
+  lbQtys = {};
+  saveLB();
+  renderLBTable();
+  updateStats();
+  toast('All quantities cleared');
+}
+
+// ── EXPORT CSV ────────────────────────────────────────────────────────────────
+function exportLB(){
+  const years = ALL_YEARS.filter(y => lbParts.some(p=>getQty(p.id,y)>0));
+  const rows  = [['BL Part ID','Color Name','BL Color ID','Element ID','Note',...years,'Total']];
+  lbParts.forEach(p=>{
+    const totals = years.map(y=>getQty(p.id,y));
+    const grand  = totals.reduce((s,v)=>s+v,0);
+    rows.push([p.blPart,p.colorName,p.colorId,p.elemId||'',p.note||'',...totals,grand]);
+  });
+  // Year totals row
+  const ytots = years.map(y=>lbParts.reduce((s,p)=>s+getQty(p.id,y),0));
+  rows.push(['','TOTAL','','','',... ytots, ytots.reduce((s,v)=>s+v,0)]);
+
+  const csv = rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a   = document.createElement('a');
+  a.href    = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download = `lugbulk_history_${new Date().getFullYear()}.csv`;
+  a.click();
+  toast('CSV exported ✓');
+}
+
+// ── IMPORT CSV ────────────────────────────────────────────────────────────────
+function importLB(){
+  const inp = document.createElement('input');
+  inp.type  = 'file';
+  inp.accept= '.csv';
+  inp.onchange = e => {
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try{
+        const lines = ev.target.result.split('\n').map(l=>l.split(',').map(c=>c.replace(/^"|"$/g,'').trim()));
+        const header = lines[0];
+        const yearCols = header.slice(5, header.length-1).map(Number).filter(Boolean);
+        let added = 0;
+        lines.slice(1).forEach(row => {
+          if(!row[0]||row[1]==='TOTAL') return;
+          const id = 'p'+Date.now()+Math.random();
+          lbParts.push({id, blPart:row[0], colorName:row[1], colorId:parseInt(row[2])||0, elemId:row[3], note:row[4], ccss:getCssForColorId(parseInt(row[2])||0)});
+          yearCols.forEach((y,i)=>{ const q=parseInt(row[5+i])||0; if(q>0) lbQtys[id+'_'+y]=q; });
+          added++;
+        });
+        saveLB();
+        renderLBTable();
+        updateStats();
+        buildYearToggles();
+        toast(`Imported ${added} parts ✓`);
+      } catch(err){ toast('Import failed — check CSV format','error'); }
+    };
+    reader.readAsText(file);
+  };
+  inp.click();
+}
+
+// ── COLOR CSS HELPER ──────────────────────────────────────────────────────────
+function getCssForColorId(id){
+  const map={0:'#1a1a1a',1:'#006cb7',2:'#00852b',4:'#c91a09',5:'#c870a0',6:'#583927',7:'#9ba19d',
+    8:'#6d6e5c',9:'#9fc3e9',10:'#37ab2d',14:'#f2cd37',15:'#ffffff',19:'#f5e4bc',22:'#7b4fb5',
+    25:'#fe8a18',27:'#bbd159',28:'#c7ac78',38:'#88421d',39:'#5a7184',40:'#7db38a',41:'#a95500',
+    46:'#720e0f',57:'#9b9b9b',63:'#003882',69:'#595d60',71:'#a0a5a9',72:'#cc8f62',84:'#d09168',
+    88:'#c870a0',89:'#b390d8',95:'#7c9051',97:'#ff7b54',127:'#daa016',134:'#c7822a',
+    135:'#c7af5e',148:'#58595a',152:'#352100',154:'#f2a5b8'};
+  return map[id]||'#aaaaaa';
+}
+</script>
+<script src="../js/shared.js"></script>
+</body>
+</html>

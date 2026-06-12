@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudsUp — Instructions</title>
+<link rel="stylesheet" href="../css/shared.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f4ef;color:#1a1a1a}
+.nav{background:#1a1a2e;padding:0 32px;display:flex;align-items:center;height:56px;gap:8px}
+.logo{font-size:20px;font-weight:800;color:#FFD700;margin-right:20px}.logo span{color:#FF4444}
+.nl{color:rgba(255,255,255,.55);font-size:13px;padding:6px 11px;border-radius:6px;cursor:pointer;border:none;background:none;white-space:nowrap}
+.nl:hover,.nl.on{color:#FFD700;background:rgba(255,255,255,.08)}
+.nav-search{flex:1;max-width:420px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:8px;display:flex;align-items:center;gap:6px;padding:0 12px}
+.nav-search input{background:none;border:none;outline:none;color:#fff;font-size:14px;flex:1;height:36px}
+.nav-search input::placeholder{color:rgba(255,255,255,.35)}
+.nav-search button{background:#FFD700;border:none;border-radius:6px;color:#1a1a2e;font-size:12px;font-weight:700;padding:4px 12px;cursor:pointer}
+.nav-r{display:flex;align-items:center;gap:8px;margin-left:auto}
+.nb{background:#FFD700;color:#1a1a2e;border:none;border-radius:20px;font-size:12px;font-weight:700;padding:5px 14px;cursor:pointer}
+.avatar{width:32px;height:32px;border-radius:50%;background:#FF4444;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700}
+
+/* HERO */
+.hero{background:#1a1a2e;padding:32px 32px 0}
+.hero-inner{max-width:1060px;margin:0 auto}
+.bc{font-size:12px;color:rgba(255,255,255,.4);margin-bottom:14px}
+.bc a{color:rgba(255,255,255,.6);cursor:pointer}
+.hero h1{font-size:28px;font-weight:800;color:#fff;margin-bottom:6px;letter-spacing:-.5px}
+.hero h1 em{color:#FFD700;font-style:normal}
+.hero p{font-size:14px;color:rgba(255,255,255,.55);margin-bottom:20px;max-width:560px;line-height:1.6}
+
+/* SEARCH BAR */
+.big-search{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:12px;display:flex;align-items:center;gap:10px;padding:0 16px;max-width:640px;margin-bottom:20px}
+.big-search input{background:none;border:none;outline:none;color:#fff;font-size:15px;flex:1;height:48px}
+.big-search input::placeholder{color:rgba(255,255,255,.3)}
+.big-search button{background:#FFD700;border:none;border-radius:8px;color:#1a1a2e;font-size:14px;font-weight:700;padding:8px 20px;cursor:pointer;white-space:nowrap}
+
+/* STAT BAR */
+.stat-bar{display:flex;gap:28px;padding:14px 0;border-top:1px solid rgba(255,255,255,.07)}
+.sbt{font-size:11px;color:rgba(255,255,255,.4)}
+.sbt strong{color:#FFD700;font-size:16px;font-weight:800;display:block}
+
+/* TABS */
+.tab-nav{background:#fff;border-bottom:1px solid #e8e7e2;padding:0 32px}
+.tab-inner{max-width:1060px;margin:0 auto;display:flex;gap:0}
+.tnav{font-size:13px;color:#888;padding:12px 16px;border-bottom:2px solid transparent;cursor:pointer;border:none;background:none;font-weight:500;white-space:nowrap}
+.tnav:hover{color:#1a1a1a}
+.tnav.on{color:#1a1a1a;border-bottom-color:#FFD700}
+
+/* CONTENT */
+.content{max-width:1060px;margin:24px auto;padding:0 20px;display:grid;grid-template-columns:1fr 280px;gap:16px}
+.main{display:flex;flex-direction:column;gap:14px}
+.side{display:flex;flex-direction:column;gap:14px}
+.card{background:#fff;border:1px solid #e8e7e2;border-radius:12px;padding:16px}
+.sec-h{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.sec-h small{font-size:12px;font-weight:400;color:#888}
+
+/* SORT + FILTER BAR */
+.filter-bar{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.fb{background:none;border:1px solid #ddd;border-radius:6px;font-size:12px;padding:5px 10px;color:#555;cursor:pointer;transition:all .12s}
+.fb:hover,.fb.on{background:#1a1a2e;color:#FFD700;border-color:#1a1a2e}
+.fsel{border:1px solid #ddd;border-radius:8px;padding:6px 10px;font-size:13px;outline:none;background:#fff;cursor:pointer;color:#555}
+.fsearch{border:1px solid #ddd;border-radius:8px;padding:6px 12px;font-size:13px;outline:none;flex:1;min-width:180px}
+.fsearch:focus{border-color:#FFD700}
+
+/* SET CARD */
+.set-list{display:flex;flex-direction:column;gap:10px}
+.scard{background:#fff;border:1px solid #e8e7e2;border-radius:12px;overflow:hidden;cursor:pointer;transition:all .15s}
+.scard:hover{border-color:#ddd;box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.scard-inner{display:flex;gap:0}
+.scard-thumb{width:110px;min-height:100px;background:#f5f4ef;display:flex;align-items:center;justify-content:center;font-size:48px;flex-shrink:0;border-right:1px solid #e8e7e2}
+.scard-body{flex:1;padding:14px}
+.scard-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
+.scard-title{font-size:15px;font-weight:700;margin-bottom:2px}
+.scard-sub{font-size:12px;color:#888}
+.scard-badges{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.sbadge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
+.sb-y{background:#FFF8DC;border:1px solid #E6B800;color:#8a6a00}
+.sb-g{background:#E1F5EE;border:1px solid #1D9E75;color:#085041}
+.sb-b{background:#E6F1FB;border:1px solid #378ADD;color:#185FA5}
+.sb-r{background:#FCEBEB;border:1px solid #E24B4A;color:#791F1F}
+.sb-p{background:#EEEDFE;border:1px solid #7F77DD;color:#3C3489}
+
+/* STATUS PILLS */
+.status-row{display:flex;align-items:center;gap:12px;font-size:12px;flex-wrap:wrap}
+.status-pill{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-weight:600;font-size:11px}
+.sp-ok{background:#E1F5EE;color:#085041}
+.sp-miss{background:#FCEBEB;color:#791F1F}
+.sp-part{background:#FFF8DC;color:#8a6a00}
+.sp-none{background:#f5f4ef;color:#888}
+
+/* ACTIONS */
+.scard-actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.btn-dl{background:#1a1a2e;border:none;border-radius:7px;color:#FFD700;font-size:12px;font-weight:700;padding:6px 14px;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .12s}
+.btn-dl:hover{background:#2d2d4e}
+.btn-sm{background:#f5f4ef;border:1px solid #e0e0dc;border-radius:7px;font-size:12px;color:#555;padding:6px 12px;cursor:pointer;transition:all .12s;display:flex;align-items:center;gap:4px}
+.btn-sm:hover{background:#fff;border-color:#ccc}
+.btn-sm.buy{background:#FFD700;border-color:#FFD700;color:#1a1a2e;font-weight:700}
+
+/* DETAIL EXPAND */
+.expand-section{border-top:1px solid #f0f0ec;padding:12px 14px;display:none;background:#fafaf8}
+.exp-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.exp-row{padding:6px 0;border-bottom:1px solid #f0f0ec;display:flex;justify-content:space-between;font-size:12px}
+.exp-row:nth-last-child(-n+2){border-bottom:none}
+.exp-lbl{color:#888}
+.exp-val{font-weight:600}
+
+/* PARTS MATCH */
+.parts-match{margin-top:12px}
+.pm-title{font-size:12px;font-weight:700;margin-bottom:8px;color:#555}
+.pm-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f5f4ef;font-size:12px}
+.pm-row:last-child{border-bottom:none}
+.pm-ico{font-size:20px;flex-shrink:0}
+.pm-name{flex:1}
+.pm-qty{color:#888;margin-right:4px}
+.pm-status{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;flex-shrink:0}
+.pm-ok{background:#E1F5EE;color:#085041}
+.pm-miss{background:#FCEBEB;color:#791F1F}
+.pm-part{background:#FFF8DC;color:#8a6a00}
+
+/* GRID VIEW */
+.set-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.gc{background:#fff;border:1px solid #e8e7e2;border-radius:12px;overflow:hidden;cursor:pointer;transition:all .15s}
+.gc:hover{transform:translateY(-2px);box-shadow:0 5px 16px rgba(0,0,0,.08)}
+.gc-img{height:120px;background:#f5f4ef;display:flex;align-items:center;justify-content:center;font-size:48px;border-bottom:1px solid #e8e7e2}
+.gc-body{padding:12px}
+.gc-name{font-size:13px;font-weight:700;margin-bottom:2px}
+.gc-sub{font-size:11px;color:#888;margin-bottom:8px}
+.gc-status{font-size:11px;display:flex;align-items:center;gap:4px;margin-bottom:6px}
+.gc-btns{display:flex;gap:5px}
+.gc-btn{flex:1;background:#f5f4ef;border:1px solid #e0e0dc;border-radius:6px;font-size:11px;padding:5px;cursor:pointer;text-align:center}
+.gc-btn.dl{background:#1a1a2e;border-color:#1a1a2e;color:#FFD700;font-weight:700}
+
+/* SIDEBAR */
+.info-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f5f4ef;font-size:13px}
+.info-row:last-child{border-bottom:none}
+.info-lbl{color:#888}
+.info-val{font-weight:600}
+.theme-list{display:flex;flex-direction:column;gap:5px}
+.theme-row{display:flex;align-items:center;gap:8px;padding:6px 0;cursor:pointer;font-size:13px;border-bottom:1px solid #f5f4ef}
+.theme-row:last-child{border-bottom:none}
+.theme-row:hover{color:#1a73e8}
+.theme-cnt{margin-left:auto;background:#f5f4ef;color:#888;font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px}
+.upload-drop{border:2px dashed #e0e0dc;border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:all .15s}
+.upload-drop:hover{border-color:#FFD700;background:#FFFDF0}
+.upload-drop h4{font-size:13px;font-weight:700;margin-bottom:4px}
+.upload-drop p{font-size:12px;color:#888}
+.upload-btn{background:#FFD700;border:none;border-radius:7px;font-size:12px;font-weight:700;color:#1a1a2e;padding:7px 14px;cursor:pointer;margin-top:10px}
+.missing-alert{background:#FCEBEB;border:1px solid #E24B4A;border-radius:10px;padding:12px;font-size:12px;color:#791F1F;margin-top:10px;display:none}
+.missing-alert strong{display:block;margin-bottom:4px;font-size:13px}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:200;padding:20px}
+.modal{background:#fff;border-radius:16px;max-width:540px;width:100%;padding:24px;position:relative}
+.modal h2{font-size:18px;font-weight:800;margin-bottom:4px}
+.modal-sub{font-size:13px;color:#888;margin-bottom:18px}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;font-size:20px;cursor:pointer;color:#888}
+.dl-option{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid #e8e7e2;border-radius:10px;cursor:pointer;margin-bottom:8px;transition:all .12s}
+.dl-option:hover{border-color:#FFD700;background:#FFFDF0}
+.dl-ico{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.dl-name{font-size:14px;font-weight:700}
+.dl-desc{font-size:12px;color:#888}
+.dl-badge{margin-left:auto;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;flex-shrink:0}
+.progress-bar{height:4px;background:#e8e7e2;border-radius:2px;overflow:hidden;margin-top:6px;display:none}
+.progress-fill{height:4px;background:#FFD700;border-radius:2px;width:0;transition:width .1s linear}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="../../index.html" class="nav-logo">Studs<span>Up</span></a>
+  <div class="nav-links">
+    <a href="home.html"          class="nav-link">Marketplace</a>
+    <a href="lugbulk.html"       class="nav-link">📦 Parts catalogue</a>
+    <a href="search.html"        class="nav-link">Search</a>
+    <a href="collection.html"    class="nav-link">My Collection</a>
+    <a href="lug.html"           class="nav-link">LUGs</a>
+    <a href="stream.html"        class="nav-link">Streams</a>
+    <a href="profile-blog.html"  class="nav-link">Profile</a>
+    <a href="instructions.html"  class="nav-link">Instructions</a>
+  </div>
+  <div class="nav-right" id="navRight">
+    <div id="navSellArea"></div>
+    <div id="navUserArea"></div>
+  </div>
+</nav>
+<script>
+(function(){
+  var u=null;
+  try{u=JSON.parse(sessionStorage.getItem('su_user'));}catch(e){}
+  // Sell button
+  var sa=document.getElementById('navSellArea');
+  if(sa){
+    if(u&&u.name){
+      sa.innerHTML='<button class="nav-sell" onclick="window.location.href='profile-blog.html'">+ Sell parts</button>';
+    } else {
+      sa.innerHTML='<button class="nav-sell" onclick="window.location.href='login.html'">+ Sell parts</button>';
+    }
+  }
+  // User area
+  var el=document.getElementById('navUserArea');
+  if(!el)return;
+  if(u&&u.name){
+    el.innerHTML='<a href="profile-blog.html" style="display:flex;align-items:center;gap:7px;text-decoration:none">'
+      +'<div class="nav-avatar" style="font-size:12px;flex-shrink:0">'+u.avatar+'</div>'
+      +'<span style="font-size:12px;color:rgba(255,255,255,.75);white-space:nowrap">'+u.name+'</span></a>';
+  } else {
+    el.innerHTML='<a href="login.html" class="nav-sell" style="background:var(--yellow);color:var(--dark);text-decoration:none;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap">Sign in</a>';
+  }
+})();
+</script>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="bc"><a>Home</a> › Instructions</div>
+    <h1>LEGO <em>Instructions</em> library</h1>
+    <p>Download official building instructions for any set. Check whether the parts list and instruction booklets are available and cross-reference with your own collection.</p>
+    <div class="big-search">
+      <span style="color:rgba(255,255,255,.4);font-size:18px">📖</span>
+      <input type="text" placeholder="Search by set name, number or theme…" id="heroSearch" oninput="liveSearch(this.value)">
+      <button onclick="liveSearch(document.getElementById('heroSearch').value)">Find instructions</button>
+    </div>
+    <div class="stat-bar">
+      <div class="sbt"><strong>21,400+</strong>Sets with instructions</div>
+      <div class="sbt"><strong>98%</strong>Have parts list</div>
+      <div class="sbt"><strong>12,800</strong>PDF booklets</div>
+      <div class="sbt"><strong>4,200</strong>Digitised instructions</div>
+      <div class="sbt"><strong>Free</strong>All downloads</div>
+    </div>
+  </div>
+</div>
+
+<div class="tab-nav">
+  <div class="tab-inner">
+    <button class="tnav on" onclick="showMainTab('browse',this)">Browse all sets</button>
+    <button class="tnav" onclick="showMainTab('my',this)">My sets (48)</button>
+    <button class="tnav" onclick="showMainTab('missing',this)">Missing parts checker</button>
+    <button class="tnav" onclick="showMainTab('recent',this)">Recently viewed</button>
+    <button class="tnav" onclick="showMainTab('upload',this)">Upload instructions</button>
+  </div>
+</div>
+
+<div class="content">
+<div class="main">
+
+<!-- BROWSE TAB -->
+<div id="mt-browse">
+  <div class="card" style="padding:14px">
+    <div class="filter-bar">
+      <button class="fb on" onclick="selFb(this,'all')">All themes</button>
+      <button class="fb" onclick="selFb(this,'castle')">🏰 Castle</button>
+      <button class="fb" onclick="selFb(this,'technic')">⚙️ Technic</button>
+      <button class="fb" onclick="selFb(this,'city')">🚗 City</button>
+      <button class="fb" onclick="selFb(this,'space')">🚀 Space</button>
+      <button class="fb" onclick="selFb(this,'star')">🌌 Star Wars</button>
+      <button class="fb" onclick="selFb(this,'icons')">🏛️ Icons</button>
+      <select class="fsel" id="yearFilter" onchange="applyFilters()">
+        <option value="">All years</option>
+        <option>2026</option><option>2025</option><option>2024</option>
+        <option>2023</option><option>2022</option><option>2021</option>
+        <option>2020</option><option>2019</option><option>2018</option>
+        <option value="older">Before 2018</option>
+      </select>
+      <select class="fsel" id="statusFilter" onchange="applyFilters()">
+        <option value="">All statuses</option>
+        <option value="full">✅ Full match</option>
+        <option value="partial">⚠️ Partial match</option>
+        <option value="none">❌ No parts match</option>
+      </select>
+      <input class="fsearch" id="listSearch" type="text" placeholder="Search sets…" oninput="applyFilters()">
+      <div style="margin-left:auto;display:flex;gap:4px">
+        <button id="vlist" class="fb on" onclick="setView('list')">☰ List</button>
+        <button id="vgrid" class="fb" onclick="setView('grid')">⊞ Grid</button>
+      </div>
+    </div>
+
+    <!-- LIST VIEW -->
+    <div id="viewList" class="set-list" id="setList"></div>
+    <!-- GRID VIEW -->
+    <div id="viewGrid" class="set-grid" style="display:none"></div>
+
+    <div style="text-align:center;margin-top:16px">
+      <button style="background:#f5f4ef;border:1px solid #ddd;border-radius:8px;font-size:13px;padding:8px 22px;cursor:pointer" onclick="alert('Loading more sets…')">Load more sets</button>
+    </div>
+  </div>
+</div>
+
+<!-- MY SETS TAB -->
+<div id="mt-my" style="display:none">
+  <div class="card">
+    <div class="sec-h">My sets — instruction status <small>48 sets in your collection</small></div>
+    <div class="filter-bar">
+      <button class="fb on">All (48)</button>
+      <button class="fb">✅ Instructions downloaded (32)</button>
+      <button class="fb">⚠️ Not yet downloaded (16)</button>
+    </div>
+    <div class="set-list" id="mySetsBody"></div>
+  </div>
+</div>
+
+<!-- MISSING PARTS CHECKER TAB -->
+<div id="mt-missing" style="display:none">
+  <div class="card">
+    <div class="sec-h">Missing parts checker</div>
+    <p style="font-size:13px;color:#666;margin-bottom:16px;line-height:1.65">Select a set below (or enter a set number) and StudsUp will compare the official parts list against your collection — showing exactly what you own, what you're short, and where to buy the missing pieces.</p>
+    <div style="display:flex;gap:8px;margin-bottom:16px">
+      <input style="flex:1;border:1px solid #ddd;border-radius:8px;padding:9px 12px;font-size:14px;outline:none" id="checkerInput" placeholder="Enter set number e.g. 10305" oninput="checkerHint(this.value)">
+      <button style="background:#FFD700;border:none;border-radius:8px;font-size:14px;font-weight:700;color:#1a1a2e;padding:9px 20px;cursor:pointer" onclick="runChecker()">Check</button>
+    </div>
+    <div id="checkerHint" style="font-size:12px;color:#1a73e8;margin-bottom:12px;display:none"></div>
+    <div id="checkerResult" style="display:none">
+      <div style="background:#f5f4ef;border-radius:10px;padding:14px;margin-bottom:14px;display:flex;gap:14px;align-items:center">
+        <span style="font-size:44px">🏰</span>
+        <div>
+          <div style="font-size:15px;font-weight:700">Lion Knights' Castle — #10305</div>
+          <div style="font-size:12px;color:#888;margin-top:2px">Castle · 2022 · 4,514 parts · 5 booklets · Parts list: ✅ Available</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:14px">
+        <div style="flex:1;background:#E1F5EE;border-radius:10px;padding:12px;text-align:center"><div style="font-size:22px;font-weight:800;color:#085041" id="ownCount">3,240</div><div style="font-size:12px;color:#085041">Parts you own</div></div>
+        <div style="flex:1;background:#FCEBEB;border-radius:10px;padding:12px;text-align:center"><div style="font-size:22px;font-weight:800;color:#791F1F" id="missCount">1,274</div><div style="font-size:12px;color:#791F1F">Missing</div></div>
+        <div style="flex:1;background:#FFF8DC;border-radius:10px;padding:12px;text-align:center"><div style="font-size:22px;font-weight:800;color:#8a6a00">72%</div><div style="font-size:12px;color:#8a6a00">Complete</div></div>
+        <div style="flex:1;background:#f5f4ef;border-radius:10px;padding:12px;text-align:center"><div style="font-size:22px;font-weight:800">€48</div><div style="font-size:12px;color:#888">Est. cost to complete</div></div>
+      </div>
+      <div style="height:10px;border-radius:5px;background:#e8e7e2;overflow:hidden;margin-bottom:16px">
+        <div style="height:10px;border-radius:5px;background:linear-gradient(90deg,#22c55e,#FFD700);width:72%;transition:width .5s ease" id="checkerBar"></div>
+      </div>
+      <p style="font-size:13px;font-weight:700;margin-bottom:8px">Top missing parts — cheapest available:</p>
+      <div class="parts-match" style="margin-top:0">
+        <div class="pm-row"><span class="pm-ico">🟫</span><span class="pm-name">Plate 2×4 Dark Brown ×84</span><span class="pm-qty">#3020</span><span style="color:#888;font-size:11px">€1.68</span><span class="pm-status pm-miss">Missing</span><button style="margin-left:6px;background:#FFD700;border:none;border-radius:5px;font-size:11px;font-weight:700;padding:3px 9px;cursor:pointer">Buy</button></div>
+        <div class="pm-row"><span class="pm-ico">⬛</span><span class="pm-name">Slope 45° Black ×32</span><span class="pm-qty">#3040</span><span style="color:#888;font-size:11px">€1.60</span><span class="pm-status pm-miss">Missing</span><button style="margin-left:6px;background:#FFD700;border:none;border-radius:5px;font-size:11px;font-weight:700;padding:3px 9px;cursor:pointer">Buy</button></div>
+        <div class="pm-row"><span class="pm-ico">🟥</span><span class="pm-name">Plate 2×4 Red ×48</span><span class="pm-qty">#3020</span><span style="color:#888;font-size:11px">—</span><span class="pm-status pm-ok">You own 120</span></div>
+        <div class="pm-row"><span class="pm-ico">🔵</span><span class="pm-name">Slope 1×2 Blue ×60</span><span class="pm-qty">#85984</span><span style="color:#888;font-size:11px">€2.40</span><span class="pm-status pm-part">Have 24/60</span><button style="margin-left:6px;background:#FFD700;border:none;border-radius:5px;font-size:11px;font-weight:700;padding:3px 9px;cursor:pointer">Buy 36</button></div>
+        <div class="pm-row"><span class="pm-ico">🪵</span><span class="pm-name">Log Brick 1×2 Tan ×120</span><span class="pm-qty">#30136</span><span style="color:#888;font-size:11px">€3.60</span><span class="pm-status pm-miss">Missing</span><button style="margin-left:6px;background:#FFD700;border:none;border-radius:5px;font-size:11px;font-weight:700;padding:3px 9px;cursor:pointer">Buy</button></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:14px">
+        <button style="background:#1a1a2e;border:none;border-radius:8px;color:#FFD700;font-size:13px;font-weight:700;padding:9px 18px;cursor:pointer">Buy all missing (€48.20)</button>
+        <button style="background:#f5f4ef;border:1px solid #ddd;border-radius:8px;font-size:13px;padding:9px 14px;cursor:pointer">Export list (.csv)</button>
+        <button style="background:#f5f4ef;border:1px solid #ddd;border-radius:8px;font-size:13px;padding:9px 14px;cursor:pointer" onclick="openDlModal('10305','Lion Knights Castle')">📥 Download instructions</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RECENTLY VIEWED -->
+<div id="mt-recent" style="display:none">
+  <div class="card">
+    <div class="sec-h">Recently viewed instructions</div>
+    <div class="set-list" id="recentSets"></div>
+  </div>
+</div>
+
+<!-- UPLOAD TAB -->
+<div id="mt-upload" style="display:none">
+  <div class="card">
+    <div class="sec-h">Upload instructions</div>
+    <p style="font-size:13px;color:#666;line-height:1.65;margin-bottom:16px">Help the community by uploading scanned instruction booklets or parts lists you own. All uploads are reviewed before publishing.</p>
+    <div class="upload-drop" onclick="alert('File picker would open here — supports PDF, JPG, PNG')">
+      <div style="font-size:36px;margin-bottom:8px">📄</div>
+      <h4>Drop PDF or image files here</h4>
+      <p>Supports PDF, JPG, PNG · Max 50MB per file</p>
+      <button class="upload-btn">Choose files</button>
+    </div>
+    <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div>
+        <label style="font-size:12px;color:#888;display:block;margin-bottom:4px">Set number</label>
+        <input style="width:100%;border:1px solid #ddd;border-radius:7px;padding:8px 10px;font-size:13px;outline:none" placeholder="e.g. 10305">
+      </div>
+      <div>
+        <label style="font-size:12px;color:#888;display:block;margin-bottom:4px">Booklet number (if applicable)</label>
+        <input style="width:100%;border:1px solid #ddd;border-radius:7px;padding:8px 10px;font-size:13px;outline:none" placeholder="e.g. Book 1 of 3">
+      </div>
+      <div>
+        <label style="font-size:12px;color:#888;display:block;margin-bottom:4px">Language</label>
+        <select style="width:100%;border:1px solid #ddd;border-radius:7px;padding:8px 10px;font-size:13px;outline:none;background:#fff">
+          <option>English</option><option>Latvian</option><option>German</option><option>Russian</option><option>French</option><option>Other</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:12px;color:#888;display:block;margin-bottom:4px">Type</label>
+        <select style="width:100%;border:1px solid #ddd;border-radius:7px;padding:8px 10px;font-size:13px;outline:none;background:#fff">
+          <option>Building instruction</option>
+          <option>Parts list / inventory</option>
+          <option>Both combined</option>
+        </select>
+      </div>
+    </div>
+    <button style="margin-top:14px;background:#1a1a2e;border:none;border-radius:8px;color:#FFD700;font-size:14px;font-weight:700;padding:10px 24px;cursor:pointer" onclick="alert('Upload submitted for review! Thank you for contributing.')">Submit upload</button>
+  </div>
+</div>
+
+</div>
+<div class="side">
+
+  <div class="card">
+    <div class="sec-h" style="margin-bottom:10px">Quick set lookup</div>
+    <div style="display:flex;gap:6px">
+      <input style="flex:1;border:1px solid #ddd;border-radius:7px;padding:7px 10px;font-size:13px;outline:none" id="quickNum" placeholder="Set # e.g. 75192" onkeydown="if(event.key==='Enter')quickLook()">
+      <button style="background:#FFD700;border:none;border-radius:7px;font-size:13px;font-weight:700;color:#1a1a2e;padding:7px 12px;cursor:pointer" onclick="quickLook()">Go</button>
+    </div>
+    <div id="quickResult" style="margin-top:10px;display:none;background:#f5f4ef;border-radius:8px;padding:10px;font-size:12px"></div>
+  </div>
+
+  <div class="card">
+    <div class="sec-h">My collection match</div>
+    <div style="font-size:12px;color:#666;margin-bottom:10px;line-height:1.5">How well your collection covers the sets you're viewing:</div>
+    <div class="info-row"><span class="info-lbl">Sets with full parts</span><span class="info-val" style="color:#22c55e">14 sets</span></div>
+    <div class="info-row"><span class="info-lbl">Sets with partial parts</span><span class="info-val" style="color:#f59e0b">22 sets</span></div>
+    <div class="info-row"><span class="info-lbl">Sets with few parts</span><span class="info-val" style="color:#ef4444">12 sets</span></div>
+    <div class="info-row"><span class="info-lbl">Avg completion</span><span class="info-val">68%</span></div>
+    <button style="width:100%;margin-top:10px;background:#1a1a2e;border:none;border-radius:7px;color:#FFD700;font-size:12px;font-weight:700;padding:8px;cursor:pointer" onclick="showMainTab('missing',document.querySelectorAll('.tnav')[2])">Run full missing parts check →</button>
+  </div>
+
+  <div class="card">
+    <div class="sec-h">Browse by theme</div>
+    <div class="theme-list">
+      <div class="theme-row" onclick="selFb(null,'castle')"><span>🏰 Castle</span><span class="theme-cnt">1,240</span></div>
+      <div class="theme-row" onclick="selFb(null,'technic')"><span>⚙️ Technic</span><span class="theme-cnt">2,180</span></div>
+      <div class="theme-row" onclick="selFb(null,'city')"><span>🚗 City</span><span class="theme-cnt">3,420</span></div>
+      <div class="theme-row" onclick="selFb(null,'space')"><span>🚀 Space</span><span class="theme-cnt">980</span></div>
+      <div class="theme-row" onclick="selFb(null,'star')"><span>🌌 Star Wars</span><span class="theme-cnt">1,840</span></div>
+      <div class="theme-row" onclick="selFb(null,'icons')"><span>🏛️ Icons</span><span class="theme-cnt">620</span></div>
+      <div class="theme-row"><span>🧙 Harry Potter</span><span class="theme-cnt">480</span></div>
+      <div class="theme-row"><span>🦸 Marvel</span><span class="theme-cnt">560</span></div>
+      <div class="theme-row" onclick="alert('All 48 themes')"><span style="color:#1a73e8;font-size:12px">View all 48 themes →</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sec-h">Format guide</div>
+    <div style="display:flex;flex-direction:column;gap:6px;font-size:12px">
+      <div style="display:flex;gap:8px;align-items:flex-start;padding:6px 0;border-bottom:1px solid #f5f4ef">
+        <span style="font-size:16px;flex-shrink:0">📄</span>
+        <div><div style="font-weight:700">PDF booklet</div><div style="color:#888">Original scan, exact pages</div></div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:flex-start;padding:6px 0;border-bottom:1px solid #f5f4ef">
+        <span style="font-size:16px;flex-shrink:0">📊</span>
+        <div><div style="font-weight:700">Parts list (.xml)</div><div style="color:#888">BrickLink-compatible inventory</div></div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:flex-start;padding:6px 0;border-bottom:1px solid #f5f4ef">
+        <span style="font-size:16px;flex-shrink:0">🧩</span>
+        <div><div style="font-weight:700">Studio file (.io)</div><div style="color:#888">3D model for BrickLink Studio</div></div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:flex-start;padding:6px 0">
+        <span style="font-size:16px;flex-shrink:0">📋</span>
+        <div><div style="font-weight:700">CSV parts list</div><div style="color:#888">Spreadsheet-ready inventory</div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- DOWNLOAD MODAL -->
+<div class="modal-bg" id="dlModal" onclick="if(event.target===this)closeDlModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeDlModal()">✕</button>
+    <h2 id="dlTitle">Download instructions</h2>
+    <div class="modal-sub" id="dlSub">Choose format and language</div>
+
+    <div id="dlOptions">
+      <div class="dl-option" onclick="startDownload(this,'PDF booklet — Book 1 of 3')">
+        <div class="dl-ico" style="background:#FCEBEB">📄</div>
+        <div><div class="dl-name">PDF booklet — Book 1 of 3</div><div class="dl-desc">Original LEGO scan · 148 pages · 24 MB</div></div>
+        <span class="dl-badge" style="background:#E1F5EE;color:#085041">Available</span>
+      </div>
+      <div class="dl-option" onclick="startDownload(this,'PDF booklet — Book 2 of 3')">
+        <div class="dl-ico" style="background:#FCEBEB">📄</div>
+        <div><div class="dl-name">PDF booklet — Book 2 of 3</div><div class="dl-desc">Original LEGO scan · 132 pages · 21 MB</div></div>
+        <span class="dl-badge" style="background:#E1F5EE;color:#085041">Available</span>
+      </div>
+      <div class="dl-option" onclick="startDownload(this,'PDF booklet — Book 3 of 3')">
+        <div class="dl-ico" style="background:#FCEBEB">📄</div>
+        <div><div class="dl-name">PDF booklet — Book 3 of 3</div><div class="dl-desc">Original LEGO scan · 156 pages · 26 MB</div></div>
+        <span class="dl-badge" style="background:#E1F5EE;color:#085041">Available</span>
+      </div>
+      <div class="dl-option" onclick="startDownload(this,'Parts list (.xml)')">
+        <div class="dl-ico" style="background:#E6F1FB">📊</div>
+        <div><div class="dl-name">Parts list (.xml)</div><div class="dl-desc">BrickLink-compatible · 4,514 parts · 128 KB</div></div>
+        <span class="dl-badge" style="background:#E1F5EE;color:#085041">Available</span>
+      </div>
+      <div class="dl-option" onclick="startDownload(this,'Parts list (.csv)')">
+        <div class="dl-ico" style="background:#E1F5EE">📋</div>
+        <div><div class="dl-name">Parts list (.csv)</div><div class="dl-desc">Spreadsheet-ready · 4,514 rows</div></div>
+        <span class="dl-badge" style="background:#E1F5EE;color:#085041">Available</span>
+      </div>
+      <div class="dl-option" style="opacity:.5;cursor:not-allowed" onclick="alert('Studio file not yet available for this set')">
+        <div class="dl-ico" style="background:#f5f4ef">🧩</div>
+        <div><div class="dl-name">Studio file (.io)</div><div class="dl-desc">3D model — not yet available</div></div>
+        <span class="dl-badge" style="background:#f5f4ef;color:#888">Coming soon</span>
+      </div>
+      <div style="margin-top:12px;font-size:12px;color:#888">Language: <strong>English</strong> · <a style="color:#1a73e8;cursor:pointer" onclick="alert('Language selection: EN, DE, LV, RU, FR, PL, NL…')">Change language</a></div>
+    </div>
+
+    <div id="dlProgress" style="display:none;text-align:center;padding:20px 0">
+      <div style="font-size:36px;margin-bottom:10px">⬇️</div>
+      <div style="font-size:14px;font-weight:700;margin-bottom:6px" id="dlProgressName"></div>
+      <div class="progress-bar" id="dlBar" style="display:block;max-width:300px;margin:0 auto 10px">
+        <div class="progress-fill" id="dlFill"></div>
+      </div>
+      <div style="font-size:12px;color:#888" id="dlPct">0%</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SETS=[
+  {id:'10305',name:"Lion Knights' Castle",theme:'castle',year:2022,parts:4514,booklets:3,ico:'🏰',partsAvail:true,instrAvail:true,studioAvail:false,myMatch:72,myStatus:'partial'},
+  {id:'75192',name:'Millennium Falcon',theme:'star',year:2017,parts:7541,booklets:2,ico:'🌌',partsAvail:true,instrAvail:true,studioAvail:true,myMatch:88,myStatus:'full'},
+  {id:'42156',name:'PEUGEOT 9X8 Hypercar',theme:'technic',year:2023,parts:1775,booklets:1,ico:'⚙️',partsAvail:true,instrAvail:true,studioAvail:false,myMatch:95,myStatus:'full'},
+  {id:'10276',name:'Colosseum',theme:'icons',year:2020,parts:9036,booklets:4,ico:'🏛️',partsAvail:true,instrAvail:true,studioAvail:false,myMatch:41,myStatus:'partial'},
+  {id:'71043',name:'Hogwarts Castle',theme:'other',year:2018,parts:6020,booklets:3,ico:'🧙',partsAvail:true,instrAvail:true,studioAvail:true,myMatch:72,myStatus:'partial'},
+  {id:'60388',name:'Gaming Tournament Truck',theme:'city',year:2023,parts:456,booklets:1,ico:'🚗',partsAvail:true,instrAvail:true,studioAvail:false,myMatch:100,myStatus:'full'},
+  {id:'75346',name:"Pirate Snub Fighter",theme:'star',year:2023,parts:285,booklets:1,ico:'🚀',partsAvail:true,instrAvail:true,studioAvail:false,myMatch:55,myStatus:'partial'},
+  {id:'31120',name:'Medieval Castle',theme:'castle',year:2021,parts:1426,booklets:1,ico:'🏰',partsAvail:true,instrAvail:true,studioAvail:true,myMatch:0,myStatus:'none'},
+  {id:'42115',name:'Lamborghini Sián',theme:'technic',year:2020,parts:3696,booklets:2,ico:'⚙️',partsAvail:true,instrAvail:false,studioAvail:false,myMatch:18,myStatus:'none'},
+  {id:'10294',name:'Titanic',theme:'icons',year:2021,parts:9090,booklets:4,ico:'🚢',partsAvail:true,instrAvail:true,studioAvail:false,myMatch:62,myStatus:'partial'},
+];
+
+let currentTheme='all', currentView='list';
+
+function statusPill(s,pct){
+  if(s==='full')return `<span class="status-pill sp-ok">✅ Parts match: ${pct}%</span>`;
+  if(s==='partial')return `<span class="status-pill sp-part">⚠️ Partial: ${pct}%</span>`;
+  return `<span class="status-pill sp-none">❌ No parts match</span>`;
+}
+function instrStatus(set){
+  const rows=[];
+  rows.push(set.instrAvail
+    ? `<span class="status-pill sp-ok">📄 Instructions: ${set.booklets} booklet${set.booklets>1?'s':''}</span>`
+    : `<span class="status-pill sp-miss">📄 Instructions: not available</span>`);
+  rows.push(set.partsAvail
+    ? `<span class="status-pill sp-ok">📊 Parts list: available</span>`
+    : `<span class="status-pill sp-miss">📊 Parts list: missing</span>`);
+  rows.push(set.studioAvail
+    ? `<span class="status-pill sp-ok">🧩 Studio file: yes</span>`
+    : `<span class="status-pill sp-none">🧩 Studio file: no</span>`);
+  return rows.join('');
+}
+
+function renderList(data){
+  document.getElementById('viewList').innerHTML=data.map(s=>`
+    <div class="scard">
+      <div class="scard-inner">
+        <div class="scard-thumb">${s.ico}</div>
+        <div class="scard-body">
+          <div class="scard-head">
+            <div style="flex:1">
+              <div class="scard-title">${s.name}</div>
+              <div class="scard-sub">#${s.id} · ${s.theme==='star'?'Star Wars':s.theme.charAt(0).toUpperCase()+s.theme.slice(1)} · ${s.year} · ${s.parts.toLocaleString()} parts</div>
+            </div>
+          </div>
+          <div class="scard-badges">
+            ${s.instrAvail?`<span class="sbadge sb-g">📄 ${s.booklets} booklet${s.booklets>1?'s':''}</span>`:'<span class="sbadge sb-r">📄 No instruction</span>'}
+            ${s.partsAvail?'<span class="sbadge sb-b">📊 Parts list ✓</span>':'<span class="sbadge sb-r">📊 No parts list</span>'}
+            ${s.studioAvail?'<span class="sbadge sb-p">🧩 Studio file</span>':''}
+          </div>
+          <div class="status-row">${statusPill(s.myStatus,s.myMatch)}</div>
+          <div class="scard-actions">
+            ${s.instrAvail?`<button class="btn-dl" onclick="openDlModal('${s.id}','${s.name.replace(/'/g,"\\'")}')">📥 Download instructions</button>`:'<button class="btn-sm" style="opacity:.5;cursor:not-allowed">📥 No instruction available</button>'}
+            ${s.partsAvail?`<button class="btn-sm" onclick="openDlModal('${s.id}','${s.name.replace(/'/g,"\\'")}')">📊 Parts list</button>`:''}
+            <button class="btn-sm" onclick="showMissingFor('${s.id}','${s.name.replace(/'/g,"\\'")}')">✅ Check my parts</button>
+            <button class="btn-sm buy">🛒 Buy missing</button>
+          </div>
+        </div>
+      </div>
+      <div class="expand-section" id="exp-${s.id}">
+        <div class="exp-grid">
+          <div class="exp-row"><span class="exp-lbl">Set number</span><span class="exp-val">#${s.id}</span></div>
+          <div class="exp-row"><span class="exp-lbl">Year</span><span class="exp-val">${s.year}</span></div>
+          <div class="exp-row"><span class="exp-lbl">Total parts</span><span class="exp-val">${s.parts.toLocaleString()}</span></div>
+          <div class="exp-row"><span class="exp-lbl">Booklets</span><span class="exp-val">${s.booklets}</span></div>
+          <div class="exp-row"><span class="exp-lbl">Parts list</span><span class="exp-val" style="color:${s.partsAvail?'#22c55e':'#ef4444'}">${s.partsAvail?'✅ Available':'❌ Not available'}</span></div>
+          <div class="exp-row"><span class="exp-lbl">Studio file</span><span class="exp-val" style="color:${s.studioAvail?'#22c55e':'#888'}">${s.studioAvail?'✅ Yes':'—'}</span></div>
+          <div class="exp-row"><span class="exp-lbl">My parts match</span><span class="exp-val" style="color:${s.myMatch>80?'#22c55e':s.myMatch>40?'#f59e0b':'#ef4444'}">${s.myMatch}%</span></div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderGrid(data){
+  document.getElementById('viewGrid').innerHTML=data.map(s=>`
+    <div class="gc">
+      <div class="gc-img">${s.ico}</div>
+      <div class="gc-body">
+        <div class="gc-name">${s.name}</div>
+        <div class="gc-sub">#${s.id} · ${s.year} · ${s.parts.toLocaleString()} parts</div>
+        <div class="gc-status">
+          ${s.instrAvail?'<span style="color:#22c55e">📄</span> Instructions':'<span style="color:#ef4444">📄</span> No instructions'}
+          &nbsp;·&nbsp;
+          ${s.partsAvail?'<span style="color:#22c55e">📊</span>':'<span style="color:#ef4444">📊</span>'}
+        </div>
+        <div class="gc-status">${s.myStatus==='full'?'<span style="color:#22c55e">✅ Full match</span>':s.myStatus==='partial'?`<span style="color:#f59e0b">⚠️ ${s.myMatch}% match</span>`:'<span style="color:#ef4444">❌ No match</span>'}</div>
+        <div class="gc-btns">
+          <button class="gc-btn dl" onclick="openDlModal('${s.id}','${s.name.replace(/'/g,"\\'")}')">📥 DL</button>
+          <button class="gc-btn" onclick="showMissingFor('${s.id}','${s.name.replace(/'/g,"\\'")}')">✅ Check</button>
+          <button class="gc-btn">🛒 Buy</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function applyFilters(){
+  const search=(document.getElementById('listSearch')||{value:''}).value.toLowerCase();
+  const year=(document.getElementById('yearFilter')||{value:''}).value;
+  const status=(document.getElementById('statusFilter')||{value:''}).value;
+  let data=SETS.filter(s=>{
+    if(currentTheme!=='all'&&s.theme!==currentTheme)return false;
+    if(year&&year!=='older'&&String(s.year)!==year)return false;
+    if(year==='older'&&s.year>=2018)return false;
+    if(status&&s.myStatus!==status.replace('full','full').replace('partial','partial').replace('none','none'))return false;
+    if(search&&!s.name.toLowerCase().includes(search)&&!s.id.includes(search))return false;
+    return true;
+  });
+  renderList(data);
+  renderGrid(data);
+}
+
+function selFb(btn,theme){
+  currentTheme=theme;
+  document.querySelectorAll('.fb').forEach(b=>{ if(['☰ List','⊞ Grid'].every(l=>b.textContent.trim()!==l) && !['vlist','vgrid'].includes(b.id)) b.classList.remove('on'); });
+  if(btn)btn.classList.add('on');
+  applyFilters();
+  if(document.getElementById('mt-browse').style.display==='none'){
+    showMainTab('browse',document.querySelectorAll('.tnav')[0]);
+  }
+}
+
+function setView(v){
+  currentView=v;
+  document.getElementById('viewList').style.display=v==='list'?'':'none';
+  document.getElementById('viewGrid').style.display=v==='grid'?'':'none';
+  document.getElementById('vlist').classList.toggle('on',v==='list');
+  document.getElementById('vgrid').classList.toggle('on',v==='grid');
+}
+
+function liveSearch(val){
+  if(document.getElementById('listSearch'))document.getElementById('listSearch').value=val;
+  applyFilters();
+}
+
+applyFilters();
+
+// My sets tab
+document.getElementById('mySetsBody').innerHTML=SETS.slice(0,5).map(s=>`
+  <div class="scard" style="margin-bottom:10px">
+    <div class="scard-inner">
+      <div class="scard-thumb">${s.ico}</div>
+      <div class="scard-body">
+        <div class="scard-head"><div><div class="scard-title">${s.name}</div><div class="scard-sub">#${s.id} · ${s.year} · ${s.parts.toLocaleString()} parts</div></div></div>
+        <div class="status-row">
+          ${s.instrAvail?'<span class="status-pill sp-ok">📄 Downloaded</span>':'<span class="status-pill sp-miss">📄 Not downloaded</span>'}
+          ${s.partsAvail?'<span class="status-pill sp-ok">📊 Parts list ✓</span>':'<span class="status-pill sp-miss">📊 Missing</span>'}
+          ${statusPill(s.myStatus,s.myMatch)}
+        </div>
+        <div class="scard-actions">
+          ${s.instrAvail?`<button class="btn-dl" onclick="openDlModal('${s.id}','${s.name.replace(/'/g,"\\'")}')">📥 Re-download</button>`:''}
+          <button class="btn-sm" onclick="showMissingFor('${s.id}','${s.name.replace(/'/g,"\\'")}')">✅ Check parts</button>
+        </div>
+      </div>
+    </div>
+  </div>
+`).join('');
+
+// Recent tab
+document.getElementById('recentSets').innerHTML=SETS.slice(0,3).map((s,i)=>`
+  <div class="scard" style="margin-bottom:10px">
+    <div class="scard-inner">
+      <div class="scard-thumb">${s.ico}</div>
+      <div class="scard-body">
+        <div class="scard-head"><div><div class="scard-title">${s.name}</div><div class="scard-sub">#${s.id} · Viewed ${['2 hours','yesterday','3 days'][i]} ago</div></div></div>
+        <div class="scard-actions">
+          <button class="btn-dl" onclick="openDlModal('${s.id}','${s.name.replace(/'/g,"\\'")}')">📥 Download</button>
+          <button class="btn-sm" onclick="showMissingFor('${s.id}','${s.name.replace(/'/g,"\\'")}')">✅ Check parts</button>
+        </div>
+      </div>
+    </div>
+  </div>
+`).join('');
+
+function showMainTab(name,btn){
+  ['browse','my','missing','recent','upload'].forEach(t=>{
+    const el=document.getElementById('mt-'+t);
+    if(el)el.style.display=t===name?'':'none';
+  });
+  document.querySelectorAll('.tnav').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+}
+
+// DOWNLOAD MODAL
+function openDlModal(id,name){
+  document.getElementById('dlTitle').textContent='Download: '+name;
+  document.getElementById('dlSub').textContent='Set #'+id+' · Choose file format';
+  document.getElementById('dlOptions').style.display='';
+  document.getElementById('dlProgress').style.display='none';
+  document.getElementById('dlModal').style.display='flex';
+}
+function closeDlModal(){
+  document.getElementById('dlModal').style.display='none';
+}
+function startDownload(el,name){
+  document.getElementById('dlOptions').style.display='none';
+  document.getElementById('dlProgress').style.display='block';
+  document.getElementById('dlProgressName').textContent='Downloading: '+name;
+  let pct=0;
+  const fill=document.getElementById('dlFill');
+  const pctEl=document.getElementById('dlPct');
+  const iv=setInterval(()=>{
+    pct+=Math.round(4+Math.random()*8);
+    if(pct>=100){pct=100;clearInterval(iv);
+      setTimeout(()=>{
+        document.getElementById('dlProgressName').textContent='✅ Download complete!';
+        pctEl.textContent='Done';
+        fill.style.background='#22c55e';
+        setTimeout(closeDlModal,1200);
+      },300);
+    }
+    fill.style.width=pct+'%';
+    pctEl.textContent=pct+'%';
+  },80);
+}
+
+// MISSING PARTS CHECKER
+function checkerHint(val){
+  const hint=document.getElementById('checkerHint');
+  const found=SETS.find(s=>s.id.startsWith(val)&&val.length>=4);
+  if(found){hint.style.display='block';hint.textContent='Found: '+found.name+' ('+found.parts.toLocaleString()+' parts) — press Check';}
+  else{hint.style.display='none';}
+}
+function runChecker(){
+  document.getElementById('checkerResult').style.display='block';
+  document.getElementById('checkerBar').style.width='0';
+  setTimeout(()=>document.getElementById('checkerBar').style.width='72%',100);
+}
+function showMissingFor(id,name){
+  showMainTab('missing',document.querySelectorAll('.tnav')[2]);
+  document.getElementById('checkerInput').value=id;
+  checkerHint(id);
+  runChecker();
+}
+
+// QUICK LOOKUP
+function quickLook(){
+  const v=document.getElementById('quickNum').value.trim();
+  const found=SETS.find(s=>s.id===v);
+  const res=document.getElementById('quickResult');
+  res.style.display='block';
+  if(found){
+    res.innerHTML=`<div style="font-size:20px;margin-bottom:4px">${found.ico} <strong>${found.name}</strong></div>
+    <div style="color:#888;margin-bottom:8px">#${found.id} · ${found.year} · ${found.parts.toLocaleString()} parts</div>
+    <div style="display:flex;flex-direction:column;gap:4px">
+      <div>${found.instrAvail?'✅':'❌'} Instructions (${found.booklets} booklet${found.booklets>1?'s':''})</div>
+      <div>${found.partsAvail?'✅':'❌'} Parts list</div>
+      <div>${found.studioAvail?'✅':'—'} Studio file</div>
+      <div style="margin-top:6px;color:${found.myMatch>80?'#22c55e':found.myMatch>40?'#f59e0b':'#ef4444'};font-weight:700">Your parts: ${found.myMatch}% match</div>
+    </div>
+    <button style="margin-top:8px;width:100%;background:#FFD700;border:none;border-radius:6px;font-size:12px;font-weight:700;padding:6px;cursor:pointer" onclick="openDlModal('${found.id}','${found.name.replace(/'/g,"\\'")}')">📥 Download</button>`;
+  } else {
+    res.innerHTML=`<div style="color:#888">Set #${v} not found — try another number.</div>`;
+  }
+}
+</script>
+<script src="../js/shared.js"></script>
+</body>
+</html>

@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudsUp — Search</title>
+<link rel="stylesheet" href="../css/shared.css">
+<style>
+.search-hero{background:var(--dark);padding:28px 32px 22px}
+.sh-inner{max-width:860px;margin:0 auto}
+.sh-inner h1{color:#fff;font-size:20px;font-weight:800;margin-bottom:14px;letter-spacing:-.3px}
+.search-bar{display:flex;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.18);border-radius:10px;overflow:hidden;max-width:800px}
+.search-bar input{flex:1;background:none;border:none;outline:none;color:#fff;font-size:16px;padding:13px 16px}
+.search-bar input::placeholder{color:rgba(255,255,255,.35)}
+.search-bar button{background:var(--yellow);border:none;color:var(--dark);font-size:14px;font-weight:700;padding:13px 24px;cursor:pointer;white-space:nowrap;transition:background .15s}
+.search-bar button:hover{background:var(--yellow-dark)}
+
+.cat-tabs{background:#fff;border-bottom:1px solid var(--border);overflow-x:auto}
+.cat-tabs-inner{max-width:1100px;margin:0 auto;display:flex;padding:0 20px;gap:0}
+.ctab{padding:11px 16px;font-size:13px;font-weight:500;color:var(--muted);border:none;background:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;transition:all .15s}
+.ctab:hover{color:var(--text)}
+.ctab.on{color:var(--text);border-bottom-color:var(--yellow);font-weight:600}
+.ctab .cnt{background:var(--bg);color:var(--muted);font-size:10px;font-weight:700;padding:2px 6px;border-radius:20px;min-width:18px;text-align:center}
+.ctab.on .cnt{background:var(--yellow);color:var(--dark)}
+
+.content{max-width:1100px;margin:0 auto;padding:20px}
+.results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.results-count{font-size:14px;font-weight:600;color:var(--text)}
+.results-count span{color:var(--muted);font-weight:400}
+.sort-row{display:flex;gap:8px;align-items:center}
+.sort-sel{border:1px solid var(--border2);border-radius:7px;padding:6px 10px;font-size:12px;outline:none;background:#fff}
+
+/* ── RESULT CARDS ── */
+.results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.results-list{display:flex;flex-direction:column;gap:8px}
+
+/* Part card */
+.rc-part{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;cursor:pointer;transition:all .15s}
+.rc-part:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.rc-img-wrap{height:120px;background:var(--bg);display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.rc-img{width:100px;height:100px;object-fit:contain}
+.rc-img-fb{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff}
+.rc-body{padding:11px}
+.rc-color{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:3px}
+.swatch{width:10px;height:10px;border-radius:50%;border:1px solid rgba(0,0,0,.1);flex-shrink:0}
+.rc-ids{font-size:10px;color:var(--hint);margin-bottom:7px}
+.rc-price{font-size:15px;font-weight:800;margin-bottom:6px}
+.rc-stock{font-size:11px;color:var(--muted)}
+.rc-btns{display:flex;gap:5px;margin-top:7px}
+.rcb{flex:1;border:none;border-radius:6px;font-size:11px;font-weight:700;padding:5px;cursor:pointer;transition:all .12s}
+.rcb-buy{background:var(--yellow);color:var(--dark)}
+.rcb-buy:hover{background:var(--yellow-dark)}
+.rcb-more{background:var(--bg);border:1px solid var(--border2);color:var(--text2)}
+.rcb-more:hover{background:#fff}
+
+/* Row card (sets, stores, users, lugs, streams, discounts) */
+.rc-row{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .15s}
+.rc-row:hover{border-color:#ccc;box-shadow:var(--shadow-sm)}
+.rc-icon{font-size:32px;flex-shrink:0;width:48px;text-align:center}
+.rc-av{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0}
+.rc-main{flex:1;min-width:0}
+.rc-title{font-size:14px;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rc-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.rc-meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:5px}
+.rcm{font-size:11px;color:var(--hint)}
+.rcm strong{color:var(--text2);font-weight:600}
+.rc-right{text-align:right;flex-shrink:0}
+.rc-badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px}
+.rb-live{background:#FCEBEB;color:#791F1F}
+.rb-vod{background:var(--bg);color:var(--muted)}
+.rb-discount{background:#E1F5EE;color:#085041}
+.rb-verified{background:var(--yellow-bg);color:#8a6a00}
+.rc-action{background:var(--yellow);border:none;border-radius:7px;color:var(--dark);font-size:12px;font-weight:700;padding:6px 14px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.rc-action:hover{background:var(--yellow-dark)}
+
+/* Empty / loading states */
+.state-box{text-align:center;padding:48px 20px;color:var(--muted)}
+.state-box .ico{font-size:48px;margin-bottom:14px}
+.state-box h3{font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px}
+.state-box p{font-size:13px;line-height:1.6;max-width:380px;margin:0 auto}
+.skeleton{background:linear-gradient(90deg,#f0f0ec 25%,#e8e7e2 50%,#f0f0ec 75%);background-size:200% 100%;animation:shimmer 1.2s infinite;border-radius:6px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.sk-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;height:200px}
+
+/* Pagination */
+.pagination{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:20px}
+.pag{min-width:34px;height:34px;border:1px solid var(--border2);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;background:#fff;padding:0 8px;transition:all .12s;font-weight:500}
+.pag:hover{background:var(--bg)}
+.pag.on{background:var(--dark);color:var(--yellow);border-color:var(--dark);font-weight:700}
+.pag.dots{border:none;background:none;cursor:default;color:var(--hint)}
+
+/* API status banner */
+.api-banner{padding:10px 20px;font-size:12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
+.api-banner.ok{background:#E1F5EE;color:#085041}
+.api-banner.err{background:#FCEBEB;color:#791F1F}
+.api-banner.warn{background:var(--yellow-bg);color:#8a6a00}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="../../index.html" class="nav-logo">Studs<span>Up</span></a>
+  <div class="nav-links">
+    <a href="home.html"         class="nav-link">Marketplace</a>
+    <a href="lugbulk.html"      class="nav-link">📦 Parts catalogue</a>
+    <a href="search.html"       class="nav-link active">Search</a>
+    <a href="collection.html"   class="nav-link">My Collection</a>
+    <a href="lug.html"          class="nav-link">LUGs</a>
+    <a href="stream.html"       class="nav-link">Streams</a>
+    <a href="profile-blog.html" class="nav-link">Profile</a>
+    <a href="instructions.html" class="nav-link">Instructions</a>
+  </div>
+  <div class="nav-right" id="navRight">
+    <div id="navSellArea"></div>
+    <div id="navUserArea"></div>
+  </div>
+</nav>
+
+<!-- API status -->
+<div id="apiBanner" class="api-banner warn" style="display:none"></div>
+
+<!-- Search hero -->
+<div class="search-hero">
+  <div class="sh-inner">
+    <h1>🔍 Search StudsUp</h1>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search parts, sets, stores, LUGs, streams…"
+             autofocus autocomplete="off">
+      <button onclick="doSearch()">Search</button>
+    </div>
+  </div>
+</div>
+
+<!-- Category tabs -->
+<div class="cat-tabs">
+  <div class="cat-tabs-inner">
+    <button class="ctab on" data-cat="all"       onclick="setTab('all',this)">All <span class="cnt" id="cnt-all">—</span></button>
+    <button class="ctab"    data-cat="parts"      onclick="setTab('parts',this)">🧱 Parts <span class="cnt" id="cnt-parts">—</span></button>
+    <button class="ctab"    data-cat="sets"       onclick="setTab('sets',this)">📦 Sets <span class="cnt" id="cnt-sets">—</span></button>
+    <button class="ctab"    data-cat="stores"     onclick="setTab('stores',this)">🏪 Stores <span class="cnt" id="cnt-stores">—</span></button>
+    <button class="ctab"    data-cat="discounts"  onclick="setTab('discounts',this)">🏷️ Discounts <span class="cnt" id="cnt-discounts">—</span></button>
+    <button class="ctab"    data-cat="users"      onclick="setTab('users',this)">👤 Users <span class="cnt" id="cnt-users">—</span></button>
+    <button class="ctab"    data-cat="lugs"       onclick="setTab('lugs',this)">🏛️ LUGs <span class="cnt" id="cnt-lugs">—</span></button>
+    <button class="ctab"    data-cat="streams"    onclick="setTab('streams',this)">🔴 Streams <span class="cnt" id="cnt-streams">—</span></button>
+    <button class="ctab"    data-cat="videos"     onclick="setTab('videos',this)">🎥 Videos <span class="cnt" id="cnt-videos">—</span></button>
+  </div>
+</div>
+
+<div class="content">
+  <div class="results-header" id="resultsHeader" style="display:none">
+    <div class="results-count" id="resultsCount"></div>
+    <div class="sort-row">
+      <select class="sort-sel" id="sortSel" onchange="renderCurrentTab()">
+        <option value="">Default order</option>
+        <option value="price_asc">Price ↑</option>
+        <option value="price_desc">Price ↓</option>
+        <option value="qty_desc">Most in stock</option>
+        <option value="rating_desc">Best rating</option>
+      </select>
+    </div>
+  </div>
+  <div id="resultsArea">
+    <div class="state-box">
+      <div class="ico">🔍</div>
+      <h3>Search StudsUp</h3>
+      <p>Find parts by ID or color, sets by name or number, stores, LUG clubs, live streams, videos, and active discounts — all in one search.</p>
+    </div>
+  </div>
+  <div class="pagination" id="pagination"></div>
+</div>
+
+<script src="../js/shared.js"></script>
+<script>
+// ── CONFIG ────────────────────────────────────────────────────────────────────
+// Change this to your server URL when running locally e.g. http://localhost:8000
+// API base URL:
+// - Set STUDSUP_API_URL in your environment, OR
+// - Defaults to same origin (when backend serves frontend), OR
+// - Falls back to localhost for local development
+const API = (function(){
+  // If a global is set (e.g. injected at deploy time), use it
+  if(typeof window.STUDSUP_API !== 'undefined') return window.STUDSUP_API;
+  // If running from file:// → local dev
+  if(window.location.protocol === 'file:') return 'http://localhost:8000';
+  // If hostname contains 'onrender.com' and we are the static site,
+  // the API is at studsup-api.onrender.com
+  if(window.location.hostname.includes('onrender.com') &&
+     window.location.hostname.includes('frontend')) {
+    return window.location.origin.replace('studsup-frontend','studsup-api');
+  }
+  // Same origin (backend serves frontend directly)
+  return '';
+})();
+
+let currentQuery   = '';
+let currentTab     = 'all';
+let currentPage    = 1;
+let lastResults    = null;
+let searchTimer    = null;
+const PER_PAGE     = 24;
+
+// ── NAV ───────────────────────────────────────────────────────────────────────
+(function(){
+  var u=null; try{u=JSON.parse(sessionStorage.getItem('su_user'));}catch(e){}
+  var sa=document.getElementById('navSellArea');
+  if(sa) sa.innerHTML=u&&u.name
+    ? '<button class="nav-sell" onclick="location.href=\'profile-blog.html\'">+ Sell parts</button>'
+    : '<button class="nav-sell" onclick="location.href=\'login.html\'">+ Sell parts</button>';
+  var el=document.getElementById('navUserArea');
+  if(!el)return;
+  if(u&&u.name){
+    el.innerHTML='<a href="profile-blog.html" style="display:flex;align-items:center;gap:7px;text-decoration:none">'
+      +'<div class="nav-avatar" style="font-size:12px">'+u.avatar+'</div>'
+      +'<span style="font-size:12px;color:rgba(255,255,255,.75)">'+u.name+'</span></a>';
+  } else {
+    el.innerHTML='<a href="login.html" class="nav-sell" style="text-decoration:none">Sign in</a>';
+  }
+})();
+
+// ── URL PARAMS ────────────────────────────────────────────────────────────────
+const params = new URLSearchParams(window.location.search);
+if(params.get('q')) {
+  document.getElementById('searchInput').value = params.get('q');
+  currentQuery = params.get('q');
+}
+if(params.get('tab')) {
+  currentTab = params.get('tab');
+  document.querySelectorAll('.ctab').forEach(b => {
+    b.classList.toggle('on', b.dataset.cat === currentTab);
+  });
+}
+
+// ── SEARCH ────────────────────────────────────────────────────────────────────
+document.getElementById('searchInput').addEventListener('keydown', e => {
+  if(e.key === 'Enter') doSearch();
+});
+document.getElementById('searchInput').addEventListener('input', () => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    const v = document.getElementById('searchInput').value.trim();
+    if(v.length >= 2) doSearch(false);
+  }, 400);
+});
+
+function doSearch(pushState=true) {
+  const q = document.getElementById('searchInput').value.trim();
+  if(!q) return;
+  currentQuery = q;
+  currentPage  = 1;
+  if(pushState) {
+    const url = `?q=${encodeURIComponent(q)}&tab=${currentTab}`;
+    history.pushState({q,tab:currentTab}, '', url);
+  }
+  fetchSearch();
+}
+
+async function fetchSearch() {
+  if(!currentQuery) return;
+  showLoading();
+
+  const cats = currentTab === 'all'
+    ? 'parts,sets,stores,discounts,users,lugs,streams,videos'
+    : currentTab;
+
+  const url = `${API}/api/search?q=${encodeURIComponent(currentQuery)}&categories=${cats}&per_page=${PER_PAGE}&page=${currentPage}`;
+
+  try {
+    const res = await fetch(url, {signal: AbortSignal.timeout(8000)});
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    lastResults = data;
+    updateCounts(data.results);
+    renderCurrentTab();
+    setApiBanner('ok', `✓ API connected — real-time search · ${data.total} results`);
+  } catch(err) {
+    if(err.name === 'TimeoutError' || err.message.includes('fetch')) {
+      setApiBanner('err',
+        '⚠ Cannot reach API server. Start the backend: <code>cd studsup-backend && uvicorn main:app --reload</code> then refresh. ' +
+        'Showing static demo results below.');
+      showFallbackResults(currentQuery);
+    } else {
+      setApiBanner('err', '⚠ API error: ' + err.message);
+      showFallbackResults(currentQuery);
+    }
+  }
+}
+
+function setApiBanner(type, msg) {
+  const el = document.getElementById('apiBanner');
+  el.className = `api-banner ${type}`;
+  el.innerHTML = msg;
+  el.style.display = '';
+}
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function setTab(cat, btn) {
+  currentTab = cat;
+  currentPage = 1;
+  document.querySelectorAll('.ctab').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  if(currentQuery) fetchSearch();
+  else renderCurrentTab();
+}
+
+function updateCounts(results) {
+  let total = 0;
+  const cats = ['parts','sets','stores','discounts','users','lugs','streams','videos'];
+  cats.forEach(c => {
+    const n = results[c]?.total || 0;
+    const el = document.getElementById('cnt-'+c);
+    if(el) el.textContent = n > 999 ? Math.round(n/1000)+'k' : n;
+    total += n;
+  });
+  const all = document.getElementById('cnt-all');
+  if(all) all.textContent = total > 999 ? Math.round(total/1000)+'k' : total;
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function renderCurrentTab() {
+  if(!lastResults) return;
+
+  const area = document.getElementById('resultsArea');
+  const hdr  = document.getElementById('resultsHeader');
+  const data  = lastResults.results;
+  const q     = lastResults.query;
+
+  if(currentTab === 'all') {
+    // Show a section for each category that has results
+    let html = '';
+    const ORDER = ['parts','sets','stores','discounts','users','lugs','streams','videos'];
+    ORDER.forEach(cat => {
+      const r = data[cat];
+      if(!r || r.total === 0) return;
+      html += `<div style="margin-bottom:28px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <h3 style="font-size:15px;font-weight:700">${catLabel(cat)} <span style="color:var(--muted);font-weight:400;font-size:13px">(${r.total})</span></h3>
+          ${r.total > PER_PAGE ? `<button onclick="setTab('${cat}',document.querySelector('[data-cat=${cat}]'))" class="btn btn-outline btn-sm">View all ${r.total} →</button>` : ''}
+        </div>
+        <div class="${cat==='parts'?'results-grid':'results-list'}">
+          ${r.items.slice(0,cat==='parts'?8:5).map(item => renderCard(item, cat)).join('')}
+        </div>
+      </div>`;
+    });
+    if(!html) html = emptyState(q);
+    area.innerHTML = html;
+    hdr.style.display = 'none';
+    document.getElementById('pagination').innerHTML = '';
+    return;
+  }
+
+  // Single category view
+  const r = data[currentTab];
+  if(!r || r.total === 0) {
+    area.innerHTML = emptyState(q, currentTab);
+    hdr.style.display = 'none';
+    document.getElementById('pagination').innerHTML = '';
+    return;
+  }
+
+  hdr.style.display = '';
+  document.getElementById('resultsCount').innerHTML =
+    `<strong>${r.total.toLocaleString()}</strong> <span>${catLabel(currentTab)} results for "${q}"</span>`;
+
+  const cls = currentTab === 'parts' ? 'results-grid' : 'results-list';
+  area.innerHTML = `<div class="${cls}">${r.items.map(item => renderCard(item, currentTab)).join('')}</div>`;
+  renderPagination(r.total, r.page, r.pages);
+}
+
+function catLabel(cat) {
+  return {parts:'🧱 Parts',sets:'📦 Sets',stores:'🏪 Stores',discounts:'🏷️ Discounts',
+          users:'👤 Users',lugs:'🏛️ LUGs',streams:'🔴 Streams',videos:'🎥 Videos'}[cat] || cat;
+}
+
+function renderCard(item, cat) {
+  switch(cat) {
+    case 'parts':    return partCard(item);
+    case 'sets':     return setRow(item);
+    case 'stores':   return storeRow(item);
+    case 'discounts':return discountRow(item);
+    case 'users':    return userRow(item);
+    case 'lugs':     return lugRow(item);
+    case 'streams':  return streamRow(item);
+    case 'videos':   return videoRow(item);
+    default:         return '';
+  }
+}
+
+function partCard(p) {
+  const price = p.avail_avg_usd > 0 ? '$' + p.avail_avg_usd.toFixed(3) : '—';
+  const avail = p.avail_qty > 0 ? p.avail_lots + ' sellers · ' + p.avail_qty.toLocaleString() + ' in stock' : 'Out of stock';
+  return `<div class="rc-part" onclick="location.href='part-detail.html'">
+    <div class="rc-img-wrap">
+      <img class="rc-img" src="${p.img_url}" alt="Part ${p.bl_part_id}"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="rc-img-fb" style="background:${p.color_css||'#ccc'};display:none">
+        ${(p.bl_color_name||'').split(' ').map(w=>w[0]||'').slice(0,2).join('').toUpperCase()}
+      </div>
+    </div>
+    <div class="rc-body">
+      <div class="rc-color"><span class="swatch" style="background:${p.color_css||'#ccc'}"></span>${p.bl_color_name}</div>
+      <div class="rc-ids">BL: ${p.bl_part_id} · EID: ${p.element_id}</div>
+      <div class="rc-price">${price} <span style="font-size:11px;font-weight:400;color:var(--hint)">avg</span></div>
+      <div class="rc-stock">${avail}</div>
+      <div class="rc-btns">
+        <button class="rcb rcb-buy" onclick="event.stopPropagation();buyPart(${p.element_id})">Buy</button>
+        <button class="rcb rcb-more" onclick="event.stopPropagation();location.href='part-detail.html'">Detail</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function setRow(s) {
+  return `<div class="rc-row" onclick="location.href='instructions.html'">
+    <div class="rc-icon">📦</div>
+    <div class="rc-main">
+      <div class="rc-title">${s.name}</div>
+      <div class="rc-sub">#${s.set_number} · ${s.theme} · ${s.year} · ${s.part_count?.toLocaleString()} parts</div>
+      <div class="rc-meta">
+        ${s.instructions_available ? '<span class="rcm"><strong>📄 Instructions</strong></span>' : ''}
+        ${s.parts_list_available   ? '<span class="rcm"><strong>📊 Parts list</strong></span>' : ''}
+        ${s.retail_eur ? `<span class="rcm">RRP <strong>€${s.retail_eur}</strong></span>` : ''}
+      </div>
+    </div>
+    <div class="rc-right">
+      <button class="rc-action" onclick="event.stopPropagation();location.href='instructions.html'">View →</button>
+    </div>
+  </div>`;
+}
+
+function storeRow(s) {
+  return `<div class="rc-row">
+    <div class="rc-av" style="background:${s.avatar_color||'#888'}">${(s.owner||s.name||'?')[0].toUpperCase()}</div>
+    <div class="rc-main">
+      <div class="rc-title">${s.name}</div>
+      <div class="rc-sub">${s.country} · ★ ${s.rating} · ${s.total_sales?.toLocaleString()} sales</div>
+      <div class="rc-meta">
+        ${s.ships_worldwide ? '<span class="rcm">🌍 Ships worldwide</span>' : ''}
+        ${s.min_order_eur > 0 ? `<span class="rcm">Min order €${s.min_order_eur}</span>` : ''}
+        ${s.active_discounts > 0 ? `<span class="rcm" style="color:#22c55e"><strong>🏷️ ${s.active_discounts} active discount${s.active_discounts>1?'s':''}</strong></span>` : ''}
+      </div>
+    </div>
+    <div class="rc-right">
+      <div class="rc-badge rb-verified">Verified</div>
+    </div>
+  </div>`;
+}
+
+function discountRow(d) {
+  return `<div class="rc-row">
+    <div class="rc-icon">🏷️</div>
+    <div class="rc-main">
+      <div class="rc-title">${d.title}</div>
+      <div class="rc-sub">${d.store_name} · ${d.country||''}</div>
+      <div class="rc-meta">
+        ${d.min_order_eur > 0 ? `<span class="rcm">Min €${d.min_order_eur}</span>` : '<span class="rcm">No minimum</span>'}
+        ${d.valid_until ? `<span class="rcm">Until ${d.valid_until}</span>` : ''}
+      </div>
+    </div>
+    <div class="rc-right">
+      <div class="rc-badge rb-discount" style="font-size:14px;padding:5px 12px">-${d.discount_pct}%</div>
+      <div style="font-size:12px;font-weight:800;color:var(--dark);margin-top:6px;text-align:center;letter-spacing:1px">${d.code}</div>
+    </div>
+  </div>`;
+}
+
+function userRow(u) {
+  return `<div class="rc-row" onclick="location.href='profile-blog.html'">
+    <div class="rc-av" style="background:${u.avatar_color||'#888'}">${(u.display_name||u.username||'?').slice(0,2).toUpperCase()}</div>
+    <div class="rc-main">
+      <div class="rc-title">${u.display_name || u.username}</div>
+      <div class="rc-sub">@${u.username} · ${u.country||''} ${u.city?'· '+u.city:''}</div>
+      <div class="rc-meta">
+        ${u.seller_sales > 0 ? `<span class="rcm">★ ${u.seller_rating} · <strong>${u.seller_sales.toLocaleString()}</strong> sales</span>` : ''}
+      </div>
+    </div>
+    <button class="rc-action" onclick="event.stopPropagation();location.href='profile-blog.html'">View profile</button>
+  </div>`;
+}
+
+function lugRow(l) {
+  return `<div class="rc-row" onclick="location.href='lug.html'">
+    <div class="rc-icon">${l.logo_emoji||'🧱'}</div>
+    <div class="rc-main">
+      <div class="rc-title">${l.name} ${l.is_verified?'<span style="color:#22c55e;font-size:11px">✓ Verified</span>':''}</div>
+      <div class="rc-sub">${l.country} · ${l.city} ${l.founded_year?'· Founded '+l.founded_year:''}</div>
+      <div class="rc-meta">
+        <span class="rcm"><strong>${l.member_count}</strong> members</span>
+        ${l.is_lego_recognized ? '<span class="rcm" style="color:#22c55e"><strong>🏆 LEGO Recognized</strong></span>' : ''}
+      </div>
+    </div>
+    <button class="rc-action" onclick="event.stopPropagation();location.href='lug.html'">View LUG</button>
+  </div>`;
+}
+
+function streamRow(s) {
+  const isLive = s.status === 'live';
+  return `<div class="rc-row" onclick="location.href='stream.html'">
+    <div class="rc-icon">${s.thumbnail_emoji||'🎥'}</div>
+    <div class="rc-main">
+      <div class="rc-title">${s.title}</div>
+      <div class="rc-sub">${s.streamer||''} · ${s.theme_tag||''}</div>
+      <div class="rc-meta">
+        ${isLive ? `<span class="rcm" style="color:#ef4444"><strong>🔴 LIVE</strong> · ${s.viewer_count?.toLocaleString()} watching</span>` :
+                   `<span class="rcm">📼 ${s.vod_views?.toLocaleString()} views</span>`}
+      </div>
+    </div>
+    <div class="rc-badge ${isLive?'rb-live':'rb-vod'}">${isLive?'LIVE':'VOD'}</div>
+  </div>`;
+}
+
+function videoRow(s) { return streamRow({...s, status:'vod'}); }
+
+// ── BUY ───────────────────────────────────────────────────────────────────────
+function buyPart(eid) {
+  let u=null; try{u=JSON.parse(sessionStorage.getItem('su_user'));}catch(e){}
+  if(!u) { location.href='login.html'; return; }
+  toast('Added to cart ✓');
+}
+
+// ── PAGINATION ────────────────────────────────────────────────────────────────
+function renderPagination(total, page, pages) {
+  const el = document.getElementById('pagination');
+  if(pages <= 1) { el.innerHTML=''; return; }
+  let html = `<div class="pag" onclick="goPage(${Math.max(1,page-1)})">‹</div>`;
+  const show = new Set([1,2,page-1,page,page+1,pages-1,pages].filter(p=>p>=1&&p<=pages));
+  let prev = 0;
+  [...show].sort((a,b)=>a-b).forEach(p => {
+    if(p-prev>1) html += `<div class="pag dots">…</div>`;
+    html += `<div class="pag ${p===page?'on':''}" onclick="goPage(${p})">${p}</div>`;
+    prev = p;
+  });
+  html += `<div class="pag" onclick="goPage(${Math.min(pages,page+1)})">›</div>`;
+  el.innerHTML = html;
+}
+function goPage(n) {
+  currentPage = n;
+  fetchSearch();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── LOADING ───────────────────────────────────────────────────────────────────
+function showLoading() {
+  document.getElementById('resultsHeader').style.display = 'none';
+  document.getElementById('pagination').innerHTML = '';
+  document.getElementById('resultsArea').innerHTML =
+    '<div class="results-grid">' +
+    Array(8).fill('<div class="sk-card skeleton"></div>').join('') +
+    '</div>';
+}
+
+function emptyState(q, cat='') {
+  return `<div class="state-box">
+    <div class="ico">🔍</div>
+    <h3>No ${cat ? catLabel(cat)+' ' : ''}results for "${q}"</h3>
+    <p>Try a different keyword, part number, or check the spelling.</p>
+  </div>`;
+}
+
+// ── FALLBACK (API not running) ────────────────────────────────────────────────
+function showFallbackResults(q) {
+  const q_l = q.toLowerCase();
+  const results = {
+    parts: {total:3, page:1, items:[
+      {element_id:6195496,bl_part_id:'15082',bl_color_name:'Dark Bluish Gray',color_css:'#595d60',avail_lots:407,avail_qty:20981,avail_avg_usd:0.49,img_url:`https://img.bricklink.com/ItemImage/PN/69/15082.png`},
+      {element_id:6213729,bl_part_id:'11089',bl_color_name:'Black',color_css:'#1a1a1a',avail_lots:853,avail_qty:17711,avail_avg_usd:0.10,img_url:`https://img.bricklink.com/ItemImage/PN/11/11089.png`},
+      {element_id:6420198,bl_part_id:'3171',bl_color_name:'Black',color_css:'#1a1a1a',avail_lots:1602,avail_qty:97817,avail_avg_usd:0.17,img_url:`https://img.bricklink.com/ItemImage/PN/11/3171.png`},
+    ]},
+    sets: {total:2, page:1, items:[
+      {id:1,set_number:'10305',name:"Lion Knights' Castle",theme:'Castle',year:2022,part_count:4514,retail_eur:259.99,instructions_available:1,parts_list_available:1},
+      {id:5,set_number:'71043',name:'Hogwarts Castle',theme:'Harry Potter',year:2018,part_count:6020,retail_eur:469.99,instructions_available:1,parts_list_available:1},
+    ]},
+    stores: {total:2, page:1, items:[
+      {id:1,name:'BrickMaster_Shop',description:'Official LEGO parts store. Latvia.',country:'Latvia',rating:4.9,total_sales:8420,avatar_color:'#1a1a2e',ships_worldwide:1,active_discounts:2},
+      {id:2,name:'PartsBarn_EU',description:'Bulk parts from Germany.',country:'Germany',rating:4.8,total_sales:3110,avatar_color:'#3b82f6',ships_worldwide:1,active_discounts:1},
+    ]},
+    discounts: {total:2, page:1, items:[
+      {id:1,title:'Summer sale — 10% off',store_name:'BrickMaster_Shop',country:'Latvia',discount_pct:10,min_order_eur:20,code:'SUMMER10',valid_until:'2026-08-31'},
+      {id:2,title:'Bulk buyer discount',store_name:'PartsBarn_EU',country:'Germany',discount_pct:15,min_order_eur:50,code:'BULK15',valid_until:'2026-12-31'},
+    ]},
+    lugs: {total:1, page:1, items:[
+      {id:1,name:'BrickBaltic LUG',slug:'brickbaltic',country:'Latvia',city:'Riga',member_count:284,is_verified:1,is_lego_recognized:1,logo_emoji:'🇱🇻',founded_year:2012},
+    ]},
+    streams: {total:2, page:1, items:[
+      {id:1,title:'Building Hogwarts Castle live — day 3',description:'',theme_tag:'Castle',status:'live',viewer_count:1240,vod_views:0,thumbnail_emoji:'🏗️',streamer:'BrickMasterPaul'},
+      {id:4,title:'Custom minifig painting tutorial',description:'',theme_tag:'Custom',status:'vod',viewer_count:0,vod_views:12400,thumbnail_emoji:'🎨',streamer:'BrickMasterPaul'},
+    ]},
+    videos: {total:1, page:1, items:[
+      {id:5,title:'Building a full LEGO city — 12 hour marathon',theme_tag:'City',status:'vod',vod_views:8100,thumbnail_emoji:'🏙️',streamer:'georgs_bricks'},
+    ]},
+  };
+  lastResults = {query:q, total:Object.values(results).reduce((s,v)=>s+(v.total||0),0), results};
+  updateCounts(results);
+  renderCurrentTab();
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+if(currentQuery) {
+  setTimeout(fetchSearch, 100);
+}
+
+// Check API health on load
+fetch(`${API}/api/health`, {signal:AbortSignal.timeout(3000)})
+  .then(r => r.json())
+  .then(d => setApiBanner('ok', `✓ API connected — ${d.db.parts?.toLocaleString()} parts · ${d.db.sets} sets · ${d.db.stores} stores · ${d.db.lugs} LUGs · ${d.db.streams} streams`))
+  .catch(() => setApiBanner('warn',
+    '⚠ API server not running. To enable live search: <code>cd studsup-backend && uvicorn main:app --reload --port 8000</code> · <a href="#" onclick="location.reload()" style="color:inherit">Retry</a>'));
+</script>
+</body>
+</html>

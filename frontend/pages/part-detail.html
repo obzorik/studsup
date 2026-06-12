@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BrickGrid — Plate 2×4 · #3020</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link rel="stylesheet" href="../css/shared.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f4f3ee; color: #1a1a1a; }
+  a { text-decoration: none; }
+
+  /* NAV */
+  .nav { background: #1a1a2e; padding: 0 24px; display: flex; align-items: center; gap: 6px; height: 52px; }
+  .logo { color: #E6B800; font-size: 17px; font-weight: 600; margin-right: 16px; letter-spacing: -0.3px; }
+  .logo em { color: #fff; font-style: normal; }
+  .nav-links { display: flex; gap: 2px; flex: 1; }
+  .nav-link { color: rgba(255,255,255,0.55); font-size: 13px; padding: 6px 10px; border-radius: 6px; cursor: pointer; border: none; background: none; }
+  .nav-link:hover { color: #fff; background: rgba(255,255,255,0.08); }
+  .nav-right { display: flex; align-items: center; gap: 8px; }
+  .nav-btn { background: #E6B800; color: #1a1a2e; border: none; border-radius: 20px; font-size: 12px; font-weight: 600; padding: 4px 14px; cursor: pointer; }
+  .avatar { width: 30px; height: 30px; border-radius: 50%; background: #CC0000; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 12px; font-weight: 600; cursor: pointer; }
+
+  /* BREADCRUMB */
+  .breadcrumb { padding: 10px 24px; display: flex; align-items: center; gap: 6px; font-size: 12px; color: #888; background: #fff; border-bottom: 1px solid #eee; }
+  .breadcrumb a { color: #1a73e8; }
+  .breadcrumb span { color: #999; }
+
+  /* PAGE LAYOUT */
+  .page { max-width: 1100px; margin: 20px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 300px; gap: 18px; }
+  .main { display: flex; flex-direction: column; gap: 14px; }
+  .side { display: flex; flex-direction: column; gap: 14px; }
+
+  .card { background: #fff; border: 1px solid #e8e8e4; border-radius: 12px; padding: 18px; }
+
+  /* PART HEADER */
+  .part-header { display: flex; gap: 18px; align-items: flex-start; }
+  .part-visual { width: 110px; height: 110px; background: #f4f3ee; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 58px; flex-shrink: 0; border: 1px solid #e8e8e4; }
+  .part-title { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .part-sub { font-size: 13px; color: #666; margin-bottom: 10px; }
+  .part-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+  .ptag { background: #f4f3ee; border: 1px solid #ddd; color: #555; font-size: 11px; padding: 3px 9px; border-radius: 20px; }
+  .ptag.y { background: #FFF8DC; border-color: #E6B800; color: #8a6a00; font-weight: 600; }
+  .part-stats { display: flex; gap: 20px; }
+  .pstat { font-size: 12px; color: #666; }
+  .pstat strong { color: #1a1a1a; font-size: 15px; display: block; font-weight: 700; }
+
+  /* PRICE CHART */
+  .range-tabs { display: flex; gap: 4px; margin-bottom: 12px; }
+  .rtab { background: none; border: 1px solid #ddd; border-radius: 6px; font-size: 12px; padding: 4px 12px; color: #666; cursor: pointer; transition: all 0.12s; }
+  .rtab.active { background: #1a1a2e; color: #E6B800; border-color: #1a1a2e; font-weight: 600; }
+  .chart-wrap { position: relative; width: 100%; height: 220px; }
+  .price-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 14px; }
+  .psc { background: #f8f8f6; border-radius: 8px; padding: 10px; text-align: center; }
+  .psc .v { font-size: 16px; font-weight: 700; }
+  .psc .l { font-size: 11px; color: #888; margin-top: 2px; }
+  .alert-row { display: flex; align-items: center; gap: 10px; margin-top: 14px; padding-top: 14px; border-top: 1px solid #eee; }
+  .alert-row label { font-size: 13px; color: #555; flex: 1; }
+  .alert-inp { width: 80px; border: 1px solid #ddd; border-radius: 6px; padding: 5px 8px; font-size: 13px; outline: none; }
+  .alert-inp:focus { border-color: #E6B800; }
+  .alert-btn { background: #FFF8DC; border: 1px solid #E6B800; color: #8a6a00; border-radius: 8px; font-size: 13px; padding: 6px 14px; cursor: pointer; font-weight: 600; }
+  .alert-btn:hover { background: #fff0b0; }
+
+  /* TABS */
+  .tab-row { display: flex; border-bottom: 1px solid #eee; margin-bottom: 14px; }
+  .ctab { font-size: 13px; color: #888; padding: 8px 14px; border-bottom: 2px solid transparent; cursor: pointer; border: none; background: none; white-space: nowrap; transition: all 0.12s; }
+  .ctab.active { color: #1a1a1a; border-bottom: 2px solid #E6B800; font-weight: 600; }
+
+  /* SELLERS */
+  .seller-list { display: flex; flex-direction: column; gap: 8px; }
+  .seller-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #f8f8f6; border-radius: 8px; cursor: pointer; border: 1px solid transparent; transition: all 0.12s; }
+  .seller-row:hover { background: #fff; border-color: #ddd; }
+  .sa { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+  .sname { font-size: 13px; font-weight: 600; }
+  .smeta { font-size: 11px; color: #888; }
+  .sright { margin-left: auto; text-align: right; }
+  .sprice { font-size: 16px; font-weight: 700; }
+  .sqty { font-size: 11px; color: #888; }
+  .cbadge { font-size: 10px; padding: 2px 7px; border-radius: 4px; font-weight: 600; flex-shrink: 0; }
+  .cnew { background: #E1F5EE; color: #085041; }
+  .cused { background: #FAEEDA; color: #633806; }
+
+  /* BUY CARD */
+  .buy-price { font-size: 30px; font-weight: 800; margin-bottom: 3px; }
+  .buy-sub { font-size: 12px; color: #888; margin-bottom: 14px; }
+  .qty-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .qty-row label { font-size: 13px; color: #666; }
+  .qbtn { width: 28px; height: 28px; border: 1px solid #ccc; background: #f4f3ee; border-radius: 6px; font-size: 17px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.1s; }
+  .qbtn:hover { background: #fff; border-color: #aaa; }
+  .qval { font-size: 15px; font-weight: 700; min-width: 26px; text-align: center; }
+  .btn-buy { width: 100%; background: #E6B800; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; color: #1a1a2e; padding: 11px; cursor: pointer; margin-bottom: 8px; transition: all 0.12s; }
+  .btn-buy:hover { background: #d4a800; }
+  .btn-cart { width: 100%; background: #f4f3ee; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; color: #1a1a1a; padding: 9px; cursor: pointer; margin-bottom: 8px; transition: all 0.12s; }
+  .btn-cart:hover { background: #eee; }
+  .btn-row { display: flex; gap: 6px; }
+  .btn-icon { flex: 1; background: #f4f3ee; border: 1px solid #ddd; border-radius: 8px; font-size: 12px; color: #555; padding: 7px; cursor: pointer; text-align: center; transition: all 0.12s; }
+  .btn-icon:hover { background: #fff; color: #1a1a1a; }
+
+  /* DETAILS GRID */
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; }
+  .info-row { padding: 8px 0; border-bottom: 1px solid #f0f0ec; }
+  .info-row:nth-last-child(-n+2) { border-bottom: none; }
+  .info-label { font-size: 11px; color: #888; margin-bottom: 2px; }
+  .info-val { font-size: 13px; font-weight: 600; }
+  .colors-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .cdot { width: 22px; height: 22px; border-radius: 50%; border: 1px solid #ddd; cursor: pointer; transition: transform 0.1s; }
+  .cdot:hover { transform: scale(1.15); }
+  .cdot.active { border: 2.5px solid #1a1a1a; }
+
+  /* RELATED */
+  .related-row { display: flex; gap: 8px; }
+  .rc { flex: 1; background: #f8f8f6; border-radius: 8px; padding: 8px; cursor: pointer; border: 1px solid transparent; transition: all 0.12s; }
+  .rc:hover { background: #fff; border-color: #ddd; }
+  .ri { height: 50px; display: flex; align-items: center; justify-content: center; font-size: 26px; margin-bottom: 5px; }
+  .rn { font-size: 12px; font-weight: 600; }
+  .rp { font-size: 11px; color: #888; }
+
+  /* REVIEWS */
+  .review-item { padding: 10px 0; border-bottom: 1px solid #f0f0ec; }
+  .review-item:last-child { border-bottom: none; }
+  .review-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+  .rva { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+  .rvname { font-size: 13px; font-weight: 600; }
+  .rvdate { font-size: 11px; color: #999; margin-left: auto; }
+  .rvstars { color: #E6B800; font-size: 13px; }
+  .rvtext { font-size: 13px; color: #555; line-height: 1.5; }
+
+  .section-label { font-size: 14px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; color: #1a1a1a; }
+  .section-label small { font-size: 12px; color: #888; font-weight: 400; }
+
+  @media (max-width: 700px) {
+    .page { grid-template-columns: 1fr; }
+    .side { order: -1; }
+  }
+
+  /* PDF DOWNLOAD */
+  .dl-card { background: #fff; border: 1px solid #e8e8e4; border-radius: 12px; padding: 16px; }
+  .dl-title { font-size: 14px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+  .dl-row { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border: 1px solid #e8e8e4; border-radius: 8px; cursor: pointer; transition: all .13s; margin-bottom: 7px; }
+  .dl-row:hover { border-color: #E6B800; background: #FFFDF0; }
+  .dl-ico { width: 34px; height: 34px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+  .dl-name { font-size: 13px; font-weight: 600; flex: 1; }
+  .dl-meta { font-size: 11px; color: #888; }
+  .dl-avail { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 20px; flex-shrink: 0; }
+  .dl-ok { background: #E1F5EE; color: #085041; }
+  .dl-no { background: #f4f3ee; color: #888; cursor: not-allowed; }
+  .dl-btn { background: #1a1a2e; border: none; border-radius: 7px; color: #E6B800; font-size: 11px; font-weight: 700; padding: 5px 11px; cursor: pointer; flex-shrink: 0; transition: all .12s; }
+  .dl-btn:hover { background: #2d2d4e; }
+
+  /* MODAL */
+  .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,.5); display: none; align-items: center; justify-content: center; z-index: 200; padding: 20px; }
+  .modal-bg.open { display: flex; }
+  .modal { background: #fff; border-radius: 14px; max-width: 480px; width: 100%; padding: 22px; position: relative; }
+  .modal h3 { font-size: 17px; font-weight: 700; margin-bottom: 3px; }
+  .modal-sub { font-size: 12px; color: #888; margin-bottom: 16px; }
+  .modal-close { position: absolute; top: 14px; right: 14px; background: none; border: none; font-size: 18px; cursor: pointer; color: #888; }
+  .modal-close:hover { color: #1a1a1a; }
+  .modal-opt { display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid #e8e8e4; border-radius: 9px; cursor: pointer; margin-bottom: 7px; transition: all .13s; }
+  .modal-opt:hover:not(.disabled) { border-color: #E6B800; background: #FFFDF0; }
+  .modal-opt.disabled { opacity: .5; cursor: not-allowed; }
+  .mopt-ico { width: 38px; height: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 19px; flex-shrink: 0; }
+  .mopt-name { font-size: 13px; font-weight: 700; }
+  .mopt-desc { font-size: 11px; color: #888; }
+  .mopt-badge { margin-left: auto; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; flex-shrink: 0; }
+  .prog-wrap { display: none; padding: 16px 0 4px; text-align: center; }
+  .prog-name { font-size: 13px; font-weight: 700; margin-bottom: 10px; }
+  .prog-bar { height: 8px; background: #f0f0ec; border-radius: 4px; overflow: hidden; max-width: 320px; margin: 0 auto 8px; }
+  .prog-fill { height: 8px; background: #E6B800; border-radius: 4px; width: 0; transition: width .08s linear; }
+  .prog-pct { font-size: 12px; color: #888; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="../../index.html" class="nav-logo">Studs<span>Up</span></a>
+  <div class="nav-links">
+    <a href="home.html"          class="nav-link">Marketplace</a>
+    <a href="lugbulk.html"       class="nav-link">📦 Parts catalogue</a>
+    <a href="search.html"        class="nav-link">Search</a>
+    <a href="collection.html"    class="nav-link">My Collection</a>
+    <a href="lug.html"           class="nav-link">LUGs</a>
+    <a href="stream.html"        class="nav-link">Streams</a>
+    <a href="profile-blog.html"  class="nav-link">Profile</a>
+    <a href="instructions.html"  class="nav-link">Instructions</a>
+  </div>
+  <div class="nav-right" id="navRight">
+    <div id="navSellArea"></div>
+    <div id="navUserArea"></div>
+  </div>
+</nav>
+<script>
+(function(){
+  var u=null;
+  try{u=JSON.parse(sessionStorage.getItem('su_user'));}catch(e){}
+  // Sell button
+  var sa=document.getElementById('navSellArea');
+  if(sa){
+    if(u&&u.name){
+      sa.innerHTML='<button class="nav-sell" onclick="window.location.href='profile-blog.html'">+ Sell parts</button>';
+    } else {
+      sa.innerHTML='<button class="nav-sell" onclick="window.location.href='login.html'">+ Sell parts</button>';
+    }
+  }
+  // User area
+  var el=document.getElementById('navUserArea');
+  if(!el)return;
+  if(u&&u.name){
+    el.innerHTML='<a href="profile-blog.html" style="display:flex;align-items:center;gap:7px;text-decoration:none">'
+      +'<div class="nav-avatar" style="font-size:12px;flex-shrink:0">'+u.avatar+'</div>'
+      +'<span style="font-size:12px;color:rgba(255,255,255,.75);white-space:nowrap">'+u.name+'</span></a>';
+  } else {
+    el.innerHTML='<a href="login.html" class="nav-sell" style="background:var(--yellow);color:var(--dark);text-decoration:none;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap">Sign in</a>';
+  }
+})();
+</script>
+
+<div class="breadcrumb">
+  <a href="#">Marketplace</a> › <a href="#">Parts</a> › <a href="#">Plates</a> › <span>Plate 2×4</span>
+</div>
+
+<div class="page">
+<div class="main">
+
+  <!-- Part header -->
+  <div class="card">
+    <div class="part-header">
+      <div class="part-visual">🟥</div>
+      <div style="flex:1">
+        <div class="part-title">Plate 2×4</div>
+        <div class="part-sub">Part #3020 · Element ID 362321 · Design ID 3020</div>
+        <div class="part-tags">
+          <span class="ptag y">Plates</span>
+          <span class="ptag">Basic</span>
+          <span class="ptag">147 colors</span>
+          <span class="ptag">Since 1958</span>
+          <span class="ptag">Most used part</span>
+        </div>
+        <div class="part-stats">
+          <div class="pstat"><strong>48</strong>Sellers</div>
+          <div class="pstat"><strong>12,400</strong>In stock</div>
+          <div class="pstat"><strong>4.9★</strong>Avg rating</div>
+          <div class="pstat"><strong>€0.04</strong>Avg price</div>
+          <div class="pstat"><strong>2,840</strong>Sets</div>
+        </div>
+        <div style="display:flex;gap:7px;margin-top:12px;flex-wrap:wrap">
+          <button onclick="openDlModal()" style="background:#1a1a2e;border:none;border-radius:8px;color:#E6B800;font-size:12px;font-weight:700;padding:7px 14px;cursor:pointer;display:flex;align-items:center;gap:5px">📥 Download part data</button>
+          <button style="background:#f4f3ee;border:1px solid #ddd;border-radius:8px;font-size:12px;color:#555;padding:7px 12px;cursor:pointer">📊 Export parts list</button>
+          <button style="background:#f4f3ee;border:1px solid #ddd;border-radius:8px;font-size:12px;color:#555;padding:7px 12px;cursor:pointer" onclick="alert('Link copied!')">🔗 Share</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Price history chart -->
+  <div class="card">
+    <div class="section-label">Price history <small id="period-lbl">Last 12 months · Red</small></div>
+    <div class="range-tabs">
+      <button class="rtab active" data-r="12">12m</button>
+      <button class="rtab" data-r="6">6m</button>
+      <button class="rtab" data-r="3">3m</button>
+      <button class="rtab" data-r="1">1m</button>
+    </div>
+    <div class="chart-wrap">
+      <canvas id="priceChart" role="img" aria-label="Price history for Plate 2x4 Red over selected period">Price history chart.</canvas>
+    </div>
+    <div class="price-stats">
+      <div class="psc"><div class="v" id="sMin">€0.03</div><div class="l">Period low</div></div>
+      <div class="psc"><div class="v" id="sMax">€0.06</div><div class="l">Period high</div></div>
+      <div class="psc"><div class="v" id="sAvg">€0.04</div><div class="l">Average</div></div>
+      <div class="psc"><div class="v" id="sTrend" style="color:#1a7f4b">−12%</div><div class="l">vs prior period</div></div>
+    </div>
+    <div class="alert-row">
+      <span>🔔</span>
+      <label>Alert me when price drops below</label>
+      <input class="alert-inp" id="alertVal" type="number" value="0.03" step="0.01" min="0.01">
+      <button class="alert-btn" onclick="alert('Price alert set for €' + document.getElementById('alertVal').value + ' — you will be notified by email!')">Set alert</button>
+    </div>
+  </div>
+
+  <!-- Tabs: Sellers / Reviews / In Sets -->
+  <div class="card">
+    <div class="tab-row">
+      <button class="ctab active" onclick="sw(this,'ts')">Sellers (48)</button>
+      <button class="ctab" onclick="sw(this,'tr')">Reviews (214)</button>
+      <button class="ctab" onclick="sw(this,'ta')">In sets (2,840)</button>
+    </div>
+
+    <div id="ts">
+      <div style="font-size:12px;color:#888;margin-bottom:10px">Click a seller to buy directly from them</div>
+      <div class="seller-list">
+        <div class="seller-row" onclick="selectSeller(this,'BrickMaster_Shop','€0.03','Latvia')">
+          <div class="sa" style="background:#E1F5EE;color:#085041">BM</div>
+          <div>
+            <div class="sname">BrickMaster_Shop</div>
+            <div class="smeta">★ 4.9 · 8,420 sales · Latvia 🇱🇻</div>
+          </div>
+          <span class="cbadge cnew">New</span>
+          <div class="sright"><div class="sprice">€0.03</div><div class="sqty">×500 in stock</div></div>
+          <button style="background:#FFD700;border:none;border-radius:6px;font-size:12px;font-weight:700;color:#1a1a2e;padding:5px 12px;cursor:pointer;flex-shrink:0" onclick="event.stopPropagation();buyFromSeller('BrickMaster_Shop','€0.03')">Buy</button>
+        </div>
+        <div class="seller-row" onclick="selectSeller(this,'PartsBarn_EU','€0.04','Germany')">
+          <div class="sa" style="background:#E6F1FB;color:#0C447C">PB</div>
+          <div>
+            <div class="sname">PartsBarn_EU</div>
+            <div class="smeta">★ 4.8 · 3,110 sales · Germany 🇩🇪</div>
+          </div>
+          <span class="cbadge cnew">New</span>
+          <div class="sright"><div class="sprice">€0.04</div><div class="sqty">×1,200 in stock</div></div>
+          <button style="background:#FFD700;border:none;border-radius:6px;font-size:12px;font-weight:700;color:#1a1a2e;padding:5px 12px;cursor:pointer;flex-shrink:0" onclick="event.stopPropagation();buyFromSeller('PartsBarn_EU','€0.04')">Buy</button>
+        </div>
+        <div class="seller-row" onclick="selectSeller(this,'LegoKing_Vintage','€0.02','Netherlands')">
+          <div class="sa" style="background:#FAEEDA;color:#633806">LK</div>
+          <div>
+            <div class="sname">LegoKing_Vintage</div>
+            <div class="smeta">★ 4.7 · 1,890 sales · Netherlands 🇳🇱</div>
+          </div>
+          <span class="cbadge cused">Used</span>
+          <div class="sright"><div class="sprice">€0.02</div><div class="sqty">×320 in stock</div></div>
+          <button style="background:#FFD700;border:none;border-radius:6px;font-size:12px;font-weight:700;color:#1a1a2e;padding:5px 12px;cursor:pointer;flex-shrink:0" onclick="event.stopPropagation();buyFromSeller('LegoKing_Vintage','€0.02')">Buy</button>
+        </div>
+        <div class="seller-row" onclick="selectSeller(this,'StudsTrader','€0.05','Poland')">
+          <div class="sa" style="background:#EEEDFE;color:#3C3489">ST</div>
+          <div>
+            <div class="sname">StudsTrader</div>
+            <div class="smeta">★ 5.0 · 540 sales · Poland 🇵🇱</div>
+          </div>
+          <span class="cbadge cnew">New</span>
+          <div class="sright"><div class="sprice">€0.05</div><div class="sqty">×80 in stock</div></div>
+          <button style="background:#FFD700;border:none;border-radius:6px;font-size:12px;font-weight:700;color:#1a1a2e;padding:5px 12px;cursor:pointer;flex-shrink:0" onclick="event.stopPropagation();buyFromSeller('StudsTrader','€0.05')">Buy</button>
+        </div>
+        <div class="seller-row" onclick="selectSeller(this,'BrickRealm_Store','€0.04','Czech Republic')">
+          <div class="sa" style="background:#FCEBEB;color:#A32D2D">BR</div>
+          <div>
+            <div class="sname">BrickRealm_Store</div>
+            <div class="smeta">★ 4.6 · 2,200 sales · Czech Republic 🇨🇿</div>
+          </div>
+          <span class="cbadge cnew">New</span>
+          <div class="sright"><div class="sprice">€0.04</div><div class="sqty">×740 in stock</div></div>
+          <button style="background:#FFD700;border:none;border-radius:6px;font-size:12px;font-weight:700;color:#1a1a2e;padding:5px 12px;cursor:pointer;flex-shrink:0" onclick="event.stopPropagation();buyFromSeller('BrickRealm_Store','€0.04')">Buy</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="tr" style="display:none">
+      <div class="review-item">
+        <div class="review-header">
+          <div class="rva" style="background:#E1F5EE;color:#085041">MK</div>
+          <span class="rvname">Maris K.</span>
+          <span class="rvstars">★★★★★</span>
+          <span class="rvdate">2 days ago</span>
+        </div>
+        <div class="rvtext">Fast shipping from BrickMaster, all parts were in perfect condition. Exactly as described. Will definitely order again.</div>
+      </div>
+      <div class="review-item">
+        <div class="review-header">
+          <div class="rva" style="background:#E6F1FB;color:#0C447C">JH</div>
+          <span class="rvname">Jan H.</span>
+          <span class="rvstars">★★★★☆</span>
+          <span class="rvdate">1 week ago</span>
+        </div>
+        <div class="rvtext">Good price, minor scratches on 3 of 50 pieces but seller had them correctly marked as Used. Good packaging, nothing lost in transit.</div>
+      </div>
+      <div class="review-item">
+        <div class="review-header">
+          <div class="rva" style="background:#FAEEDA;color:#633806">TP</div>
+          <span class="rvname">Tomas P.</span>
+          <span class="rvstars">★★★★★</span>
+          <span class="rvdate">2 weeks ago</span>
+        </div>
+        <div class="rvtext">Bought 200 pieces for a big MOC, all new, perfect clutch power. Best price I found anywhere across 5 platforms. Highly recommend StudsTrader.</div>
+      </div>
+    </div>
+
+    <div id="ta" style="display:none">
+      <p style="font-size:13px;color:#555;padding:6px 0 12px">This part appears in <strong>2,840 LEGO sets</strong> across all themes.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px">
+        <div style="background:#f8f8f6;border-radius:8px;padding:10px;font-size:12px"><strong>10305</strong> — Lion Knights' Castle<br><span style="color:#888">Castle · 2022 · 4,514 parts</span></div>
+        <div style="background:#f8f8f6;border-radius:8px;padding:10px;font-size:12px"><strong>10294</strong> — Titanic<br><span style="color:#888">Creator · 2021 · 9,090 parts</span></div>
+        <div style="background:#f8f8f6;border-radius:8px;padding:10px;font-size:12px"><strong>75192</strong> — Millennium Falcon<br><span style="color:#888">Star Wars · 2017 · 7,541 parts</span></div>
+        <div style="background:#f8f8f6;border-radius:8px;padding:10px;font-size:12px"><strong>10300</strong> — Back to the Future<br><span style="color:#888">Icons · 2022 · 1,872 parts</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<div class="side">
+
+  <!-- Buy panel -->
+  <div class="card">
+    <div class="buy-price">€0.03</div>
+    <div class="buy-sub">BrickMaster_Shop · New · 500 in stock</div>
+    <div class="qty-row">
+      <label>Qty</label>
+      <button class="qbtn" id="qminus">−</button>
+      <span class="qval" id="qtyVal">10</span>
+      <button class="qbtn" id="qplus">+</button>
+      <span style="font-size:13px;color:#888;margin-left:4px">= <strong id="totalPrice" style="color:#1a1a1a">€0.30</strong></span>
+    </div>
+    <div id="buyActions"></div>
+    <div class="btn-row">
+      <button class="btn-icon" onclick="handleWishlist(this)">♡ Wishlist</button>
+      <button class="btn-icon" onclick="handleTrade()">⇄ Trade</button>
+      <button class="btn-icon" onclick="handleCollect()">📦 Collect</button>
+    </div>
+    <!-- Seller contact (signed in only) -->
+    <div id="sellerContact" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid #f0f0ec">
+      <div style="font-size:11px;color:#888;margin-bottom:6px">Buying from BrickMaster_Shop</div>
+      <button style="width:100%;background:#f5f4ef;border:1px solid #ddd;border-radius:8px;font-size:13px;padding:8px;cursor:pointer" onclick="alert('Message sent to BrickMaster_Shop ✓')">✉ Message seller</button>
+    </div>
+  </div>
+
+  <!-- Part info -->
+  <div class="card">
+    <div class="section-label">Part details</div>
+    <div class="info-grid">
+      <div class="info-row"><div class="info-label">Part ID</div><div class="info-val">#3020</div></div>
+      <div class="info-row"><div class="info-label">Category</div><div class="info-val">Plates</div></div>
+      <div class="info-row"><div class="info-label">Dimensions</div><div class="info-val">2×4 studs</div></div>
+      <div class="info-row"><div class="info-label">Weight</div><div class="info-val">2.4 g</div></div>
+      <div class="info-row"><div class="info-label">Material</div><div class="info-val">ABS plastic</div></div>
+      <div class="info-row"><div class="info-label">First year</div><div class="info-val">1958</div></div>
+    </div>
+    <div style="margin-top:12px;padding-top:12px;border-top:1px solid #f0f0ec">
+      <div class="info-label" style="margin-bottom:7px">Available in 147 colors</div>
+      <div class="colors-row">
+        <div class="cdot active" style="background:#CC0000" title="Red"></div>
+        <div class="cdot" style="background:#0055BF" title="Blue"></div>
+        <div class="cdot" style="background:#FFD700" title="Yellow"></div>
+        <div class="cdot" style="background:#237841" title="Green"></div>
+        <div class="cdot" style="background:#fff;border:1px solid #ccc" title="White"></div>
+        <div class="cdot" style="background:#1B2A34" title="Black"></div>
+        <div class="cdot" style="background:#9BA19D" title="Light grey"></div>
+        <div class="cdot" style="background:#F2705A" title="Salmon"></div>
+        <div class="cdot" style="background:#E0B07C" title="Tan"></div>
+        <span style="font-size:11px;color:#888;align-self:center">+138</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Related parts -->
+  <div class="card">
+    <div class="section-label">Related parts</div>
+    <div class="related-row">
+      <div class="rc"><div class="ri">🟧</div><div class="rn">Plate 2×2</div><div class="rp">€0.02 avg</div></div>
+      <div class="rc"><div class="ri">🟫</div><div class="rn">Plate 2×6</div><div class="rp">€0.06 avg</div></div>
+      <div class="rc"><div class="ri">🟥</div><div class="rn">Brick 2×4</div><div class="rp">€0.05 avg</div></div>
+    </div>
+  </div>
+
+  <!-- Download card -->
+  <div class="dl-card">
+    <div class="dl-title">📥 Download part data</div>
+
+    <div class="dl-row" onclick="startDl(this,'Part datasheet (PDF)','180 KB')">
+      <div class="dl-ico" style="background:#FCEBEB">📄</div>
+      <div style="flex:1"><div class="dl-name">Part datasheet</div><div class="dl-meta">PDF · Dimensions, specs, all colors · 180 KB</div></div>
+      <span class="dl-avail dl-ok">Available</span>
+      <button class="dl-btn">PDF</button>
+    </div>
+
+    <div class="dl-row" onclick="startDl(this,'Parts list — all colors (.xml)','44 KB')">
+      <div class="dl-ico" style="background:#E6F1FB">📊</div>
+      <div style="flex:1"><div class="dl-name">Parts list — all colors</div><div class="dl-meta">.xml · BrickLink-compatible · 147 colors · 44 KB</div></div>
+      <span class="dl-avail dl-ok">Available</span>
+      <button class="dl-btn">XML</button>
+    </div>
+
+    <div class="dl-row" onclick="startDl(this,'Parts list (.csv)','12 KB')">
+      <div class="dl-ico" style="background:#E1F5EE">📋</div>
+      <div style="flex:1"><div class="dl-name">Parts list (.csv)</div><div class="dl-meta">Spreadsheet-ready · All variants · 12 KB</div></div>
+      <span class="dl-avail dl-ok">Available</span>
+      <button class="dl-btn">CSV</button>
+    </div>
+
+    <div class="dl-row" onclick="startDl(this,'3D model (.ldr)','280 KB')">
+      <div class="dl-ico" style="background:#EEEDFE">🧩</div>
+      <div style="flex:1"><div class="dl-name">3D model</div><div class="dl-meta">.ldr · LDraw-compatible · 280 KB</div></div>
+      <span class="dl-avail dl-ok">Available</span>
+      <button class="dl-btn">LDR</button>
+    </div>
+
+    <div class="dl-row" style="opacity:.5;cursor:not-allowed" onclick="alert('Studio file not available for this part yet')">
+      <div class="dl-ico" style="background:#f4f3ee">🧱</div>
+      <div style="flex:1"><div class="dl-name">Studio file (.io)</div><div class="dl-meta">BrickLink Studio · Coming soon</div></div>
+      <span class="dl-avail dl-no">Soon</span>
+    </div>
+
+    <button onclick="openDlModal()" style="width:100%;margin-top:10px;background:#1a1a2e;border:none;border-radius:8px;color:#E6B800;font-size:13px;font-weight:700;padding:9px;cursor:pointer">📥 Download all formats (ZIP)</button>
+  </div>
+
+</div>
+</div>
+
+<!-- DOWNLOAD MODAL -->
+<div class="modal-bg" id="dlModal" onclick="if(event.target===this)closeDl()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeDl()">✕</button>
+    <h3>Download: Plate 2×4 · #3020</h3>
+    <div class="modal-sub">Choose format · Red · All downloads are free</div>
+
+    <div id="dlOpts">
+      <div class="modal-opt" onclick="runDl(this,'Part datasheet (PDF)','Plate_2x4_3020_datasheet.pdf')">
+        <div class="mopt-ico" style="background:#FCEBEB">📄</div>
+        <div><div class="mopt-name">Part datasheet (PDF)</div><div class="mopt-desc">Dimensions, specs, all 147 colors · 180 KB</div></div>
+        <span class="mopt-badge" style="background:#E1F5EE;color:#085041">Available</span>
+      </div>
+      <div class="modal-opt" onclick="runDl(this,'Parts list — all colors (.xml)','Plate_2x4_3020_parts.xml')">
+        <div class="mopt-ico" style="background:#E6F1FB">📊</div>
+        <div><div class="mopt-name">Parts list — all colors (.xml)</div><div class="mopt-desc">BrickLink-compatible inventory · 44 KB</div></div>
+        <span class="mopt-badge" style="background:#E1F5EE;color:#085041">Available</span>
+      </div>
+      <div class="modal-opt" onclick="runDl(this,'Parts list (.csv)','Plate_2x4_3020_parts.csv')">
+        <div class="mopt-ico" style="background:#E1F5EE">📋</div>
+        <div><div class="mopt-name">Parts list (.csv)</div><div class="mopt-desc">Spreadsheet-ready, all variants · 12 KB</div></div>
+        <span class="mopt-badge" style="background:#E1F5EE;color:#085041">Available</span>
+      </div>
+      <div class="modal-opt" onclick="runDl(this,'3D model (.ldr)','Plate_2x4_3020.ldr')">
+        <div class="mopt-ico" style="background:#EEEDFE">🧩</div>
+        <div><div class="mopt-name">3D model (.ldr)</div><div class="mopt-desc">LDraw-compatible · 280 KB</div></div>
+        <span class="mopt-badge" style="background:#E1F5EE;color:#085041">Available</span>
+      </div>
+      <div class="modal-opt" onclick="runDl(this,'All formats (.zip)','Plate_2x4_3020_all.zip')">
+        <div class="mopt-ico" style="background:#FFF8DC">📦</div>
+        <div><div class="mopt-name">All formats (.zip)</div><div class="mopt-desc">PDF + XML + CSV + LDR bundled · 520 KB</div></div>
+        <span class="mopt-badge" style="background:#FFF8DC;color:#8a6a00">Bundle</span>
+      </div>
+      <div class="modal-opt disabled" onclick="alert('Studio file not yet available for this part')">
+        <div class="mopt-ico" style="background:#f4f3ee">🧱</div>
+        <div><div class="mopt-name">Studio file (.io)</div><div class="mopt-desc">BrickLink Studio — coming soon</div></div>
+        <span class="mopt-badge" style="background:#f4f3ee;color:#888">Soon</span>
+      </div>
+    </div>
+
+    <div class="prog-wrap" id="dlProg">
+      <div style="font-size:32px;margin-bottom:8px">⬇️</div>
+      <div class="prog-name" id="dlProgName"></div>
+      <div class="prog-bar"><div class="prog-fill" id="dlProgFill"></div></div>
+      <div class="prog-pct" id="dlProgPct">0%</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const AD = {
+  12: { l:['Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May'], d:[0.05,0.05,0.06,0.05,0.04,0.04,0.05,0.04,0.04,0.03,0.03,0.04] },
+  6:  { l:['Dec','Jan','Feb','Mar','Apr','May'], d:[0.05,0.04,0.04,0.03,0.03,0.04] },
+  3:  { l:['Mar','Apr','May'], d:[0.03,0.03,0.04] },
+  1:  { l:['W1','W2','W3','W4'], d:[0.04,0.04,0.03,0.04] }
+};
+
+const chart = new Chart(document.getElementById('priceChart'), {
+  type: 'line',
+  data: {
+    labels: AD[12].l,
+    datasets: [{
+      label: 'Avg price (€)',
+      data: AD[12].d,
+      borderColor: '#E6B800',
+      backgroundColor: 'rgba(230,184,0,0.09)',
+      borderWidth: 2.5,
+      pointBackgroundColor: '#E6B800',
+      pointRadius: 5,
+      pointHoverRadius: 7,
+      fill: true,
+      tension: 0.35
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: c => '€' + c.raw.toFixed(2) } }
+    },
+    scales: {
+      x: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { size: 11 }, color: '#888' } },
+      y: { grid: { color: 'rgba(0,0,0,0.05)' }, min: 0.01, max: 0.08, ticks: { font: { size: 11 }, color: '#888', callback: v => '€' + v.toFixed(2) } }
+    }
+  }
+});
+
+function updChart(r) {
+  const d = AD[r];
+  chart.data.labels = d.l;
+  chart.data.datasets[0].data = d.d;
+  chart.update();
+  const mn = Math.min(...d.d), mx = Math.max(...d.d), av = d.d.reduce((a,b) => a+b, 0) / d.d.length;
+  const prev = d.d.slice(0, Math.floor(d.d.length/2));
+  const prevAvg = prev.reduce((a,b) => a+b, 0) / prev.length;
+  const trend = Math.round((av - prevAvg) / prevAvg * 100);
+  document.getElementById('sMin').textContent = '€' + mn.toFixed(2);
+  document.getElementById('sMax').textContent = '€' + mx.toFixed(2);
+  document.getElementById('sAvg').textContent = '€' + av.toFixed(2);
+  const te = document.getElementById('sTrend');
+  te.textContent = (trend >= 0 ? '+' : '') + trend + '%';
+  te.style.color = trend <= 0 ? '#1a7f4b' : '#c0392b';
+  const lbl = {12:'Last 12 months',6:'Last 6 months',3:'Last 3 months',1:'Last month'}[r];
+  document.getElementById('period-lbl').textContent = lbl + ' · Red';
+}
+
+document.querySelectorAll('.rtab').forEach(b => b.addEventListener('click', function() {
+  document.querySelectorAll('.rtab').forEach(x => x.classList.remove('active'));
+  this.classList.add('active');
+  updChart(parseInt(this.dataset.r));
+}));
+
+let qty = 10;
+document.getElementById('qminus').onclick = () => { if (qty > 1) { qty--; upd(); } };
+document.getElementById('qplus').onclick = () => { qty++; upd(); };
+function upd() {
+  document.getElementById('qtyVal').textContent = qty;
+  document.getElementById('totalPrice').textContent = '€' + (qty * 0.03).toFixed(2);
+}
+
+document.querySelectorAll('.cdot').forEach(d => d.addEventListener('click', function() {
+  document.querySelectorAll('.cdot').forEach(x => x.classList.remove('active'));
+  this.classList.add('active');
+}));
+
+function sw(btn, id) {
+  document.querySelectorAll('.ctab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  ['ts','tr','ta'].forEach(x => document.getElementById(x).style.display = x === id ? '' : 'none');
+}
+
+// ---------- DOWNLOAD ----------
+function openDlModal() {
+  document.getElementById('dlOpts').style.display = '';
+  document.getElementById('dlProg').style.display = 'none';
+  document.getElementById('dlModal').classList.add('open');
+}
+function closeDl() {
+  document.getElementById('dlModal').classList.remove('open');
+}
+function runDl(el, name, filename) {
+  document.getElementById('dlOpts').style.display = 'none';
+  const pw = document.getElementById('dlProg');
+  pw.style.display = 'block';
+  document.getElementById('dlProgName').textContent = 'Downloading: ' + name;
+  const fill = document.getElementById('dlProgFill');
+  const pct  = document.getElementById('dlProgPct');
+  let p = 0;
+  fill.style.background = '#E6B800';
+  fill.style.width = '0';
+  const iv = setInterval(() => {
+    p += Math.round(5 + Math.random() * 9);
+    if (p >= 100) {
+      p = 100;
+      clearInterval(iv);
+      fill.style.background = '#22c55e';
+      document.getElementById('dlProgName').textContent = '✅ ' + filename + ' downloaded!';
+      pct.textContent = 'Complete';
+      setTimeout(closeDl, 1400);
+    }
+    fill.style.width = p + '%';
+    pct.textContent = p + '%';
+  }, 70);
+}
+
+// Inline sidebar dl-row progress (quick visual feedback)
+function startDl(row, name, size) {
+  const btn = row.querySelector('.dl-btn');
+  if (!btn) return;
+  const orig = btn.textContent;
+  btn.textContent = '0%';
+  btn.style.background = '#f4f3ee';
+  btn.style.color = '#1a1a1a';
+  let p = 0;
+  const iv = setInterval(() => {
+    p += Math.round(8 + Math.random() * 12);
+    if (p >= 100) {
+      p = 100;
+      clearInterval(iv);
+      btn.textContent = '✓';
+      btn.style.background = '#22c55e';
+      btn.style.color = '#fff';
+      setTimeout(() => { btn.textContent = orig; btn.style.background = ''; btn.style.color = ''; }, 2000);
+    } else {
+      btn.textContent = p + '%';
+    }
+  }, 60);
+}
+
+// ── LOGIN-AWARE BUY ACTIONS ───────────────────────────────────────────────────
+(function initBuyPanel() {
+  let user = null;
+  try { user = JSON.parse(sessionStorage.getItem('su_user')); } catch(e) {}
+
+  const buyActions = document.getElementById('buyActions');
+  const sellerContact = document.getElementById('sellerContact');
+
+  if (user && user.name) {
+    // Logged in — show full buy + cart buttons
+    buyActions.innerHTML = `
+      <button class="btn-buy" onclick="doBuyNow()">Buy now — €0.30</button>
+      <button class="btn-cart" onclick="doAddCart()">🛒 Add to cart</button>`;
+    if (sellerContact) sellerContact.style.display = '';
+  } else {
+    // Not logged in — show sign-in prompt
+    buyActions.innerHTML = `
+      <div style="background:#FFF8DC;border:1px solid #E6B800;border-radius:8px;padding:12px;text-align:center;margin-bottom:8px">
+        <div style="font-size:13px;font-weight:700;color:#8a6a00;margin-bottom:6px">Sign in to buy parts</div>
+        <div style="font-size:12px;color:#8a6a00;margin-bottom:10px">Create a free account to purchase, add to cart, set price alerts and track your collection.</div>
+        <a href="login.html" style="display:block;background:#1a1a2e;color:#FFD700;text-decoration:none;border-radius:8px;font-size:14px;font-weight:700;padding:10px;margin-bottom:6px">Sign in to buy →</a>
+        <a href="login.html#register" style="display:block;background:#f5f4ef;color:#555;text-decoration:none;border-radius:8px;font-size:13px;padding:8px">Create free account</a>
+      </div>`;
+  }
+})();
+
+let cartItems = [];
+let cartTotal = 0;
+
+function doBuyNow() {
+  const qty = parseInt(document.getElementById('qtyVal').textContent) || 1;
+  const total = (qty * 0.03).toFixed(2);
+  // Show confirm panel
+  const ba = document.getElementById('buyActions');
+  ba.innerHTML = `
+    <div style="background:#E1F5EE;border:1px solid #1D9E75;border-radius:8px;padding:12px;margin-bottom:8px">
+      <div style="font-size:13px;font-weight:700;color:#085041;margin-bottom:8px">✓ Confirm order</div>
+      <div style="font-size:12px;color:#085041;margin-bottom:10px">
+        ${qty}× Plate 2×4 Red from BrickMaster_Shop<br>
+        <strong>Total: €${total}</strong> + shipping
+      </div>
+      <button onclick="confirmOrder()" style="width:100%;background:#22c55e;border:none;border-radius:8px;color:#fff;font-size:14px;font-weight:700;padding:10px;cursor:pointer;margin-bottom:6px">Confirm purchase</button>
+      <button onclick="location.reload()" style="width:100%;background:#f5f4ef;border:1px solid #ddd;border-radius:8px;font-size:13px;padding:8px;cursor:pointer">Cancel</button>
+    </div>`;
+}
+
+function confirmOrder() {
+  const qty = parseInt(document.getElementById('qtyVal').textContent) || 1;
+  const total = (qty * 0.03).toFixed(2);
+  document.getElementById('buyActions').innerHTML = `
+    <div style="background:#E1F5EE;border:1px solid #1D9E75;border-radius:8px;padding:14px;text-align:center;margin-bottom:8px">
+      <div style="font-size:20px;margin-bottom:6px">🎉</div>
+      <div style="font-size:14px;font-weight:700;color:#085041;margin-bottom:4px">Order placed!</div>
+      <div style="font-size:12px;color:#085041">€${total} · BrickMaster_Shop will confirm within 24h.<br>Check <a href="collection.html" style="color:#085041">My Collection</a> for order status.</div>
+    </div>`;
+}
+
+function doAddCart() {
+  const qty = parseInt(document.getElementById('qtyVal').textContent) || 1;
+  const total = (qty * 0.03).toFixed(2);
+  // Visual feedback on button
+  const btns = document.querySelectorAll('.btn-cart');
+  btns.forEach(b => { b.textContent = `✓ Added ${qty}× to cart`; b.style.background = '#22c55e'; b.style.color = '#fff'; });
+  setTimeout(() => {
+    btns.forEach(b => { b.textContent = '🛒 Add to cart'; b.style.background = ''; b.style.color = ''; });
+  }, 2500);
+  // Show mini cart summary
+  const existing = document.getElementById('cartSummary');
+  if (existing) existing.remove();
+  const div = document.createElement('div');
+  div.id = 'cartSummary';
+  div.style.cssText = 'background:#f5f4ef;border:1px solid #ddd;border-radius:8px;padding:10px;margin-top:8px;font-size:12px;color:#555;display:flex;align-items:center;justify-content:space-between';
+  div.innerHTML = `<span>🛒 Cart: ${qty}× Plate 2×4 Red — €${total}</span><a href="collection.html" style="color:#1a73e8;text-decoration:none;font-weight:600">View cart →</a>`;
+  document.getElementById('buyActions').after(div);
+}
+
+function handleWishlist(btn) {
+  let user = null;
+  try { user = JSON.parse(sessionStorage.getItem('su_user')); } catch(e) {}
+  if (!user) { window.location.href = 'login.html'; return; }
+  const on = btn.textContent.includes('♡');
+  btn.textContent = on ? '♥ Wishlisted' : '♡ Wishlist';
+  btn.style.color = on ? '#FF4444' : '';
+  btn.style.borderColor = on ? '#FF4444' : '';
+  if (on) showToastPD('Added to wishlist ♥');
+}
+
+function handleTrade() {
+  let user = null;
+  try { user = JSON.parse(sessionStorage.getItem('su_user')); } catch(e) {}
+  if (!user) { window.location.href = 'login.html'; return; }
+  showToastPD('Trade proposal sent to BrickMaster_Shop ⇄');
+}
+
+function handleCollect() {
+  let user = null;
+  try { user = JSON.parse(sessionStorage.getItem('su_user')); } catch(e) {}
+  if (!user) { window.location.href = 'login.html'; return; }
+  showToastPD('Added to My Collection 📦');
+}
+
+function showToastPD(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#1a1a2e;color:#FFD700;font-size:13px;font-weight:700;padding:10px 20px;border-radius:8px;z-index:999;box-shadow:0 4px 16px rgba(0,0,0,.2);white-space:nowrap';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity .35s'; setTimeout(() => t.remove(), 380); }, 2200);
+}
+
+function selectSeller(row, name, price, country) {
+  document.querySelectorAll('.seller-row').forEach(r => r.style.background = '');
+  row.style.background = '#FFF8DC';
+  // Update the buy panel to reflect this seller
+  const sub = document.querySelector('.buy-sub');
+  if (sub) sub.textContent = name + ' · ' + country + ' · New';
+  const contact = document.getElementById('sellerContact');
+  if (contact) {
+    contact.style.display = '';
+    const btn = contact.querySelector('button');
+    if (btn) btn.onclick = () => showToastPD('Message sent to ' + name + ' ✓');
+  }
+  showToastPD('Selected seller: ' + name + ' · ' + price);
+}
+
+function buyFromSeller(name, price) {
+  let user = null;
+  try { user = JSON.parse(sessionStorage.getItem('su_user')); } catch(e) {}
+  if (!user) { window.location.href = 'login.html'; return; }
+  const qty = parseInt(document.getElementById('qtyVal').textContent) || 1;
+  showToastPD('Buying ' + qty + '× from ' + name + ' · ' + price + '/ea');
+  selectSeller(document.querySelector('.seller-row'), name, price, '');
+  setTimeout(() => doBuyNow(), 300);
+}
+</script>
+<script src="../js/shared.js"></script>
+</body>
+</html>

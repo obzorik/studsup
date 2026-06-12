@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudsUp — Sign in</title>
+<link rel="stylesheet" href="../css/shared.css">
+<style>
+body{background:var(--dark);min-height:100vh;display:flex;flex-direction:column}
+.auth-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:24px}
+.auth-card{background:#fff;border-radius:20px;width:100%;max-width:420px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.35)}
+.auth-header{background:linear-gradient(135deg,#1a1a2e,#0f3460);padding:32px 32px 24px;text-align:center}
+.auth-logo{font-size:28px;font-weight:800;color:var(--yellow);letter-spacing:-.5px;margin-bottom:4px}
+.auth-logo span{color:var(--red)}
+.auth-tagline{font-size:13px;color:rgba(255,255,255,.45)}
+.auth-tabs{display:flex;border-bottom:1px solid #f0f0ec}
+.auth-tab{flex:1;padding:14px;text-align:center;font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;border:none;background:none;border-bottom:3px solid transparent;transition:all .15s}
+.auth-tab.on{color:var(--text);border-bottom-color:var(--yellow)}
+.auth-body{padding:24px 28px 28px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;font-weight:700;color:var(--text2);margin-bottom:5px}
+.field input{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 13px;font-size:14px;outline:none;transition:border-color .15s;background:#fff}
+.field input:focus{border-color:var(--yellow)}
+.field input.error{border-color:#ef4444}
+.field-err{font-size:11px;color:#ef4444;margin-top:3px;display:none}
+.field input.error + .field-err{display:block}
+.auth-btn{width:100%;background:var(--dark);border:none;border-radius:9px;color:var(--yellow);font-size:15px;font-weight:700;padding:12px;cursor:pointer;margin-top:4px;transition:background .15s}
+.auth-btn:hover{background:#2d2d4e}
+.auth-or{text-align:center;font-size:12px;color:var(--hint);margin:14px 0;position:relative}
+.auth-or::before,.auth-or::after{content:'';position:absolute;top:50%;width:42%;height:1px;background:var(--border)}
+.auth-or::before{left:0}.auth-or::after{right:0}
+.social-row{display:flex;gap:8px}
+.social-btn{flex:1;border:1.5px solid var(--border);border-radius:9px;padding:10px;font-size:13px;font-weight:600;cursor:pointer;background:#fff;display:flex;align-items:center;justify-content:center;gap:7px;transition:all .15s}
+.social-btn:hover{background:var(--bg);border-color:#ccc}
+.auth-note{font-size:11px;color:var(--hint);text-align:center;margin-top:14px;line-height:1.6}
+.auth-note a{color:#1a73e8;cursor:pointer}
+.strength{height:3px;border-radius:2px;margin-top:5px;transition:all .3s;background:var(--border)}
+.strength.s1{background:#ef4444;width:25%}
+.strength.s2{background:#f59e0b;width:50%}
+.strength.s3{background:#22c55e;width:75%}
+.strength.s4{background:#22c55e;width:100%}
+.pass-hint{font-size:11px;color:var(--hint);margin-top:3px}
+.forgot{float:right;font-size:11px;color:#1a73e8;cursor:pointer;margin-top:-2px}
+.forgot:hover{text-decoration:underline}
+.show-pass{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--hint);font-size:13px}
+.field-wrap{position:relative}
+.demo-hint{background:#FFF8DC;border:1px solid var(--yellow-dark);border-radius:8px;padding:10px 12px;font-size:12px;color:#8a6a00;margin-bottom:16px}
+.demo-hint strong{display:block;margin-bottom:2px}
+</style>
+</head>
+<body>
+
+<div style="background:var(--dark);padding:14px 24px;display:flex;align-items:center;justify-content:space-between">
+  <a href="../../index.html" class="auth-logo" style="font-size:18px;text-decoration:none">Studs<span>Up</span></a>
+  <a href="home.html" style="font-size:12px;color:rgba(255,255,255,.4);text-decoration:none">← Back to marketplace</a>
+</div>
+
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="auth-logo">Studs<span>Up</span></div>
+      <div class="auth-tagline">The world's most complete LEGO community platform</div>
+    </div>
+
+    <!-- TABS -->
+    <div class="auth-tabs">
+      <button class="auth-tab on" onclick="switchAuthTab('login',this)" id="tabLogin">Sign in</button>
+      <button class="auth-tab" onclick="switchAuthTab('register',this)" id="tabRegister">Create account</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="auth-body" id="panelLogin">
+      <div class="demo-hint">
+        <strong>🧪 Demo credentials</strong>
+        Email: <code>georgs@studsup.com</code> &nbsp;·&nbsp; Password: <code>demo1234</code>
+      </div>
+      <div class="field">
+        <label>Email address</label>
+        <input type="email" id="loginEmail" placeholder="you@example.com" value="georgs@studsup.com">
+      </div>
+      <div class="field">
+        <label>Password <span class="forgot" onclick="switchAuthTab('reset',document.getElementById('tabLogin'))">Forgot password?</span></label>
+        <div class="field-wrap">
+          <input type="password" id="loginPass" placeholder="Your password" value="demo1234">
+          <button class="show-pass" onclick="togglePass('loginPass',this)">👁</button>
+        </div>
+      </div>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);margin-bottom:16px;cursor:pointer">
+        <input type="checkbox" checked> Remember me on this device
+      </label>
+      <button class="auth-btn" onclick="doLogin()">Sign in →</button>
+      <div class="auth-or">or continue with</div>
+      <div class="social-row">
+        <button class="social-btn" onclick="socialLogin('Google')">🇬 Google</button>
+        <button class="social-btn" onclick="socialLogin('Facebook')">📘 Facebook</button>
+        <button class="social-btn" onclick="socialLogin('Apple')">🍎 Apple</button>
+      </div>
+      <div class="auth-note">Don't have an account? <a onclick="switchAuthTab('register',document.getElementById('tabRegister'))">Create one free →</a></div>
+    </div>
+
+    <!-- REGISTER -->
+    <div class="auth-body" id="panelRegister" style="display:none">
+      <div class="field">
+        <label>Username</label>
+        <input type="text" id="regUser" placeholder="brickmaster_lv" oninput="checkUsername(this)">
+        <div class="field-err">Username already taken — try another</div>
+        <div id="userAvail" style="font-size:11px;color:#22c55e;margin-top:3px;display:none">✓ Available</div>
+      </div>
+      <div class="field">
+        <label>Email address</label>
+        <input type="email" id="regEmail" placeholder="you@example.com">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <div class="field-wrap">
+          <input type="password" id="regPass" placeholder="Min. 8 characters" oninput="checkStrength(this)">
+          <button class="show-pass" onclick="togglePass('regPass',this)">👁</button>
+        </div>
+        <div class="strength" id="strengthBar"></div>
+        <div class="pass-hint" id="passHint">Use letters, numbers and symbols</div>
+      </div>
+      <div class="field">
+        <label>Confirm password</label>
+        <input type="password" id="regPass2" placeholder="Repeat password">
+      </div>
+      <div class="field">
+        <label>Country</label>
+        <select class="inp" style="background:#fff">
+          <option value="">Select your country…</option>
+          <option selected>Latvia</option>
+          <option>Estonia</option><option>Lithuania</option><option>Germany</option>
+          <option>Netherlands</option><option>United Kingdom</option><option>Poland</option>
+          <option>France</option><option>United States</option><option>Other</option>
+        </select>
+      </div>
+      <label style="display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--text2);margin-bottom:16px;cursor:pointer;line-height:1.5">
+        <input type="checkbox" id="agreeTerms" style="margin-top:2px;flex-shrink:0">
+        I agree to the <a style="color:#1a73e8">Terms of Service</a> and <a style="color:#1a73e8">Privacy Policy</a>. I am at least 13 years old.
+      </label>
+      <button class="auth-btn" style="background:#22c55e" onclick="doRegister()">Create account →</button>
+      <div class="auth-or">or continue with</div>
+      <div class="social-row">
+        <button class="social-btn" onclick="socialLogin('Google')">🇬 Google</button>
+        <button class="social-btn" onclick="socialLogin('Facebook')">📘 Facebook</button>
+        <button class="social-btn" onclick="socialLogin('Apple')">🍎 Apple</button>
+      </div>
+      <div class="auth-note">Already have an account? <a onclick="switchAuthTab('login',document.getElementById('tabLogin'))">Sign in →</a></div>
+    </div>
+
+    <!-- FORGOT PASSWORD -->
+    <div class="auth-body" id="panelReset" style="display:none">
+      <div style="text-align:center;margin-bottom:16px">
+        <div style="font-size:36px;margin-bottom:8px">🔑</div>
+        <div style="font-size:16px;font-weight:700;margin-bottom:4px">Reset your password</div>
+        <div style="font-size:13px;color:var(--muted)">Enter your email and we'll send a reset link.</div>
+      </div>
+      <div class="field">
+        <label>Email address</label>
+        <input type="email" id="resetEmail" placeholder="you@example.com">
+      </div>
+      <button class="auth-btn" onclick="doReset()">Send reset link →</button>
+      <div class="auth-note" style="margin-top:12px"><a onclick="switchAuthTab('login',document.getElementById('tabLogin'))">← Back to sign in</a></div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="auth-body" id="panelSuccess" style="display:none;text-align:center;padding:36px 28px">
+      <div style="font-size:48px;margin-bottom:12px">🎉</div>
+      <div style="font-size:18px;font-weight:800;margin-bottom:6px" id="successTitle">Welcome back, Georgs!</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:20px" id="successSub">Redirecting to your profile setup…</div>
+      <div style="height:4px;background:#f0f0ec;border-radius:2px;overflow:hidden">
+        <div id="redirectBar" style="height:4px;background:var(--yellow);border-radius:2px;width:0;transition:width 2s linear"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div style="text-align:center;padding:16px;font-size:11px;color:rgba(255,255,255,.25)">
+  © 2026 StudsUp.com · Not affiliated with the LEGO Group
+</div>
+
+<script src="../js/shared.js"></script>
+<script>
+function switchAuthTab(panel, btn){
+  ['login','register','reset','success'].forEach(p=>{
+    const el=document.getElementById('panel'+p.charAt(0).toUpperCase()+p.slice(1));
+    if(el)el.style.display=p===panel?'':'none';
+  });
+  document.querySelectorAll('.auth-tab').forEach(b=>b.classList.remove('on'));
+  if(btn&&btn.classList.contains('auth-tab'))btn.classList.add('on');
+}
+
+function togglePass(id,btn){
+  const inp=document.getElementById(id);
+  inp.type=inp.type==='password'?'text':'password';
+  btn.textContent=inp.type==='password'?'👁':'🙈';
+}
+
+function checkUsername(inp){
+  const taken=['brickmaster','legoking','studsup','admin'];
+  const v=inp.value.toLowerCase().trim();
+  const avail=document.getElementById('userAvail');
+  if(!v){inp.classList.remove('error');avail.style.display='none';return;}
+  if(taken.includes(v)){inp.classList.add('error');avail.style.display='none';}
+  else{inp.classList.remove('error');avail.style.display='block';}
+}
+
+function checkStrength(inp){
+  const v=inp.value;
+  const bar=document.getElementById('strengthBar');
+  const hint=document.getElementById('passHint');
+  bar.className='strength';
+  if(!v){hint.textContent='Use letters, numbers and symbols';return;}
+  let s=0;
+  if(v.length>=8)s++;
+  if(/[A-Z]/.test(v))s++;
+  if(/[0-9]/.test(v))s++;
+  if(/[^A-Za-z0-9]/.test(v))s++;
+  bar.classList.add('s'+s);
+  const labels=['Too short','Weak','Fair','Strong','Very strong'];
+  hint.textContent=labels[s]||'';
+  hint.style.color=s<=1?'#ef4444':s===2?'#f59e0b':'#22c55e';
+}
+
+function doLogin(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPass').value;
+  if(!email||!pass){toast('Please fill in all fields','error');return;}
+  if(email==='georgs@studsup.com'&&pass==='demo1234'){
+    // Save session
+    sessionStorage.setItem('su_user',JSON.stringify({name:'Georgs',handle:'georgs_bricks',email,avatar:'GT',country:'Latvia',role:'member',newUser:false}));
+    showSuccess('Welcome back, Georgs! 👋','Redirecting to your profile…','profile-blog.html');
+  } else {
+    toast('Incorrect email or password','error');
+    document.getElementById('loginPass').classList.add('error');
+  }
+}
+
+function doRegister(){
+  const user=document.getElementById('regUser').value.trim();
+  const email=document.getElementById('regEmail').value.trim();
+  const pass=document.getElementById('regPass').value;
+  const pass2=document.getElementById('regPass2').value;
+  const agree=document.getElementById('agreeTerms').checked;
+  if(!user||!email||!pass){toast('Please fill in all fields','error');return;}
+  if(pass!==pass2){toast('Passwords do not match','error');return;}
+  if(!agree){toast('Please accept the Terms of Service','error');return;}
+  if(pass.length<8){toast('Password must be at least 8 characters','error');return;}
+  sessionStorage.setItem('su_user',JSON.stringify({name:user,handle:user.toLowerCase(),email,avatar:user.slice(0,2).toUpperCase(),country:'',role:'member',newUser:true}));
+  showSuccess('Account created! 🎉','Let\'s set up your profile…','profile-setup.html');
+}
+
+function doReset(){
+  const email=document.getElementById('resetEmail').value.trim();
+  if(!email){toast('Enter your email address','error');return;}
+  toast('Reset link sent to '+email+' ✓');
+  setTimeout(()=>switchAuthTab('login',document.getElementById('tabLogin')),2000);
+}
+
+function socialLogin(provider){
+  sessionStorage.setItem('su_user',JSON.stringify({name:'Georgs',handle:'georgs_bricks',email:'georgs@studsup.com',avatar:'GT',country:'Latvia',role:'member',newUser:false}));
+  showSuccess('Signed in with '+provider+' ✓','Redirecting…','profile-blog.html');
+}
+
+function showSuccess(title,sub,redirect){
+  document.getElementById('successTitle').textContent=title;
+  document.getElementById('successSub').textContent=sub;
+  document.querySelectorAll('.auth-tab').forEach(b=>b.classList.remove('on'));
+  switchAuthTab('success',null);
+  setTimeout(()=>{document.getElementById('redirectBar').style.width='100%';},50);
+  setTimeout(()=>{ window.location.href=redirect; },2200);
+}
+</script>
+</body>
+</html>
