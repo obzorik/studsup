@@ -177,19 +177,15 @@
 // - Set STUDSUP_API_URL in your environment, OR
 // - Defaults to same origin (when backend serves frontend), OR
 // - Falls back to localhost for local development
+// API base URL — auto-detected from current hostname
 const API = (function(){
-  // If a global is set (e.g. injected at deploy time), use it
+  const h = window.location.hostname;
   if(typeof window.STUDSUP_API !== 'undefined') return window.STUDSUP_API;
-  // If running from file:// → local dev
   if(window.location.protocol === 'file:') return 'http://localhost:8000';
-  // If hostname contains 'onrender.com' and we are the static site,
-  // the API is at studsup-api.onrender.com
-  if(window.location.hostname.includes('onrender.com') &&
-     window.location.hostname.includes('frontend')) {
-    return window.location.origin.replace('studsup-frontend','studsup-api');
-  }
-  // Same origin (backend serves frontend directly)
-  return '';
+  // On Render static site → always point to studsup-api.onrender.com
+  if(h.includes('onrender.com')) return 'https://studsup-api.onrender.com';
+  if(h === 'localhost' || h === '127.0.0.1') return 'http://localhost:8000';
+  return ''; // same origin fallback
 })();
 
 let currentQuery   = '';
