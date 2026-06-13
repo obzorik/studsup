@@ -247,7 +247,7 @@
         <div style="display:flex;gap:7px;margin-top:12px;flex-wrap:wrap">
           <button onclick="openDlModal()" style="background:#1a1a2e;border:none;border-radius:8px;color:#E6B800;font-size:12px;font-weight:700;padding:7px 14px;cursor:pointer;display:flex;align-items:center;gap:5px">📥 Download part data</button>
           <button style="background:#f4f3ee;border:1px solid #ddd;border-radius:8px;font-size:12px;color:#555;padding:7px 12px;cursor:pointer">📊 Export parts list</button>
-          <button style="background:#f4f3ee;border:1px solid #ddd;border-radius:8px;font-size:12px;color:#555;padding:7px 12px;cursor:pointer" onclick="alert('Link copied!')">🔗 Share</button>
+          <button style="background:#f4f3ee;border:1px solid #ddd;border-radius:8px;font-size:12px;color:#555;padding:7px 12px;cursor:pointer" onclick="navigator.clipboard&&navigator.clipboard.writeText(location.href).then(()=>toast('Link copied ✓')).catch(()=>toast('Copy URL from browser bar'))">🔗 Share</button>
         </div>
       </div>
     </div>
@@ -275,7 +275,7 @@
       <span>🔔</span>
       <label>Alert me when price drops below</label>
       <input class="alert-inp" id="alertVal" type="number" value="0.03" step="0.01" min="0.01">
-      <button class="alert-btn" onclick="alert('Price alert set for €' + document.getElementById('alertVal').value + ' — you will be notified by email!')">Set alert</button>
+      <button class="alert-btn" onclick="(function(){var u=null;try{u=JSON.parse(sessionStorage.getItem('su_user'));}catch(e){}if(!u){location.href='login.html';return;}toast('Price alert set for €'+document.getElementById('alertVal').value+' ✓');})()">Set alert</button>
     </div>
   </div>
 
@@ -290,50 +290,50 @@
     <div id="ts">
       <div style="font-size:12px;color:#888;margin-bottom:10px">Click a seller to buy directly from them</div>
       <div class="seller-list">
-        <div class="seller-row" onclick="selectSeller(this,'BrickMaster_Shop','€0.03','Latvia')">
+        <div class="seller-row" onclick="selectSeller(this,'Seller 1','€0.03','Latvia')">
           <div class="sa" style="background:#E1F5EE;color:#085041">BM</div>
           <div>
-            <div class="sname">BrickMaster_Shop</div>
+            <div class="sname">Seller 1 (Latvia 🇱🇻)</div>
             <div class="smeta">Latvia 🇱🇻</div>
           </div>
           <span class="cbadge cnew">New</span>
           <div class="sright"><div class="sprice">€0.03</div><div class="sqty">×500 in stock</div></div>
-          <button style="background:#FFD700;border:none;border-radius:6px;font-size:12px;font-weight:700;color:#1a1a2e;padding:5px 12px;cursor:pointer;flex-shrink:0" onclick="event.stopPropagation();buyFromSeller('BrickMaster_Shop','€0.03')">Buy</button>
+          <button style="background:#FFD700;border:none;border-radius:6px;font-size:12px;font-weight:700;color:#1a1a2e;padding:5px 12px;cursor:pointer;flex-shrink:0" onclick="event.stopPropagation();buyFromSeller('Seller 1','€0.03')">Buy</button>
         </div>
-        <div class="seller-row" onclick="selectSeller(this,'PartsBarn_EU','€0.04','Germany')">
+        <div class="seller-row" onclick="selectSeller(this,'Seller 2','€0.04','Germany')">
           <div class="sa" style="background:#E6F1FB;color:#0C447C">PB</div>
           <div>
-            <div class="sname">PartsBarn_EU</div>
+            <div class="sname">Seller 2 (Germany 🇩🇪)</div>
             <div class="smeta">Germany 🇩🇪</div>
           </div>
           <span class="cbadge cnew">New</span>
           <div class="sright"><div class="sprice">€0.04</div><div class="sqty">×1,200 in stock</div></div>
-          <button style="background:#FFD700;border:none;border-radius:6px;font-size:12px;font-weight:700;color:#1a1a2e;padding:5px 12px;cursor:pointer;flex-shrink:0" onclick="event.stopPropagation();buyFromSeller('PartsBarn_EU','€0.04')">Buy</button>
+          <button style="background:#FFD700;border:none;border-radius:6px;font-size:12px;font-weight:700;color:#1a1a2e;padding:5px 12px;cursor:pointer;flex-shrink:0" onclick="event.stopPropagation();buyFromSeller('Seller 2','€0.04')">Buy</button>
         </div>
-        <div class="seller-row" onclick="selectSeller(this,'LegoKing_Vintage','€0.02','Netherlands')">
+        <div class="seller-row" onclick="selectSeller(this,'Seller 3','€0.02','Netherlands')">
           <div class="sa" style="background:#FAEEDA;color:#633806">LK</div>
           <div>
-            <div class="sname">LegoKing_Vintage</div>
+            <div class="sname">Seller 3 (Netherlands 🇳🇱)</div>
             <div class="smeta">Netherlands 🇳🇱</div>
           </div>
           <span class="cbadge cused">Used</span>
           <div class="sright"><div class="sprice">€0.02</div><div class="sqty">×320 in stock</div></div>
-          <button style="background:#FFD700;border:none;border-radius:6px;font-size:12px;font-weight:700;color:#1a1a2e;padding:5px 12px;cursor:pointer;flex-shrink:0" onclick="event.stopPropagation();buyFromSeller('LegoKing_Vintage','€0.02')">Buy</button>
+          <button style="background:#FFD700;border:none;border-radius:6px;font-size:12px;font-weight:700;color:#1a1a2e;padding:5px 12px;cursor:pointer;flex-shrink:0" onclick="event.stopPropagation();buyFromSeller('Seller 3','€0.02')">Buy</button>
         </div>
-        <div class="seller-row" onclick="selectSeller(this,'StudsTrader','€0.05','Poland')">
+        <div class="seller-row" onclick="selectSeller(this,'Seller 4','€0.05','Poland')">
           <div class="sa" style="background:#EEEDFE;color:#3C3489">ST</div>
           <div>
-            <div class="sname">StudsTrader</div>
+            <div class="sname">Seller 4 (Poland 🇵🇱)</div>
             <div class="smeta">★ 5.0 · 540 sales · Poland 🇵🇱</div>
           </div>
           <span class="cbadge cnew">New</span>
           <div class="sright"><div class="sprice">€0.05</div><div class="sqty">×80 in stock</div></div>
-          <button style="background:#FFD700;border:none;border-radius:6px;font-size:12px;font-weight:700;color:#1a1a2e;padding:5px 12px;cursor:pointer;flex-shrink:0" onclick="event.stopPropagation();buyFromSeller('StudsTrader','€0.05')">Buy</button>
+          <button style="background:#FFD700;border:none;border-radius:6px;font-size:12px;font-weight:700;color:#1a1a2e;padding:5px 12px;cursor:pointer;flex-shrink:0" onclick="event.stopPropagation();buyFromSeller('Seller 4','€0.05')">Buy</button>
         </div>
         <div class="seller-row" onclick="selectSeller(this,'BrickRealm_Store','€0.04','Czech Republic')">
           <div class="sa" style="background:#FCEBEB;color:#A32D2D">BR</div>
           <div>
-            <div class="sname">BrickRealm_Store</div>
+            <div class="sname">Seller 5 (Czech Republic 🇨🇿)</div>
             <div class="smeta">★ 4.6 · 2,200 sales · Czech Republic 🇨🇿</div>
           </div>
           <span class="cbadge cnew">New</span>
@@ -369,7 +369,7 @@
           <span class="rvstars">★★★★★</span>
           <span class="rvdate">2 weeks ago</span>
         </div>
-        <div class="rvtext">Bought 200 pieces for a big MOC, all new, perfect clutch power. Best price I found anywhere across 5 platforms. Highly recommend StudsTrader.</div>
+        <div class="rvtext">Bought 200 pieces for a big MOC, all new, perfect clutch power. Best price I found anywhere across 5 platforms. Highly recommend Seller 4.</div>
       </div>
     </div>
 
@@ -390,7 +390,7 @@
   <!-- Buy panel -->
   <div class="card">
     <div class="buy-price">€0.03</div>
-    <div class="buy-sub">BrickMaster_Shop · New · 500 in stock</div>
+    <div class="buy-sub">Community seller · New · Available</div>
     <div class="qty-row">
       <label>Qty</label>
       <button class="qbtn" id="qminus">−</button>
@@ -406,8 +406,8 @@
     </div>
     <!-- Seller contact (signed in only) -->
     <div id="sellerContact" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid #f0f0ec">
-      <div style="font-size:11px;color:#888;margin-bottom:6px">Buying from BrickMaster_Shop</div>
-      <button style="width:100%;background:#f5f4ef;border:1px solid #ddd;border-radius:8px;font-size:13px;padding:8px;cursor:pointer" onclick="alert('Message sent to BrickMaster_Shop ✓')">✉ Message seller</button>
+      <div style="font-size:11px;color:#888;margin-bottom:6px">Buying from Community Seller</div>
+      <button style="width:100%;background:#f5f4ef;border:1px solid #ddd;border-radius:8px;font-size:13px;padding:8px;cursor:pointer" onclick="toast('Message sent to seller ✓')">✉ Message seller</button>
     </div>
   </div>
 
@@ -481,7 +481,7 @@
       <button class="dl-btn">LDR</button>
     </div>
 
-    <div class="dl-row" style="opacity:.5;cursor:not-allowed" onclick="alert('Studio file not available for this part yet')">
+    <div class="dl-row" style="opacity:.5;cursor:not-allowed" onclick="toast('Studio file not available yet')">
       <div class="dl-ico" style="background:#f4f3ee">🧱</div>
       <div style="flex:1"><div class="dl-name">Studio file (.io)</div><div class="dl-meta">BrickLink Studio · Coming soon</div></div>
       <span class="dl-avail dl-no">Soon</span>
@@ -526,7 +526,7 @@
         <div><div class="mopt-name">All formats (.zip)</div><div class="mopt-desc">PDF + XML + CSV + LDR bundled · 520 KB</div></div>
         <span class="mopt-badge" style="background:#FFF8DC;color:#8a6a00">Bundle</span>
       </div>
-      <div class="modal-opt disabled" onclick="alert('Studio file not yet available for this part')">
+      <div class="modal-opt disabled" onclick="toast('Studio file not available yet')">
         <div class="mopt-ico" style="background:#f4f3ee">🧱</div>
         <div><div class="mopt-name">Studio file (.io)</div><div class="mopt-desc">BrickLink Studio — coming soon</div></div>
         <span class="mopt-badge" style="background:#f4f3ee;color:#888">Soon</span>
@@ -721,7 +721,7 @@ function doBuyNow() {
     <div style="background:#E1F5EE;border:1px solid #1D9E75;border-radius:8px;padding:12px;margin-bottom:8px">
       <div style="font-size:13px;font-weight:700;color:#085041;margin-bottom:8px">✓ Confirm order</div>
       <div style="font-size:12px;color:#085041;margin-bottom:10px">
-        ${qty}× Plate 2×4 Red from BrickMaster_Shop<br>
+        ${qty}× Plate 2×4 Red from Community Seller<br>
         <strong>Total: €${total}</strong> + shipping
       </div>
       <button onclick="confirmOrder()" style="width:100%;background:#22c55e;border:none;border-radius:8px;color:#fff;font-size:14px;font-weight:700;padding:10px;cursor:pointer;margin-bottom:6px">Confirm purchase</button>
@@ -736,7 +736,7 @@ function confirmOrder() {
     <div style="background:#E1F5EE;border:1px solid #1D9E75;border-radius:8px;padding:14px;text-align:center;margin-bottom:8px">
       <div style="font-size:20px;margin-bottom:6px">🎉</div>
       <div style="font-size:14px;font-weight:700;color:#085041;margin-bottom:4px">Order placed!</div>
-      <div style="font-size:12px;color:#085041">€${total} · BrickMaster_Shop will confirm within 24h.<br>Check <a href="collection.html" style="color:#085041">My Collection</a> for order status.</div>
+      <div style="font-size:12px;color:#085041">€${total} · Community Seller will confirm within 24h.<br>Check <a href="collection.html" style="color:#085041">My Collection</a> for order status.</div>
     </div>`;
 }
 
@@ -774,7 +774,7 @@ function handleTrade() {
   let user = null;
   try { user = JSON.parse(sessionStorage.getItem('su_user')); } catch(e) {}
   if (!user) { window.location.href = 'login.html'; return; }
-  showToastPD('Trade proposal sent to BrickMaster_Shop ⇄');
+  showToastPD('Trade proposal sent to Community Seller ⇄');
 }
 
 function handleCollect() {
