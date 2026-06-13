@@ -100,13 +100,49 @@ body{background:#f5f4ef}
 
 <div class="content">
 
+  <!-- ── v7.1 ── -->
+  <div class="version-block current">
+    <div class="vcard current">
+      <div class="v-head">
+        <span class="v-num">v7.1</span>
+        <span class="current-badge">Current</span>
+        <span class="latest-badge">Latest</span>
+        <span class="v-date">June 13, 2026</span>
+      </div>
+      <div class="v-title">Full mobile responsive — hamburger nav, bottom tab bar, per-page breakpoints</div>
+      <div class="changes">
+        <div class="change"><span class="change-ico">📱</span><span class="change-text"><strong>Hamburger menu</strong> — horizontal nav hidden on mobile, replaced with slide-down drawer containing all links <span class="tag tag-new">New</span></span></div>
+        <div class="change"><span class="change-ico">⬇️</span><span class="change-text"><strong>Bottom tab bar</strong> — fixed 5-tab navigation bar at screen bottom: Home / Search / Parts / Profile / AI <span class="tag tag-new">New</span></span></div>
+        <div class="change"><span class="change-ico">📐</span><span class="change-text"><strong>Per-page breakpoints</strong> — all 13 pages get responsive CSS at 768px and 480px: stacked grids, hidden sidebars, full-width buttons <span class="tag tag-new">New</span></span></div>
+        <div class="change"><span class="change-ico">🔽</span><span class="change-text"><strong>Modal sheets</strong> — modals slide up from bottom on mobile instead of appearing centred <span class="tag tag-improve">Improved</span></span></div>
+        <div class="change"><span class="change-ico">⚙️</span><span class="change-text"><strong>Filter FAB</strong> on parts catalogue — fixed floating button to open/close filters panel on mobile <span class="tag tag-new">New</span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── v7.0 ── -->
+  <div class="version-block major">
+    <div class="vcard">
+      <div class="v-head">
+        <span class="v-num">v7.0</span>
+        <span class="v-date">June 13, 2026</span>
+      </div>
+      <div class="v-title">Zero fake data, all buttons fixed, Rebrickable CDN for images</div>
+      <div class="changes">
+        <div class="change"><span class="change-ico">🧹</span><span class="change-text"><strong>All fake data removed</strong> — no more 2.4M, 94K, 12K, 340 LUGs; replaced with real DB counts <span class="tag tag-fix">Fix</span></span></div>
+        <div class="change"><span class="change-ico">🔧</span><span class="change-text"><strong>19 broken alert() buttons fixed</strong> — now use proper toast(), navigation, or clipboard API <span class="tag tag-fix">Fix</span></span></div>
+        <div class="change"><span class="change-ico">🏪</span><span class="change-text"><strong>Fake store names removed</strong> — BrickMaster_Shop, PartsBarn_EU, BrickMasterPaul replaced with generic labels <span class="tag tag-fix">Fix</span></span></div>
+        <div class="change"><span class="change-ico">🖼️</span><span class="change-text"><strong>Rebrickable CDN</strong> — all 12,658 part images and 8 set images updated to cdn.rebrickable.com (works in all browsers) <span class="tag tag-improve">Improved</span></span></div>
+        <div class="change"><span class="change-ico">🔍</span><span class="change-text"><strong>API research</strong> — BrickLink requires seller OAuth (unusable); Rebrickable free CDN confirmed working; Brickset API returns instruction PDF URLs <span class="tag tag-improve">Improved</span></span></div>
+      </div>
+    </div>
+  </div>
+
   <!-- ── v6.2 ── -->
   <div class="version-block current">
     <div class="vcard current">
       <div class="v-head">
         <span class="v-num">v6.2</span>
-        <span class="current-badge">Current</span>
-        <span class="latest-badge">Latest</span>
         <span class="v-date">June 13, 2026</span>
       </div>
       <div class="v-title">Live deployment + admin accounts + parts catalogue API fix</div>
@@ -126,8 +162,6 @@ body{background:#f5f4ef}
     <div class="vcard current">
       <div class="v-head">
         <span class="v-num">v6.0</span>
-        <span class="current-badge">Current</span>
-        <span class="latest-badge">Latest</span>
         <span class="v-date">June 12, 2026</span>
       </div>
       <div class="v-title">Real backend + full-text search across all categories</div>
