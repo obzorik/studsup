@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>StudsUp — LUGBULK 2026 Parts Catalogue</title>
+<title>StudsUp — Parts Catalogue</title>
 <link rel="stylesheet" href="../css/shared.css">
 <style>
 /* ── PAGE LAYOUT ── */
@@ -236,12 +236,33 @@
 })();
 </script><div class="page-header">
   <div class="page-header-inner">
-    <div class="page-title">📦 LUGBULK 2026 — Parts catalogue</div>
+    <div class="page-title">📦 Parts catalogue</div>
     <div class="page-sub">
       <span class="stat-pill" id="statTotal">12,658 parts</span>
       <span class="stat-pill" id="statColors">loading colors…</span>
       <span class="stat-pill">BrickLink price data</span>
-      <span class="stat-pill">USD prices</span>
+      <select id="currencySel" class="stat-pill" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.85);font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;cursor:pointer;outline:none" onchange="setCurrency(this.value)">
+        <option value="USD">🇺🇸 USD</option>
+        <option value="EUR">🇪🇺 EUR</option>
+        <option value="GBP">🇬🇧 GBP</option>
+        <option value="JPY">🇯🇵 JPY</option>
+        <option value="CNY">🇨🇳 CNY</option>
+        <option value="CAD">🇨🇦 CAD</option>
+        <option value="AUD">🇦🇺 AUD</option>
+        <option value="CHF">🇨🇭 CHF</option>
+        <option value="INR">🇮🇳 INR</option>
+        <option value="BRL">🇧🇷 BRL</option>
+        <option value="MXN">🇲🇽 MXN</option>
+        <option value="KRW">🇰🇷 KRW</option>
+        <option value="SEK">🇸🇪 SEK</option>
+        <option value="NOK">🇳🇴 NOK</option>
+        <option value="DKK">🇩🇰 DKK</option>
+        <option value="PLN">🇵🇱 PLN</option>
+        <option value="CZK">🇨🇿 CZK</option>
+        <option value="HUF">🇭🇺 HUF</option>
+        <option value="TRY">🇹🇷 TRY</option>
+        <option value="SGD">🇸🇬 SGD</option>
+      </select>
     </div>
   </div>
 </div>
@@ -302,6 +323,14 @@
         <option value="alots-d">Sort: Most sellers ↓</option>
         <option value="sqty-d">Sort: Most sold ↓</option>
         <option value="eid">Sort: Element ID</option>
+      </select>
+      <select class="sort-sel" id="perPageSel" onchange="changePerPage(this.value)" title="Results per page">
+        <option value="48">48 / page</option>
+        <option value="200">200 / page</option>
+        <option value="500">500 / page</option>
+        <option value="1000">1000 / page</option>
+        <option value="2000">2000 / page</option>
+        <option value="99999">All</option>
       </select>
       <span class="results-info" id="resultsInfo"></span>
       <div class="view-btns">
@@ -373,8 +402,23 @@
   }
 
   function loadFromAPI(api) {
+    // Load ALL parts in chunks to avoid timeout
+    async function fetchAllParts() {
+      const PAGE_SIZE = 500;
+      const first = await fetch(api+`/api/parts?per_page=${PAGE_SIZE}&page=1&sort=avail_avg_usd&order=asc&in_stock=false`).then(r=>r.json());
+      const total = first.total;
+      const pages = Math.ceil(total / PAGE_SIZE);
+      let allItems = [...first.items];
+      if(pages > 1) {
+        const reqs = [];
+        for(let pg=2; pg<=pages; pg++) reqs.push(fetch(api+`/api/parts?per_page=${PAGE_SIZE}&page=${pg}&sort=avail_avg_usd&order=asc&in_stock=false`).then(r=>r.json()));
+        const rest = await Promise.all(reqs);
+        rest.forEach(d => allItems = allItems.concat(d.items));
+      }
+      return {items: allItems, total};
+    }
     Promise.all([
-      fetch(api+'/api/parts?per_page=200&sort=avail_avg_usd&order=asc&in_stock=false').then(r=>r.json()),
+      fetchAllParts(),
       fetch(api+'/api/parts/colors').then(r=>r.json())
     ]).then(([partsData, colors]) => {
       window.PARTS = partsData.items.map(p => ({
@@ -422,11 +466,35 @@
 // ── STATE ────────────────────────────────────────────────────────────────────
 let filtered   = [];
 let currentPage = 1;
-const PER_PAGE  = 48;
+let PER_PAGE  = 48;
 let currentView = 'grid';
 let cart        = {};   // key: eid_blcol → {part, qty}
 let wishlist    = new Set();
 let searchTimer = null;
+
+// ── CURRENCY ─────────────────────────────────────────────────────────────────
+const RATES = {USD:1,EUR:0.92,GBP:0.79,JPY:157.3,CNY:7.24,CAD:1.36,AUD:1.52,CHF:0.90,INR:83.4,BRL:4.97,MXN:17.2,KRW:1340,SEK:10.7,NOK:10.6,DKK:6.89,PLN:3.96,CZK:23.1,HUF:360,TRY:32.4,SGD:1.34};
+const SYMBOLS = {USD:'$',EUR:'€',GBP:'£',JPY:'¥',CNY:'¥',CAD:'CA$',AUD:'A$',CHF:'Fr',INR:'₹',BRL:'R$',MXN:'$',KRW:'₩',SEK:'kr',NOK:'kr',DKK:'kr',PLN:'zł',CZK:'Kč',HUF:'Ft',TRY:'₺',SGD:'S$'};
+let activeCurrency = 'USD';
+
+function setCurrency(code) {
+  activeCurrency = code;
+  document.getElementById('currencySel').value = code;
+  renderPage();
+}
+
+function fmtPrice(usd) {
+  if (!usd && usd !== 0) return '—';
+  const val = usd * RATES[activeCurrency];
+  const sym = SYMBOLS[activeCurrency];
+  return sym + (val < 10 ? val.toFixed(2) : val < 100 ? val.toFixed(1) : Math.round(val).toLocaleString());
+}
+
+function changePerPage(val) {
+  PER_PAGE = parseInt(val);
+  currentPage = 1;
+  renderPage();
+}
 
 // ── MOBILE FILTER TOGGLE ──────────────────────────────────────────────────────
 function toggleMobileFilters(){
@@ -587,7 +655,7 @@ function initials(name) {
 
 function cardHTML(p) {
   const wished = wishlist.has(p.eid);
-  const price  = p.aavg > 0 ? '$'+p.aavg.toFixed(3) : (p.amin > 0 ? '$'+p.amin.toFixed(3) : '—');
+  const price  = fmtPrice(p.aavg > 0 ? p.aavg : (p.amin > 0 ? p.amin : null));
   return `<div class="part-card" onclick="openDetail(${p.eid})">
     <div class="part-img-wrap">
       ${imgTag(p,'part-img')}
@@ -614,7 +682,7 @@ function cardHTML(p) {
 
 function rowHTML(p) {
   const wished = wishlist.has(p.eid);
-  const price  = p.aavg > 0 ? '$'+p.aavg.toFixed(3) : '—';
+  const price  = fmtPrice(p.aavg > 0 ? p.aavg : null);
   return `<div class="part-row" onclick="openDetail(${p.eid})">
     <div class="img-wrap" style="position:relative">
       ${imgTag(p,'row-img')}
@@ -739,20 +807,20 @@ function renderCartPanel() {
       <div class="ci-img-fb" style="background:${p.ccss};display:none">${initials(p.cname)}</div>
       <div class="ci-info">
         <div class="ci-name">BL ${p.blp} — ${p.cname}</div>
-        <div class="ci-sub">EID ${p.eid} · avg $${p.aavg.toFixed(3)}</div>
+        <div class="ci-sub">EID ${p.eid} · avg ${fmtPrice(p.aavg)}</div>
         <div class="ci-qty" style="margin-top:4px">
           <button class="ci-qbtn" onclick="changeQty('${key}',-1)">−</button>
           <span class="ci-qval">${ci.qty}</span>
           <button class="ci-qbtn" onclick="changeQty('${key}',1)">+</button>
         </div>
       </div>
-      <span class="ci-price">$${(p.aavg*ci.qty).toFixed(2)}</span>
+      <span class="ci-price">${fmtPrice(p.aavg*ci.qty)}</span>
       <button class="ci-del" onclick="removeFromCart('${key}')" title="Remove">🗑</button>
     </div>`;
   }).join('');
 
   const total = Object.values(cart).reduce((s,ci)=>s+(ci.part.aavg*ci.qty),0);
-  document.getElementById('cartTotal').textContent = '$'+total.toFixed(2);
+  document.getElementById('cartTotal').textContent = fmtPrice(total);
   footer.style.display = '';
 }
 
@@ -813,17 +881,17 @@ function openDetail(eid) {
       <tr><th></th><th>Min price</th><th>Avg price</th><th>Qty-wtd avg</th><th>Max price</th></tr>
       <tr>
         <td style="font-weight:700">📈 Sold</td>
-        <td>${p.smin>0?'$'+p.smin.toFixed(3):'—'}</td>
-        <td>${p.savg>0?'$'+p.savg.toFixed(3):'—'}</td>
+        <td>${fmtPrice(p.smin>0?p.smin:null)}</td>
+        <td>${fmtPrice(p.savg>0?p.savg:null)}</td>
         <td>—</td>
-        <td>${p.smax>0?'$'+p.smax.toFixed(3):'—'}</td>
+        <td>${fmtPrice(p.smax>0?p.smax:null)}</td>
       </tr>
       <tr>
         <td style="font-weight:700">🏪 Available</td>
-        <td>${p.amin>0?'$'+p.amin.toFixed(3):'—'}</td>
-        <td><strong>${p.aavg>0?'$'+p.aavg.toFixed(3):'—'}</strong></td>
+        <td>${fmtPrice(p.amin>0?p.amin:null)}</td>
+        <td><strong>${fmtPrice(p.aavg>0?p.aavg:null)}</strong></td>
         <td>—</td>
-        <td>${p.amax>0?'$'+p.amax.toFixed(3):'—'}</td>
+        <td>${fmtPrice(p.amax>0?p.amax:null)}</td>
       </tr>
       <tr>
         <td colspan="5" style="font-size:11px;color:var(--hint);padding-top:8px">

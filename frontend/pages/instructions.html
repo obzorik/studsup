@@ -68,7 +68,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .scard{background:#fff;border:1px solid #e8e7e2;border-radius:12px;overflow:hidden;cursor:pointer;transition:all .15s}
 .scard:hover{border-color:#ddd;box-shadow:0 4px 16px rgba(0,0,0,.08)}
 .scard-inner{display:flex;gap:0}
-.scard-thumb{width:110px;min-height:100px;background:#f5f4ef;display:flex;align-items:center;justify-content:center;font-size:48px;flex-shrink:0;border-right:1px solid #e8e7e2}
+.scard-thumb{width:110px;min-height:100px;background:#f5f4ef;display:flex;align-items:center;justify-content:center;font-size:48px;flex-shrink:0;border-right:1px solid #e8e7e2;overflow:hidden}
+.scard-thumb img{width:110px;height:100%;object-fit:cover;display:block}
 .scard-body{flex:1;padding:14px}
 .scard-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
 .scard-title{font-size:15px;font-weight:700;margin-bottom:2px}
@@ -122,7 +123,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .set-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
 .gc{background:#fff;border:1px solid #e8e7e2;border-radius:12px;overflow:hidden;cursor:pointer;transition:all .15s}
 .gc:hover{transform:translateY(-2px);box-shadow:0 5px 16px rgba(0,0,0,.08)}
-.gc-img{height:120px;background:#f5f4ef;display:flex;align-items:center;justify-content:center;font-size:48px;border-bottom:1px solid #e8e7e2}
+.gc-img{height:120px;background:#f5f4ef;display:flex;align-items:center;justify-content:center;font-size:48px;border-bottom:1px solid #e8e7e2;overflow:hidden}
+.gc-img img{width:100%;height:120px;object-fit:cover;display:block}
 .gc-body{padding:12px}
 .gc-name{font-size:13px;font-weight:700;margin-bottom:2px}
 .gc-sub{font-size:11px;color:#888;margin-bottom:8px}
@@ -470,37 +472,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="modal-sub" id="dlSub">Choose format and language</div>
 
     <div id="dlOptions">
-      <div class="dl-option" onclick="startDownload(this,'PDF booklet — Book 1 of 3')">
-        <div class="dl-ico" style="background:#FCEBEB">📄</div>
-        <div><div class="dl-name">PDF booklet — Book 1 of 3</div><div class="dl-desc">Original LEGO scan · 148 pages · 24 MB</div></div>
-        <span class="dl-badge" style="background:#E1F5EE;color:#085041">Available</span>
-      </div>
-      <div class="dl-option" onclick="startDownload(this,'PDF booklet — Book 2 of 3')">
-        <div class="dl-ico" style="background:#FCEBEB">📄</div>
-        <div><div class="dl-name">PDF booklet — Book 2 of 3</div><div class="dl-desc">Original LEGO scan · 132 pages · 21 MB</div></div>
-        <span class="dl-badge" style="background:#E1F5EE;color:#085041">Available</span>
-      </div>
-      <div class="dl-option" onclick="startDownload(this,'PDF booklet — Book 3 of 3')">
-        <div class="dl-ico" style="background:#FCEBEB">📄</div>
-        <div><div class="dl-name">PDF booklet — Book 3 of 3</div><div class="dl-desc">Original LEGO scan · 156 pages · 26 MB</div></div>
-        <span class="dl-badge" style="background:#E1F5EE;color:#085041">Available</span>
-      </div>
-      <div class="dl-option" onclick="startDownload(this,'Parts list (.xml)')">
-        <div class="dl-ico" style="background:#E6F1FB">📊</div>
-        <div><div class="dl-name">Parts list (.xml)</div><div class="dl-desc">BrickLink-compatible · 4,514 parts · 128 KB</div></div>
-        <span class="dl-badge" style="background:#E1F5EE;color:#085041">Available</span>
-      </div>
-      <div class="dl-option" onclick="startDownload(this,'Parts list (.csv)')">
-        <div class="dl-ico" style="background:#E1F5EE">📋</div>
-        <div><div class="dl-name">Parts list (.csv)</div><div class="dl-desc">Spreadsheet-ready · 4,514 rows</div></div>
-        <span class="dl-badge" style="background:#E1F5EE;color:#085041">Available</span>
-      </div>
-      <div class="dl-option" style="opacity:.5;cursor:not-allowed" onclick="toast('Studio file not yet available for this set')">
-        <div class="dl-ico" style="background:#f5f4ef">🧩</div>
-        <div><div class="dl-name">Studio file (.io)</div><div class="dl-desc">3D model — not yet available</div></div>
-        <span class="dl-badge" style="background:#f5f4ef;color:#888">Coming soon</span>
-      </div>
-      <div style="margin-top:12px;font-size:12px;color:#888">Language: <strong>English</strong> · <a style="color:#1a73e8;cursor:pointer" onclick="toast('Language selection: EN, DE, LV, RU, FR, PL, NL…')">Change language</a></div>
+      <div id="dlOptionsList"></div>
+      <div style="margin-top:12px;font-size:12px;color:#888">Official LEGO instructions — PDF opens in a new tab</div>
     </div>
 
     <div id="dlProgress" style="display:none;text-align:center;padding:20px 0">
@@ -515,6 +488,62 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </div>
 
 <script>
+// Real set images from Rebrickable CDN
+const SET_IMG = {
+  '10305': 'https://cdn.rebrickable.com/media/sets/10305-1.jpg',
+  '75192': 'https://cdn.rebrickable.com/media/sets/75192-1.jpg',
+  '42156': 'https://cdn.rebrickable.com/media/sets/42156-1.jpg',
+  '10276': 'https://cdn.rebrickable.com/media/sets/10276-1.jpg',
+  '71043': 'https://cdn.rebrickable.com/media/sets/71043-1.jpg',
+  '60388': 'https://cdn.rebrickable.com/media/sets/60388-1.jpg',
+  '75346': 'https://cdn.rebrickable.com/media/sets/75346-1.jpg',
+  '31120': 'https://cdn.rebrickable.com/media/sets/31120-1.jpg',
+  '42115': 'https://cdn.rebrickable.com/media/sets/42115-1.jpg',
+  '10294': 'https://cdn.rebrickable.com/media/sets/10294-1.jpg',
+};
+
+// Real instruction URLs from LEGO.com (official PDFs)
+const SET_INSTRUCTIONS = {
+  '10305': [
+    {label:'Book 1 of 3 — PDF',url:'https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6379416.pdf'},
+    {label:'Book 2 of 3 — PDF',url:'https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6379417.pdf'},
+    {label:'Book 3 of 3 — PDF',url:'https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6379418.pdf'},
+  ],
+  '75192': [
+    {label:'Book 1 of 2 — PDF',url:'https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6137392.pdf'},
+    {label:'Book 2 of 2 — PDF',url:'https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6137394.pdf'},
+  ],
+  '42156': [
+    {label:'Book 1 of 1 — PDF',url:'https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6426476.pdf'},
+  ],
+  '10276': [
+    {label:'Book 1 of 4 — PDF',url:'https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6288186.pdf'},
+    {label:'Book 2 of 4 — PDF',url:'https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6288187.pdf'},
+    {label:'Book 3 of 4 — PDF',url:'https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6288188.pdf'},
+    {label:'Book 4 of 4 — PDF',url:'https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6288189.pdf'},
+  ],
+  '71043': [
+    {label:'Book 1 of 3 — PDF',url:'https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6215083.pdf'},
+    {label:'Book 2 of 3 — PDF',url:'https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6215084.pdf'},
+    {label:'Book 3 of 3 — PDF',url:'https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6215085.pdf'},
+  ],
+  '60388': [
+    {label:'Book 1 of 1 — PDF',url:'https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6422926.pdf'},
+  ],
+  '75346': [
+    {label:'Book 1 of 1 — PDF',url:'https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6426904.pdf'},
+  ],
+  '31120': [
+    {label:'Book 1 of 1 — PDF',url:'https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6323046.pdf'},
+  ],
+  '10294': [
+    {label:'Book 1 of 4 — PDF',url:'https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6346087.pdf'},
+    {label:'Book 2 of 4 — PDF',url:'https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6346088.pdf'},
+    {label:'Book 3 of 4 — PDF',url:'https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6346089.pdf'},
+    {label:'Book 4 of 4 — PDF',url:'https://www.lego.com/cdn/product-assets/product.bi.core.pdf/6346090.pdf'},
+  ],
+};
+
 const SETS=[
   {id:'10305',name:"Lion Knights' Castle",theme:'castle',year:2022,parts:4514,booklets:3,ico:'🏰',partsAvail:true,instrAvail:true,studioAvail:false,myMatch:72,myStatus:'partial'},
   {id:'75192',name:'Millennium Falcon',theme:'star',year:2017,parts:7541,booklets:2,ico:'🌌',partsAvail:true,instrAvail:true,studioAvail:true,myMatch:88,myStatus:'full'},
@@ -522,13 +551,19 @@ const SETS=[
   {id:'10276',name:'Colosseum',theme:'icons',year:2020,parts:9036,booklets:4,ico:'🏛️',partsAvail:true,instrAvail:true,studioAvail:false,myMatch:41,myStatus:'partial'},
   {id:'71043',name:'Hogwarts Castle',theme:'other',year:2018,parts:6020,booklets:3,ico:'🧙',partsAvail:true,instrAvail:true,studioAvail:true,myMatch:72,myStatus:'partial'},
   {id:'60388',name:'Gaming Tournament Truck',theme:'city',year:2023,parts:456,booklets:1,ico:'🚗',partsAvail:true,instrAvail:true,studioAvail:false,myMatch:100,myStatus:'full'},
-  {id:'75346',name:"Pirate Snub Fighter",theme:'star',year:2023,parts:285,booklets:1,ico:'🚀',partsAvail:true,instrAvail:true,studioAvail:false,myMatch:55,myStatus:'partial'},
+  {id:'75346',name:'Pirate Snub Fighter',theme:'star',year:2023,parts:285,booklets:1,ico:'🚀',partsAvail:true,instrAvail:true,studioAvail:false,myMatch:55,myStatus:'partial'},
   {id:'31120',name:'Medieval Castle',theme:'castle',year:2021,parts:1426,booklets:1,ico:'🏰',partsAvail:true,instrAvail:true,studioAvail:true,myMatch:0,myStatus:'none'},
   {id:'42115',name:'Lamborghini Sián',theme:'technic',year:2020,parts:3696,booklets:2,ico:'⚙️',partsAvail:true,instrAvail:false,studioAvail:false,myMatch:18,myStatus:'none'},
   {id:'10294',name:'Titanic',theme:'icons',year:2021,parts:9090,booklets:4,ico:'🚢',partsAvail:true,instrAvail:true,studioAvail:false,myMatch:62,myStatus:'partial'},
 ];
 
 let currentTheme='all', currentView='list';
+
+function setThumb(s, cls) {
+  const img = SET_IMG[s.id];
+  if(img) return `<img src="${img}" alt="${s.name}" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><span style="display:none;font-size:48px;width:100%;height:100%;align-items:center;justify-content:center">${s.ico}</span>`;
+  return s.ico;
+}
 
 function statusPill(s,pct){
   if(s==='full')return `<span class="status-pill sp-ok">✅ Parts match: ${pct}%</span>`;
@@ -553,7 +588,7 @@ function renderList(data){
   document.getElementById('viewList').innerHTML=data.map(s=>`
     <div class="scard">
       <div class="scard-inner">
-        <div class="scard-thumb">${s.ico}</div>
+        <div class="scard-thumb">${setThumb(s)}</div>
         <div class="scard-body">
           <div class="scard-head">
             <div style="flex:1">
@@ -593,7 +628,7 @@ function renderList(data){
 function renderGrid(data){
   document.getElementById('viewGrid').innerHTML=data.map(s=>`
     <div class="gc">
-      <div class="gc-img">${s.ico}</div>
+      <div class="gc-img">${setThumb(s)}</div>
       <div class="gc-body">
         <div class="gc-name">${s.name}</div>
         <div class="gc-sub">#${s.id} · ${s.year} · ${s.parts.toLocaleString()} parts</div>
@@ -658,7 +693,7 @@ applyFilters();
 document.getElementById('mySetsBody').innerHTML=SETS.slice(0,5).map(s=>`
   <div class="scard" style="margin-bottom:10px">
     <div class="scard-inner">
-      <div class="scard-thumb">${s.ico}</div>
+      <div class="scard-thumb">${setThumb(s)}</div>
       <div class="scard-body">
         <div class="scard-head"><div><div class="scard-title">${s.name}</div><div class="scard-sub">#${s.id} · ${s.year} · ${s.parts.toLocaleString()} parts</div></div></div>
         <div class="status-row">
@@ -679,7 +714,7 @@ document.getElementById('mySetsBody').innerHTML=SETS.slice(0,5).map(s=>`
 document.getElementById('recentSets').innerHTML=SETS.slice(0,3).map((s,i)=>`
   <div class="scard" style="margin-bottom:10px">
     <div class="scard-inner">
-      <div class="scard-thumb">${s.ico}</div>
+      <div class="scard-thumb">${setThumb(s)}</div>
       <div class="scard-body">
         <div class="scard-head"><div><div class="scard-title">${s.name}</div><div class="scard-sub">#${s.id} · Viewed ${['2 hours','yesterday','3 days'][i]} ago</div></div></div>
         <div class="scard-actions">
@@ -703,34 +738,56 @@ function showMainTab(name,btn){
 // DOWNLOAD MODAL
 function openDlModal(id,name){
   document.getElementById('dlTitle').textContent='Download: '+name;
-  document.getElementById('dlSub').textContent='Set #'+id+' · Choose file format';
+  document.getElementById('dlSub').textContent='Set #'+id+' · Official LEGO instructions';
   document.getElementById('dlOptions').style.display='';
   document.getElementById('dlProgress').style.display='none';
   document.getElementById('dlModal').style.display='flex';
+
+  // Populate real download links
+  const instrs = SET_INSTRUCTIONS[id] || [];
+  const set = SETS.find(s=>s.id===id)||{};
+  let html = '';
+  if(instrs.length > 0) {
+    instrs.forEach((item,i) => {
+      html += `<div class="dl-option" onclick="startDownload(this,'${item.label.replace(/'/g,"\\'")}','${item.url}')">
+        <div class="dl-ico" style="background:#FCEBEB">📄</div>
+        <div><div class="dl-name">${item.label}</div><div class="dl-desc">Official LEGO PDF — opens in new tab</div></div>
+        <span class="dl-badge" style="background:#E1F5EE;color:#085041">↗ Open PDF</span>
+      </div>`;
+    });
+  } else {
+    html += `<div class="dl-option" style="opacity:.5;cursor:not-allowed">
+      <div class="dl-ico" style="background:#f5f4ef">📄</div>
+      <div><div class="dl-name">Instructions not available</div><div class="dl-desc">Not yet in our library</div></div>
+      <span class="dl-badge" style="background:#f5f4ef;color:#888">Unavailable</span>
+    </div>`;
+  }
+  // Parts list via Rebrickable
+  html += `<div class="dl-option" onclick="startDownload(this,'Parts list (Rebrickable)','https://rebrickable.com/sets/${id}-1/#parts')">
+    <div class="dl-ico" style="background:#E6F1FB">📊</div>
+    <div><div class="dl-name">Parts list — Rebrickable</div><div class="dl-desc">Full inventory on rebrickable.com</div></div>
+    <span class="dl-badge" style="background:#E1F5EE;color:#085041">↗ Open</span>
+  </div>`;
+  // Studio file if available
+  if(set.studioAvail){
+    html += `<div class="dl-option" onclick="startDownload(this,'Studio file','https://rebrickable.com/sets/${id}-1/')">
+      <div class="dl-ico" style="background:#f5f4ef">🧩</div>
+      <div><div class="dl-name">Studio file (.io)</div><div class="dl-desc">3D model via Rebrickable</div></div>
+      <span class="dl-badge" style="background:#E1F5EE;color:#085041">↗ Open</span>
+    </div>`;
+  }
+  document.getElementById('dlOptionsList').innerHTML = html;
 }
 function closeDlModal(){
   document.getElementById('dlModal').style.display='none';
 }
-function startDownload(el,name){
-  document.getElementById('dlOptions').style.display='none';
-  document.getElementById('dlProgress').style.display='block';
-  document.getElementById('dlProgressName').textContent='Downloading: '+name;
-  let pct=0;
-  const fill=document.getElementById('dlFill');
-  const pctEl=document.getElementById('dlPct');
-  const iv=setInterval(()=>{
-    pct+=Math.round(4+Math.random()*8);
-    if(pct>=100){pct=100;clearInterval(iv);
-      setTimeout(()=>{
-        document.getElementById('dlProgressName').textContent='✅ Download complete!';
-        pctEl.textContent='Done';
-        fill.style.background='#22c55e';
-        setTimeout(closeDlModal,1200);
-      },300);
-    }
-    fill.style.width=pct+'%';
-    pctEl.textContent=pct+'%';
-  },80);
+function startDownload(el,name,url){
+  if(url) {
+    window.open(url,'_blank','noopener');
+    el.style.background='#f0fff4';
+    el.querySelector('.dl-badge').textContent='✅ Opened';
+    return;
+  }
 }
 
 // MISSING PARTS CHECKER

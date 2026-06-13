@@ -269,6 +269,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="profile-actions">
       <button class="btn-msg">✉ Message</button>
       <button class="btn-follow" onclick="this.textContent='✓ Following';this.style.background='#22c55e'">Follow</button>
+      <button class="btn-msg" onclick="openSettings()" style="background:#FFD700;color:#1a1a2e;font-weight:700">⚙️ Edit Profile</button>
     </div>
   </div>
   <div class="profile-stats">
@@ -278,6 +279,111 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="pst"><strong>4.9★</strong>Seller rating</div>
     <div class="pst"><strong>12</strong>Blog posts</div>
     <div class="pst"><strong>€2,340</strong>Collection value</div>
+  </div>
+</div>
+
+<!-- ── ACCOUNT SETTINGS MODAL ── -->
+<div id="settingsModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:500;align-items:center;justify-content:center" onclick="if(event.target===this)closeSettings()">
+  <div style="background:#fff;border-radius:16px;width:min(560px,95vw);max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+    <div style="padding:20px 24px;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;justify-content:space-between">
+      <div style="font-size:18px;font-weight:800">⚙️ Account Settings</div>
+      <button onclick="closeSettings()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#888">✕</button>
+    </div>
+    <!-- Settings tabs -->
+    <div style="display:flex;gap:0;border-bottom:1px solid #f0f0f0">
+      <button class="stab on" id="stab-profile" onclick="showStab('profile',this)" style="flex:1;padding:10px;border:none;background:none;font-size:13px;font-weight:600;cursor:pointer;border-bottom:2px solid #FFD700">👤 Profile</button>
+      <button class="stab" id="stab-account" onclick="showStab('account',this)" style="flex:1;padding:10px;border:none;background:none;font-size:13px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;color:#888">🔑 Account</button>
+      <button class="stab" id="stab-photo" onclick="showStab('photo',this)" style="flex:1;padding:10px;border:none;background:none;font-size:13px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;color:#888">🖼️ Photo</button>
+    </div>
+    <div style="padding:20px 24px">
+
+      <!-- PROFILE TAB -->
+      <div id="spanel-profile">
+        <div style="margin-bottom:14px">
+          <label style="display:block;font-size:12px;font-weight:700;color:#888;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px">Display Name</label>
+          <input id="editName" type="text" value="Georgs Trupins" style="width:100%;border:1px solid #ddd;border-radius:8px;padding:9px 12px;font-size:14px;outline:none;box-sizing:border-box">
+        </div>
+        <div style="margin-bottom:14px">
+          <label style="display:block;font-size:12px;font-weight:700;color:#888;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px">Username</label>
+          <input id="editHandle" type="text" value="georgs_bricks" style="width:100%;border:1px solid #ddd;border-radius:8px;padding:9px 12px;font-size:14px;outline:none;box-sizing:border-box">
+        </div>
+        <div style="margin-bottom:14px">
+          <label style="display:block;font-size:12px;font-weight:700;color:#888;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px">Location</label>
+          <input id="editLocation" type="text" value="Riga, Latvia" style="width:100%;border:1px solid #ddd;border-radius:8px;padding:9px 12px;font-size:14px;outline:none;box-sizing:border-box">
+        </div>
+        <div style="margin-bottom:14px">
+          <label style="display:block;font-size:12px;font-weight:700;color:#888;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px">Bio</label>
+          <textarea id="editBio" rows="4" style="width:100%;border:1px solid #ddd;border-radius:8px;padding:9px 12px;font-size:14px;outline:none;resize:vertical;box-sizing:border-box;font-family:inherit">AFOL since 2004. Technic and Castle are my main themes — currently working on a 1:8 scale pneumatic engine and a 4,000-part medieval harbour diorama.</textarea>
+        </div>
+        <div style="margin-bottom:14px">
+          <label style="display:block;font-size:12px;font-weight:700;color:#888;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px">Website / Social link</label>
+          <input id="editWebsite" type="url" placeholder="https://your-site.com" style="width:100%;border:1px solid #ddd;border-radius:8px;padding:9px 12px;font-size:14px;outline:none;box-sizing:border-box">
+        </div>
+        <button onclick="saveProfileInfo()" style="width:100%;background:#FFD700;border:none;border-radius:8px;padding:11px;font-size:14px;font-weight:700;cursor:pointer;margin-top:4px">Save profile</button>
+      </div>
+
+      <!-- ACCOUNT TAB -->
+      <div id="spanel-account" style="display:none">
+        <div style="background:#fffbea;border:1px solid #FFD700;border-radius:8px;padding:12px 14px;margin-bottom:16px;font-size:13px">
+          Signed in as <strong id="settingsEmail">georgs@studsup.com</strong>
+        </div>
+        <div style="margin-bottom:14px">
+          <label style="display:block;font-size:12px;font-weight:700;color:#888;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px">New email address</label>
+          <input id="newEmail" type="email" placeholder="new@email.com" style="width:100%;border:1px solid #ddd;border-radius:8px;padding:9px 12px;font-size:14px;outline:none;box-sizing:border-box">
+        </div>
+        <div style="margin-bottom:16px">
+          <label style="display:block;font-size:12px;font-weight:700;color:#888;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px">Confirm current password</label>
+          <input id="confirmPassEmail" type="password" placeholder="Your current password" style="width:100%;border:1px solid #ddd;border-radius:8px;padding:9px 12px;font-size:14px;outline:none;box-sizing:border-box">
+        </div>
+        <button onclick="changeEmail()" style="width:100%;background:#1a1a2e;color:#fff;border:none;border-radius:8px;padding:11px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:24px">Update email</button>
+        <hr style="border:none;border-top:1px solid #eee;margin:0 0 20px">
+        <div style="font-size:15px;font-weight:700;margin-bottom:14px">Change password</div>
+        <div style="margin-bottom:12px">
+          <label style="display:block;font-size:12px;font-weight:700;color:#888;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px">Current password</label>
+          <input id="oldPass" type="password" placeholder="Current password" style="width:100%;border:1px solid #ddd;border-radius:8px;padding:9px 12px;font-size:14px;outline:none;box-sizing:border-box">
+        </div>
+        <div style="margin-bottom:12px">
+          <label style="display:block;font-size:12px;font-weight:700;color:#888;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px">New password</label>
+          <input id="newPass" type="password" placeholder="Min. 8 characters" oninput="checkPassStrength(this)" style="width:100%;border:1px solid #ddd;border-radius:8px;padding:9px 12px;font-size:14px;outline:none;box-sizing:border-box">
+          <div id="passStrengthBar" style="height:4px;border-radius:2px;margin-top:6px;background:#eee;transition:.3s"><div id="passStrengthFill" style="height:100%;border-radius:2px;width:0;transition:.3s"></div></div>
+          <div id="passStrengthLabel" style="font-size:11px;color:#888;margin-top:3px"></div>
+        </div>
+        <div style="margin-bottom:16px">
+          <label style="display:block;font-size:12px;font-weight:700;color:#888;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px">Confirm new password</label>
+          <input id="newPass2" type="password" placeholder="Repeat new password" style="width:100%;border:1px solid #ddd;border-radius:8px;padding:9px 12px;font-size:14px;outline:none;box-sizing:border-box">
+        </div>
+        <button onclick="changePassword()" style="width:100%;background:#1a1a2e;color:#fff;border:none;border-radius:8px;padding:11px;font-size:14px;font-weight:700;cursor:pointer">Change password</button>
+        <hr style="border:none;border-top:1px solid #eee;margin:24px 0 16px">
+        <div style="font-size:15px;font-weight:700;margin-bottom:8px;color:#ef4444">Danger zone</div>
+        <button onclick="if(confirm('Delete account? This cannot be undone.'))toast('Account deletion requires email confirmation. Check your inbox.','info')" style="width:100%;background:#fff;border:1px solid #ef4444;color:#ef4444;border-radius:8px;padding:11px;font-size:14px;font-weight:600;cursor:pointer">Delete account</button>
+      </div>
+
+      <!-- PHOTO TAB -->
+      <div id="spanel-photo" style="display:none">
+        <div style="text-align:center;margin-bottom:20px">
+          <div id="avatarPreview" style="width:100px;height:100px;border-radius:50%;background:#FF4444;display:flex;align-items:center;justify-content:center;color:#fff;font-size:36px;font-weight:700;margin:0 auto 12px;overflow:hidden">GT</div>
+          <div style="font-size:13px;color:#888">Current avatar</div>
+        </div>
+        <div style="border:2px dashed #ddd;border-radius:12px;padding:24px;text-align:center;cursor:pointer;margin-bottom:16px" onclick="document.getElementById('avatarFile').click()" id="avatarDrop">
+          <div style="font-size:32px;margin-bottom:8px">📷</div>
+          <div style="font-size:14px;font-weight:600;margin-bottom:4px">Upload profile photo</div>
+          <div style="font-size:12px;color:#888">JPG, PNG or GIF · max 5 MB · Click or drag to upload</div>
+          <input type="file" id="avatarFile" accept="image/*" style="display:none" onchange="previewAvatar(event)">
+        </div>
+        <div style="margin-bottom:16px">
+          <label style="display:block;font-size:12px;font-weight:700;color:#888;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px">Or choose avatar colour</label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            ${['#FF4444','#FF8C00','#FFD700','#22c55e','#06b6d4','#3b82f6','#8b5cf6','#ec4899','#1a1a2e'].map(c=>`<div onclick="setAvatarColor('${c}')" style="width:36px;height:36px;border-radius:50%;background:${c};cursor:pointer;border:3px solid transparent;transition:.15s" data-color="${c}"></div>`).join('')}
+          </div>
+        </div>
+        <div style="margin-bottom:16px">
+          <label style="display:block;font-size:12px;font-weight:700;color:#888;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px">Cover / banner image URL</label>
+          <input id="coverUrl" type="url" placeholder="https://..." style="width:100%;border:1px solid #ddd;border-radius:8px;padding:9px 12px;font-size:14px;outline:none;box-sizing:border-box">
+        </div>
+        <button onclick="savePhoto()" style="width:100%;background:#FFD700;border:none;border-radius:8px;padding:11px;font-size:14px;font-weight:700;cursor:pointer">Save photo settings</button>
+      </div>
+
+    </div>
   </div>
 </div>
 
@@ -879,6 +985,125 @@ function getCssForColorId(id){
     88:'#c870a0',89:'#b390d8',95:'#7c9051',97:'#ff7b54',127:'#daa016',134:'#c7822a',
     135:'#c7af5e',148:'#58595a',152:'#352100',154:'#f2a5b8'};
   return map[id]||'#aaaaaa';
+}
+</script>
+<script>
+// ── ACCOUNT SETTINGS ─────────────────────────────────────────────────────────
+function openSettings(){
+  const u = JSON.parse(sessionStorage.getItem('su_user')||'{}');
+  document.getElementById('settingsEmail').textContent = u.email||'georgs@studsup.com';
+  document.getElementById('settingsModal').style.display='flex';
+  showStab('profile', document.getElementById('stab-profile'));
+}
+function closeSettings(){
+  document.getElementById('settingsModal').style.display='none';
+}
+function showStab(name, btn){
+  ['profile','account','photo'].forEach(t=>{
+    const el=document.getElementById('spanel-'+t);
+    if(el) el.style.display=t===name?'':'none';
+  });
+  document.querySelectorAll('.stab').forEach(b=>{
+    b.style.borderBottom='2px solid transparent';
+    b.style.color='#888';
+  });
+  btn.style.borderBottom='2px solid #FFD700';
+  btn.style.color='#1a1a2e';
+}
+function saveProfileInfo(){
+  const name  = document.getElementById('editName').value.trim();
+  const handle= document.getElementById('editHandle').value.trim();
+  const loc   = document.getElementById('editLocation').value.trim();
+  const bio   = document.getElementById('editBio').value.trim();
+  if(!name){toast('Display name cannot be empty','error');return;}
+  // Update session
+  const u=JSON.parse(sessionStorage.getItem('su_user')||'{}');
+  u.name=name; u.handle=handle;
+  sessionStorage.setItem('su_user',JSON.stringify(u));
+  // Update visible UI
+  document.querySelector('.profile-name').textContent=name;
+  document.querySelector('.profile-handle').textContent='@'+handle+(loc?' · '+loc:'');
+  toast('Profile updated ✓','success');
+  closeSettings();
+}
+function changeEmail(){
+  const email=document.getElementById('newEmail').value.trim();
+  const pass =document.getElementById('confirmPassEmail').value;
+  if(!email){toast('Enter new email','error');return;}
+  if(!pass){toast('Enter your current password to confirm','error');return;}
+  toast('Confirmation email sent to '+email,'success');
+  document.getElementById('newEmail').value='';
+  document.getElementById('confirmPassEmail').value='';
+}
+function checkPassStrength(inp){
+  const v=inp.value;
+  let score=0;
+  if(v.length>=8) score++;
+  if(/[A-Z]/.test(v)) score++;
+  if(/[0-9]/.test(v)) score++;
+  if(/[^A-Za-z0-9]/.test(v)) score++;
+  const fill=document.getElementById('passStrengthFill');
+  const label=document.getElementById('passStrengthLabel');
+  const colors=['#ef4444','#f97316','#eab308','#22c55e'];
+  const labels=['Too short','Weak','Good','Strong'];
+  fill.style.width=(score*25)+'%';
+  fill.style.background=colors[score-1]||'#eee';
+  label.textContent=v.length?labels[score-1]||'':'';
+}
+function changePassword(){
+  const old=document.getElementById('oldPass').value;
+  const n1 =document.getElementById('newPass').value;
+  const n2 =document.getElementById('newPass2').value;
+  if(!old||!n1||!n2){toast('Fill in all password fields','error');return;}
+  if(n1!==n2){toast('New passwords do not match','error');return;}
+  if(n1.length<8){toast('Password must be at least 8 characters','error');return;}
+  toast('Password changed successfully ✓','success');
+  ['oldPass','newPass','newPass2'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('passStrengthFill').style.width='0';
+  document.getElementById('passStrengthLabel').textContent='';
+}
+function previewAvatar(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const preview=document.getElementById('avatarPreview');
+    preview.innerHTML=`<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover;display:block">`;
+    // Also update nav avatar
+    document.querySelectorAll('.nav-avatar,.profile-av').forEach(el=>{
+      el.innerHTML=`<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:50%">`;
+    });
+  };
+  reader.readAsDataURL(file);
+}
+function setAvatarColor(color){
+  const preview=document.getElementById('avatarPreview');
+  preview.style.background=color;
+  preview.innerHTML='GT';
+  // Highlight selected
+  document.querySelectorAll('[data-color]').forEach(el=>{
+    el.style.border=el.dataset.color===color?'3px solid #1a1a2e':'3px solid transparent';
+  });
+}
+function savePhoto(){
+  toast('Photo settings saved ✓','success');
+  closeSettings();
+}
+
+// Drag-and-drop for avatar
+const drop=document.getElementById('avatarDrop');
+if(drop){
+  drop.addEventListener('dragover',e=>{e.preventDefault();drop.style.borderColor='#FFD700';});
+  drop.addEventListener('dragleave',()=>{drop.style.borderColor='#ddd';});
+  drop.addEventListener('drop',e=>{
+    e.preventDefault();drop.style.borderColor='#ddd';
+    const file=e.dataTransfer.files[0];
+    if(file&&file.type.startsWith('image/')){
+      const dt=new DataTransfer();dt.items.add(file);
+      document.getElementById('avatarFile').files=dt.files;
+      previewAvatar({target:{files:[file]}});
+    }
+  });
 }
 </script>
 <script src="../js/shared.js"></script>

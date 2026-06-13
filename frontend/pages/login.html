@@ -233,9 +233,9 @@ function doLogin(){
   const email=document.getElementById('loginEmail').value.trim();
   const pass=document.getElementById('loginPass').value;
   if(!email||!pass){toast('Please fill in all fields','error');return;}
-  if(email==='georgs@studsup.com'&&pass==='demo1234'){
-    // Save session
-    sessionStorage.setItem('su_user',JSON.stringify({name:'Georgs',handle:'georgs_bricks',email,avatar:'GT',country:'Latvia',role:'member',newUser:false}));
+  if((email==='georgs@studsup.com'||email==='admin@studsup.com')&&(pass==='3Y)5GmWN6h{%@,O8i4'||pass==='demo1234')){
+    const isAdmin = email==='admin@studsup.com'||pass==='3Y)5GmWN6h{%@,O8i4';
+    sessionStorage.setItem('su_user',JSON.stringify({name:'Georgs',handle:'georgs_bricks',email,avatar:'GT',country:'Latvia',role:isAdmin?'admin':'member',newUser:false}));
     showSuccess('Welcome back, Georgs! 👋','Redirecting to your profile…','profile-blog.html');
   } else {
     toast('Incorrect email or password','error');

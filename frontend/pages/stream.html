@@ -232,7 +232,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="start-card">
       <h3>Start your own stream</h3>
       <p>Share your builds live with the StudsUp community</p>
-      <button class="btn-go-live">🔴 Go Live now</button>
+      <button class="btn-go-live" onclick="openGoLive()">🔴 Go Live now</button>
     </div>
   </div>
 
@@ -343,6 +343,219 @@ document.addEventListener('DOMContentLoaded', function() {
   const inp = document.getElementById('chatInp');
   if (inp) inp.addEventListener('keydown', e => { if(e.key==='Enter') sendChat(); });
 });
+</script>
+
+<!-- ── GO LIVE MODAL ── -->
+<div id="goLiveModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;align-items:center;justify-content:center" onclick="if(event.target===this)closeGoLive()">
+  <div style="background:#1a1a2e;border-radius:16px;width:min(680px,96vw);max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.5)">
+    <div style="padding:18px 22px;border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:space-between">
+      <div style="font-size:17px;font-weight:800;color:#fff">🔴 Go Live</div>
+      <button onclick="closeGoLive()" style="background:none;border:none;font-size:20px;cursor:pointer;color:rgba(255,255,255,.5)">✕</button>
+    </div>
+    <div style="padding:20px 22px">
+
+      <!-- Camera preview -->
+      <div style="position:relative;background:#000;border-radius:12px;overflow:hidden;aspect-ratio:16/9;margin-bottom:16px">
+        <video id="livePreview" autoplay muted playsinline style="width:100%;height:100%;object-fit:cover;display:block"></video>
+        <div id="noCameraMsg" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:rgba(255,255,255,.5)">
+          <div style="font-size:48px;margin-bottom:10px">📷</div>
+          <div style="font-size:14px">Camera preview will appear here</div>
+          <div style="font-size:12px;margin-top:4px;color:rgba(255,255,255,.3)">Click "Start camera" below</div>
+        </div>
+        <!-- Live controls overlay -->
+        <div id="liveControls" style="display:none;position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.7));padding:12px 16px;display:flex;gap:8px;align-items:center">
+          <button id="btnCam" onclick="toggleCamera()" style="background:rgba(255,255,255,.15);border:none;border-radius:6px;color:#fff;font-size:12px;font-weight:600;padding:6px 12px;cursor:pointer">📷 Cam ON</button>
+          <button id="btnMic" onclick="toggleMic()" style="background:rgba(255,255,255,.15);border:none;border-radius:6px;color:#fff;font-size:12px;font-weight:600;padding:6px 12px;cursor:pointer">🎤 Mic ON</button>
+          <button id="btnSpk" onclick="toggleSpeaker()" style="background:rgba(255,255,255,.15);border:none;border-radius:6px;color:#fff;font-size:12px;font-weight:600;padding:6px 12px;cursor:pointer">🔊 Audio ON</button>
+          <div id="liveTimer" style="margin-left:auto;font-size:12px;color:#fff;font-variant-numeric:tabular-nums"></div>
+        </div>
+      </div>
+
+      <!-- Stream setup -->
+      <div id="streamSetup">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+          <div>
+            <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.5);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px">Stream title</label>
+            <input id="streamTitle" type="text" placeholder="What are you building?" style="width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:9px 12px;font-size:13px;color:#fff;outline:none;box-sizing:border-box" onfocus="this.style.borderColor='#FFD700'" onblur="this.style.borderColor='rgba(255,255,255,.15)'">
+          </div>
+          <div>
+            <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.5);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px">Category</label>
+            <select id="streamCategory" style="width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:9px 12px;font-size:13px;color:#fff;outline:none;cursor:pointer;box-sizing:border-box">
+              <option value="building">🏗️ Building</option>
+              <option value="technic">⚙️ Technic</option>
+              <option value="castle">🏰 Castle</option>
+              <option value="unboxing">📦 Unboxing</option>
+              <option value="sorting">🗂️ Sorting</option>
+              <option value="custom">🎨 Custom / MOC</option>
+              <option value="review">🔍 Review</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:16px">
+          <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.5);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px">Camera &amp; Microphone</label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button onclick="startCamera()" id="btnStartCam" style="background:#FFD700;border:none;border-radius:8px;color:#1a1a2e;font-size:13px;font-weight:700;padding:9px 18px;cursor:pointer">📷 Start camera</button>
+            <button onclick="stopCamera()" id="btnStopCam" style="display:none;background:rgba(255,255,255,.1);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:600;padding:9px 18px;cursor:pointer">⏹ Stop camera</button>
+            <div id="deviceStatus" style="font-size:12px;color:rgba(255,255,255,.5);display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:6px 0"></div>
+          </div>
+        </div>
+        <div style="border-top:1px solid rgba(255,255,255,.08);padding-top:16px;display:flex;gap:10px;justify-content:flex-end">
+          <button onclick="closeGoLive()" style="background:rgba(255,255,255,.08);border:none;border-radius:8px;color:rgba(255,255,255,.7);font-size:13px;font-weight:600;padding:10px 20px;cursor:pointer">Cancel</button>
+          <button id="btnGoLive" onclick="goLive()" style="background:#FF4444;border:none;border-radius:8px;color:#fff;font-size:14px;font-weight:700;padding:10px 28px;cursor:pointer;opacity:.5" disabled>🔴 Go Live</button>
+        </div>
+      </div>
+
+      <!-- Live state (shown when streaming) -->
+      <div id="streamLive" style="display:none">
+        <div style="background:rgba(255,0,0,.1);border:1px solid rgba(255,0,0,.3);border-radius:8px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:10px">
+          <div style="width:10px;height:10px;border-radius:50%;background:#FF4444;animation:blink 1s infinite"></div>
+          <span style="color:#ff8888;font-size:13px;font-weight:700">You are LIVE</span>
+          <span id="viewerCount" style="color:rgba(255,255,255,.5);font-size:12px;margin-left:4px">0 watching</span>
+          <button onclick="endStream()" style="margin-left:auto;background:#FF4444;border:none;border-radius:6px;color:#fff;font-size:12px;font-weight:700;padding:7px 14px;cursor:pointer">⏹ End stream</button>
+        </div>
+        <div style="font-size:12px;color:rgba(255,255,255,.4);text-align:center">Use the camera/mic buttons on the preview to control your devices</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ── GO LIVE / CAMERA ──────────────────────────────────────────────────────────
+let liveStream = null;
+let camEnabled = false;
+let micEnabled = false;
+let spkEnabled = true;
+let isLive = false;
+let liveSeconds = 0;
+let liveTimerInterval = null;
+
+function openGoLive(){
+  document.getElementById('goLiveModal').style.display='flex';
+}
+function closeGoLive(){
+  if(isLive && !confirm('You are currently live. End stream and close?')) return;
+  endStream(true);
+  stopCamera();
+  document.getElementById('goLiveModal').style.display='none';
+}
+
+async function startCamera(){
+  try {
+    liveStream = await navigator.mediaDevices.getUserMedia({video:true, audio:true});
+    const vid = document.getElementById('livePreview');
+    vid.srcObject = liveStream;
+    vid.muted = true; // mute self-monitor to avoid feedback
+    document.getElementById('noCameraMsg').style.display='none';
+    document.getElementById('liveControls').style.display='flex';
+    document.getElementById('btnStartCam').style.display='none';
+    document.getElementById('btnStopCam').style.display='';
+    camEnabled = true;
+    micEnabled = true;
+    document.getElementById('btnGoLive').disabled=false;
+    document.getElementById('btnGoLive').style.opacity='1';
+    updateDeviceStatus();
+    toast('Camera and microphone ready ✓','success');
+  } catch(err) {
+    let msg = 'Could not access camera/microphone.';
+    if(err.name==='NotAllowedError') msg='Permission denied — allow camera access in your browser.';
+    else if(err.name==='NotFoundError') msg='No camera/microphone found on this device.';
+    else if(err.name==='NotReadableError') msg='Camera is already in use by another app.';
+    toast(msg,'error');
+    document.getElementById('deviceStatus').innerHTML=`<span style="color:#ff8888">⚠ ${msg}</span>`;
+  }
+}
+
+function stopCamera(){
+  if(liveStream){
+    liveStream.getTracks().forEach(t=>t.stop());
+    liveStream=null;
+  }
+  const vid=document.getElementById('livePreview');
+  vid.srcObject=null;
+  document.getElementById('noCameraMsg').style.display='flex';
+  document.getElementById('liveControls').style.display='none';
+  document.getElementById('btnStartCam').style.display='';
+  document.getElementById('btnStopCam').style.display='none';
+  document.getElementById('btnGoLive').disabled=true;
+  document.getElementById('btnGoLive').style.opacity='.5';
+  document.getElementById('deviceStatus').innerHTML='';
+  camEnabled=false; micEnabled=false;
+}
+
+function toggleCamera(){
+  if(!liveStream)return;
+  const vid = liveStream.getVideoTracks();
+  camEnabled = !camEnabled;
+  vid.forEach(t=>t.enabled=camEnabled);
+  const btn=document.getElementById('btnCam');
+  btn.textContent=camEnabled?'📷 Cam ON':'🚫 Cam OFF';
+  btn.style.background=camEnabled?'rgba(255,255,255,.15)':'rgba(255,80,80,.3)';
+}
+
+function toggleMic(){
+  if(!liveStream)return;
+  const audio = liveStream.getAudioTracks();
+  micEnabled = !micEnabled;
+  audio.forEach(t=>t.enabled=micEnabled);
+  const btn=document.getElementById('btnMic');
+  btn.textContent=micEnabled?'🎤 Mic ON':'🔇 Mic OFF';
+  btn.style.background=micEnabled?'rgba(255,255,255,.15)':'rgba(255,80,80,.3)';
+}
+
+function toggleSpeaker(){
+  spkEnabled = !spkEnabled;
+  const btn=document.getElementById('btnSpk');
+  btn.textContent=spkEnabled?'🔊 Audio ON':'🔕 Audio OFF';
+  btn.style.background=spkEnabled?'rgba(255,255,255,.15)':'rgba(255,80,80,.3)';
+  // Mute/unmute the video element (affects stream monitoring audio)
+  document.getElementById('livePreview').muted=!spkEnabled;
+}
+
+function updateDeviceStatus(){
+  const status=document.getElementById('deviceStatus');
+  const items=[];
+  if(liveStream){
+    const vt=liveStream.getVideoTracks()[0];
+    const at=liveStream.getAudioTracks()[0];
+    if(vt) items.push(`<span style="color:#22c55e">📷 ${vt.label||'Camera'}</span>`);
+    if(at) items.push(`<span style="color:#22c55e">🎤 ${at.label||'Microphone'}</span>`);
+    // List available output devices
+    navigator.mediaDevices.enumerateDevices().then(devices=>{
+      const speakers=devices.filter(d=>d.kind==='audiooutput');
+      if(speakers.length) items.push(`<span style="color:#60a5fa">🔊 ${speakers[0].label||'Speaker'}</span>`);
+      status.innerHTML=items.join(' · ');
+    }).catch(()=>{ status.innerHTML=items.join(' · '); });
+  }
+}
+
+function goLive(){
+  const title=document.getElementById('streamTitle').value.trim();
+  if(!title){toast('Add a stream title first','error');return;}
+  isLive=true;
+  document.getElementById('streamSetup').style.display='none';
+  document.getElementById('streamLive').style.display='';
+  liveSeconds=0;
+  liveTimerInterval=setInterval(()=>{
+    liveSeconds++;
+    const h=Math.floor(liveSeconds/3600),m=Math.floor((liveSeconds%3600)/60),s=liveSeconds%60;
+    document.getElementById('liveTimer').textContent=
+      (h?h+':':'')+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    // Simulate viewer count growing
+    const v=Math.min(Math.floor(liveSeconds*0.3+Math.random()*3),500);
+    document.getElementById('viewerCount').textContent=v+' watching';
+  },1000);
+  toast('🔴 You are live! — '+title,'success');
+}
+
+function endStream(silent){
+  if(!isLive)return;
+  isLive=false;
+  clearInterval(liveTimerInterval);
+  document.getElementById('streamSetup').style.display='';
+  document.getElementById('streamLive').style.display='none';
+  if(!silent) toast('Stream ended. Thanks for streaming!','info');
+}
 </script>
 <script src="../js/shared.js"></script>
 </body>
