@@ -281,7 +281,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div id="viewGrid" class="set-grid" style="display:none"></div>
 
     <div style="text-align:center;margin-top:16px">
-      <button style="background:#f5f4ef;border:1px solid #ddd;border-radius:8px;font-size:13px;padding:8px 22px;cursor:pointer" onclick="alert('Loading more sets…')">Load more sets</button>
+      <button style="background:#f5f4ef;border:1px solid #ddd;border-radius:8px;font-size:13px;padding:8px 22px;cursor:pointer" onclick="toast('Loading more sets…')">Load more sets</button>
     </div>
   </div>
 </div>
@@ -356,7 +356,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="card">
     <div class="sec-h">Upload instructions</div>
     <p style="font-size:13px;color:#666;line-height:1.65;margin-bottom:16px">Help the community by uploading scanned instruction booklets or parts lists you own. All uploads are reviewed before publishing.</p>
-    <div class="upload-drop" onclick="alert('File picker would open here — supports PDF, JPG, PNG')">
+    <div class="upload-drop" onclick="toast('File picker would open here — supports PDF, JPG, PNG')">
       <div style="font-size:36px;margin-bottom:8px">📄</div>
       <h4>Drop PDF or image files here</h4>
       <p>Supports PDF, JPG, PNG · Max 50MB per file</p>
@@ -386,7 +386,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         </select>
       </div>
     </div>
-    <button style="margin-top:14px;background:#1a1a2e;border:none;border-radius:8px;color:#FFD700;font-size:14px;font-weight:700;padding:10px 24px;cursor:pointer" onclick="alert('Upload submitted for review! Thank you for contributing.')">Submit upload</button>
+    <button style="margin-top:14px;background:#1a1a2e;border:none;border-radius:8px;color:#FFD700;font-size:14px;font-weight:700;padding:10px 24px;cursor:pointer" onclick="toast('Upload submitted for review! Thank you for contributing.')">Submit upload</button>
   </div>
 </div>
 
@@ -423,7 +423,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <div class="theme-row" onclick="selFb(null,'icons')"><span>🏛️ Icons</span><span class="theme-cnt">620</span></div>
       <div class="theme-row"><span>🧙 Harry Potter</span><span class="theme-cnt">480</span></div>
       <div class="theme-row"><span>🦸 Marvel</span><span class="theme-cnt">560</span></div>
-      <div class="theme-row" onclick="alert('All 48 themes')"><span style="color:#1a73e8;font-size:12px">View all 48 themes →</span></div>
+      <div class="theme-row" onclick="toast('All 48 themes')"><span style="color:#1a73e8;font-size:12px">View all 48 themes →</span></div>
     </div>
   </div>
 
@@ -485,12 +485,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <div><div class="dl-name">Parts list (.csv)</div><div class="dl-desc">Spreadsheet-ready · 4,514 rows</div></div>
         <span class="dl-badge" style="background:#E1F5EE;color:#085041">Available</span>
       </div>
-      <div class="dl-option" style="opacity:.5;cursor:not-allowed" onclick="alert('Studio file not yet available for this set')">
+      <div class="dl-option" style="opacity:.5;cursor:not-allowed" onclick="toast('Studio file not yet available for this set')">
         <div class="dl-ico" style="background:#f5f4ef">🧩</div>
         <div><div class="dl-name">Studio file (.io)</div><div class="dl-desc">3D model — not yet available</div></div>
         <span class="dl-badge" style="background:#f5f4ef;color:#888">Coming soon</span>
       </div>
-      <div style="margin-top:12px;font-size:12px;color:#888">Language: <strong>English</strong> · <a style="color:#1a73e8;cursor:pointer" onclick="alert('Language selection: EN, DE, LV, RU, FR, PL, NL…')">Change language</a></div>
+      <div style="margin-top:12px;font-size:12px;color:#888">Language: <strong>English</strong> · <a style="color:#1a73e8;cursor:pointer" onclick="toast('Language selection: EN, DE, LV, RU, FR, PL, NL…')">Change language</a></div>
     </div>
 
     <div id="dlProgress" style="display:none;text-align:center;padding:20px 0">

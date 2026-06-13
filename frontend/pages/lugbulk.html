@@ -342,9 +342,10 @@
               (h==='localhost'||h==='127.0.0.1') ? 'http://localhost:8000' : null;
 
   function imgUrl(blcol, blp, eid) {
-    // Rebrickable on Render (BrickLink blocks onrender referrer), BrickLink locally
-    if(onRender) return `https://cdn.rebrickable.com/media/parts/elements/${eid}.jpg`;
-    return `https://img.bricklink.com/ItemImage/PN/${blcol}/${blp}.png`;
+    // Rebrickable CDN by element_id — works in all browsers, no referrer restrictions
+    if(eid) return `https://cdn.rebrickable.com/media/parts/elements/${eid}.jpg`;
+    // Fallback by part+color if no element_id
+    return `https://cdn.rebrickable.com/media/parts/ldraw/${blcol}/${blp}.png`;
   }
 
   function loadFromAPI(api) {
