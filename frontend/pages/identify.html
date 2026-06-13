@@ -144,6 +144,19 @@ body{background:#f5f4ef}
 .hs-item{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-size:11px;color:var(--text2);cursor:pointer;transition:all .13s;display:flex;align-items:center;gap:6px}
 .hs-item:hover{background:#fff;border-color:#ccc}
 .hs-item-result{font-weight:700;color:var(--text)}
+
+@media(max-width:768px){
+  .ai-hero{padding:20px 14px}
+  .ai-hero-inner{grid-template-columns:1fr!important}
+  .ai-badge{display:none}
+  .content{grid-template-columns:1fr!important;padding:12px 12px 80px;gap:12px}
+  .compare-section{grid-column:1/-1}
+  .compare-grid{grid-template-columns:1fr!important;gap:12px}
+  .compare-vs{flex-direction:row;gap:10px}
+  .drop-zone{min-height:160px}
+  .match-card{padding:8px 10px;gap:8px}
+  .match-conf-pct{font-size:14px}
+}
 </style>
 </head>
 <body>

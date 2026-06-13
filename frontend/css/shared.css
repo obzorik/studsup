@@ -254,3 +254,143 @@ input, select, textarea { font-family: inherit; }
 .text-center { text-align: center; }
 .relative { position: relative; }
 .hidden { display: none !important; }
+
+/* ============================================
+   MOBILE RESPONSIVE — StudsUp.com
+   Breakpoints: 480px (phone), 768px (tablet)
+   ============================================ */
+
+/* ── MOBILE NAV ── */
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.nav-hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: rgba(255,255,255,.7);
+  border-radius: 2px;
+  transition: all .2s;
+}
+.nav-hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+
+/* Mobile nav drawer */
+.nav-drawer {
+  display: none;
+  position: fixed;
+  top: var(--nav-h);
+  left: 0; right: 0;
+  background: var(--dark);
+  border-top: 1px solid rgba(255,255,255,.08);
+  z-index: 99;
+  padding: 12px 0 20px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.4);
+  max-height: calc(100vh - var(--nav-h));
+  overflow-y: auto;
+}
+.nav-drawer.open { display: block; }
+.nav-drawer .nav-link {
+  display: block;
+  padding: 12px 24px;
+  font-size: 15px;
+  color: rgba(255,255,255,.7);
+  border-radius: 0;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+}
+.nav-drawer .nav-link:hover { background: rgba(255,255,255,.06); color: var(--yellow); }
+.nav-drawer .nav-drawer-bottom {
+  padding: 16px 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.nav-drawer .nav-sell {
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+  font-size: 14px;
+  border-radius: var(--radius-md);
+}
+
+/* Bottom nav bar (mobile only) */
+.bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--dark);
+  border-top: 1px solid rgba(255,255,255,.1);
+  z-index: 98;
+  padding: 6px 0 env(safe-area-inset-bottom, 6px);
+}
+.bottom-nav-items {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.bn-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 6px 12px;
+  color: rgba(255,255,255,.4);
+  text-decoration: none;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color .15s;
+  border: none;
+  background: none;
+  min-width: 54px;
+}
+.bn-item .bn-icon { font-size: 20px; line-height: 1; }
+.bn-item.active, .bn-item:hover { color: var(--yellow); }
+
+/* Page body padding for bottom nav */
+.has-bottom-nav { padding-bottom: 64px; }
+
+@media (max-width: 768px) {
+  /* Show hamburger, hide horizontal nav links */
+  .nav { padding: 0 16px; }
+  .nav-links { display: none; }
+  .nav-sell { display: none; }
+  .nav-hamburger { display: flex; }
+  .bottom-nav { display: block; }
+  body { padding-bottom: 64px; }
+
+  /* Cards take full width */
+  .card { border-radius: var(--radius-md); }
+
+  /* Modal full screen on mobile */
+  .modal-bg { padding: 0; align-items: flex-end; }
+  .modal {
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    max-width: 100%;
+    max-height: 92vh;
+    padding: 20px 16px 32px;
+  }
+
+  /* Section headers */
+  .sec-hd h2 { font-size: 15px; }
+
+  /* Breadcrumb */
+  .breadcrumb { font-size: 11px; }
+
+  /* Toast above bottom nav */
+  .toast-el { bottom: 78px; }
+}
+
+@media (max-width: 480px) {
+  .nav { padding: 0 12px; }
+  .nav-logo { font-size: 18px; }
+}

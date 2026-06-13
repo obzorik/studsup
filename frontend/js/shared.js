@@ -123,3 +123,80 @@ const CHART_COLORS = {
 document.addEventListener('DOMContentLoaded', () => {
   if (typeof window.pageInit === 'function') window.pageInit();
 });
+
+// ── MOBILE NAV ────────────────────────────────────────────────────────────────
+(function initMobileNav() {
+  const nav = document.querySelector('.nav');
+  if (!nav) return;
+
+  // Inject hamburger button
+  const burger = document.createElement('button');
+  burger.className = 'nav-hamburger';
+  burger.setAttribute('aria-label', 'Menu');
+  burger.innerHTML = '<span></span><span></span><span></span>';
+  nav.appendChild(burger);
+
+  // Build drawer from existing nav-links
+  const navLinksEl = document.querySelector('.nav-links');
+  const navRightEl = document.querySelector('.nav-right');
+
+  const drawer = document.createElement('div');
+  drawer.className = 'nav-drawer';
+
+  // Clone all nav links into drawer
+  if (navLinksEl) {
+    navLinksEl.querySelectorAll('.nav-link').forEach(link => {
+      const a = document.createElement('a');
+      a.className = 'nav-link';
+      a.href = link.getAttribute('href') || '#';
+      a.textContent = link.textContent;
+      if (link.classList.contains('active')) a.classList.add('active');
+      a.addEventListener('click', () => closeDrawer());
+      drawer.appendChild(a);
+    });
+  }
+
+  // Bottom section with sell/sign in
+  const bottom = document.createElement('div');
+  bottom.className = 'nav-drawer-bottom';
+  if (navRightEl) {
+    bottom.innerHTML = navRightEl.innerHTML;
+    // Make sell button full width
+    const sell = bottom.querySelector('.nav-sell');
+    if (sell) { sell.style.display = ''; sell.style.width = '100%'; sell.style.textAlign = 'center'; }
+  }
+  drawer.appendChild(bottom);
+  document.body.insertBefore(drawer, document.body.firstChild.nextSibling || document.body.firstChild);
+
+  function openDrawer()  { drawer.classList.add('open');  burger.classList.add('open');  document.body.style.overflow = 'hidden'; }
+  function closeDrawer() { drawer.classList.remove('open'); burger.classList.remove('open'); document.body.style.overflow = ''; }
+  function toggleDrawer() { drawer.classList.contains('open') ? closeDrawer() : openDrawer(); }
+
+  burger.addEventListener('click', e => { e.stopPropagation(); toggleDrawer(); });
+  document.addEventListener('click', e => { if (drawer.classList.contains('open') && !drawer.contains(e.target) && e.target !== burger) closeDrawer(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+
+  // ── BOTTOM NAV ──
+  const page = location.pathname.split('/').pop().replace('.html', '');
+  const bottomNav = document.createElement('nav');
+  bottomNav.className = 'bottom-nav';
+  bottomNav.innerHTML = `
+    <div class="bottom-nav-items">
+      <a class="bn-item ${page==='home'?'active':''}" href="home.html">
+        <span class="bn-icon">🏠</span>Home
+      </a>
+      <a class="bn-item ${page==='search'?'active':''}" href="search.html">
+        <span class="bn-icon">🔍</span>Search
+      </a>
+      <a class="bn-item ${page==='lugbulk'?'active':''}" href="lugbulk.html">
+        <span class="bn-icon">📦</span>Parts
+      </a>
+      <a class="bn-item ${page==='profile-blog'?'active':''}" href="profile-blog.html">
+        <span class="bn-icon">👤</span>Profile
+      </a>
+      <a class="bn-item ${page==='identify'?'active':''}" href="identify.html">
+        <span class="bn-icon">🤖</span>AI
+      </a>
+    </div>`;
+  document.body.appendChild(bottomNav);
+})();

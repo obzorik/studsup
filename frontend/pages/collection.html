@@ -106,6 +106,20 @@ tbody td{padding:10px}
 /* CHART */
 .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .cw{position:relative;height:180px}
+
+@media(max-width:768px){
+  .coll-layout{grid-template-columns:1fr!important}
+  .coll-sidebar{display:none}
+  .value-cards{grid-template-columns:repeat(2,1fr)!important}
+  .parts-table{font-size:12px}
+  .parts-table th,.parts-table td{padding:7px 8px}
+  .chart-wrap{height:180px!important}
+  .coll-tabs{padding:0 12px;overflow-x:auto}
+  .content{padding:12px 12px 80px}
+  .lb-table-wrap{overflow-x:auto}
+  .lb-table{font-size:11px}
+  .yr-qty{width:52px;font-size:11px}
+}
 </style>
 </head>
 <body>

@@ -162,6 +162,26 @@ footer{background:#1a1a2e;padding:36px 32px 24px;margin-top:20px}
 /* MISC */
 .badge-strip{background:#FFD700;padding:10px 32px;display:flex;align-items:center;justify-content:center;gap:32px;font-size:12px;font-weight:700;color:#1a1a2e}
 .divider{height:1px;background:#e8e7e2;margin-bottom:36px}
+
+@media(max-width:768px){
+  .hero{padding:28px 16px 24px}
+  .hero-grid{grid-template-columns:1fr!important;gap:20px}
+  .hero-title{font-size:28px!important}
+  .hero-search{order:2}
+  .hero-stats{gap:16px!important;flex-wrap:wrap}
+  .hero-stat strong{font-size:20px!important}
+  .categories-grid{grid-template-columns:repeat(2,1fr)!important}
+  .listings-grid,.featured-grid{grid-template-columns:1fr!important}
+  .content-grid,.two-col{grid-template-columns:1fr!important}
+  .ticker{font-size:11px;padding:6px 12px}
+  .hero-btns{flex-direction:column;gap:8px}
+  .hero-btns a,.hero-btns button{width:100%;text-align:center;justify-content:center}
+  section{padding:24px 14px!important}
+}
+@media(max-width:480px){
+  .hero-title{font-size:24px!important}
+  .categories-grid{grid-template-columns:repeat(2,1fr)!important}
+}
 </style>
 </head>
 <body>

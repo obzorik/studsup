@@ -94,6 +94,24 @@
 .api-banner.ok{background:#E1F5EE;color:#085041}
 .api-banner.err{background:#FCEBEB;color:#791F1F}
 .api-banner.warn{background:var(--yellow-bg);color:#8a6a00}
+
+@media(max-width:768px){
+  .search-hero{padding:20px 14px}
+  .cat-tabs-inner{padding:0 10px}
+  .ctab{padding:9px 10px;font-size:12px}
+  .content{padding:12px 12px 80px}
+  .results-header{flex-direction:column;align-items:flex-start;gap:6px}
+  .results-grid{grid-template-columns:repeat(2,1fr)!important;gap:8px}
+  .rc-part .rc-body{padding:8px}
+  .rc-price{font-size:13px!important}
+  .rc-row{flex-wrap:wrap;gap:8px}
+  .rc-action{width:100%}
+  .sort-sel{font-size:11px}
+}
+@media(max-width:480px){
+  .results-grid{grid-template-columns:1fr!important}
+  .search-bar input{font-size:14px}
+}
 </style>
 </head>
 <body>
