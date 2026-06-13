@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudsUp — Identify a brick</title>
+<link rel="stylesheet" href="../css/shared.css">
+<style>
+/* ── DESIGN: dark scanner aesthetic, yellow accent, mono data readout ── */
+:root{
+  --scan-bg:#0d0d1a;
+  --scan-border:rgba(255,215,0,.18);
+  --scan-glow:rgba(255,215,0,.08);
+  --mono:'Courier New',Courier,monospace;
+}
+
+body{background:#f5f4ef}
+
+/* Hero */
+.ai-hero{background:var(--scan-bg);padding:36px 32px 32px;position:relative;overflow:hidden}
+.ai-hero::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 80% at 80% 50%,rgba(255,215,0,.04) 0%,transparent 70%);
+  pointer-events:none}
+.ai-hero-inner{max-width:900px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center}
+.ai-eyebrow{font-size:10px;font-weight:700;letter-spacing:2px;color:rgba(255,215,0,.5);text-transform:uppercase;margin-bottom:8px}
+.ai-title{font-size:30px;font-weight:800;color:#fff;letter-spacing:-.5px;line-height:1.2;margin-bottom:8px}
+.ai-title span{color:#FFD700}
+.ai-sub{font-size:14px;color:rgba(255,255,255,.45);line-height:1.65;max-width:480px}
+.ai-badge{background:var(--scan-glow);border:1px solid var(--scan-border);border-radius:12px;padding:16px 20px;text-align:center;flex-shrink:0}
+.ai-badge-ico{font-size:32px;margin-bottom:6px}
+.ai-badge-label{font-size:10px;font-weight:700;letter-spacing:1.5px;color:rgba(255,215,0,.6);text-transform:uppercase}
+
+/* Content layout */
+.content{max-width:900px;margin:28px auto;padding:0 20px 60px;display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+@media(max-width:680px){.content{grid-template-columns:1fr}}
+
+/* Upload panel */
+.upload-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-xl);overflow:hidden}
+.uc-head{background:var(--scan-bg);padding:14px 18px;display:flex;align-items:center;gap:10px}
+.uc-head-title{color:var(--yellow);font-size:13px;font-weight:700;letter-spacing:.3px}
+.uc-head-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px #22c55e;flex-shrink:0}
+
+.drop-zone{margin:16px;border:2px dashed var(--border2);border-radius:var(--radius-lg);min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;background:var(--bg)}
+.drop-zone:hover,.drop-zone.drag-over{border-color:var(--yellow);background:var(--yellow-bg)}
+.drop-zone.has-image{border-style:solid;border-color:var(--yellow)}
+.dz-icon{font-size:40px;line-height:1}
+.dz-label{font-size:14px;font-weight:600;color:var(--text2)}
+.dz-sub{font-size:12px;color:var(--hint)}
+.dz-preview{width:100%;height:100%;object-fit:contain;position:absolute;inset:0;padding:12px;box-sizing:border-box}
+.dz-clear{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.6);border:none;color:#fff;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:14px;display:none;align-items:center;justify-content:center;transition:background .15s;z-index:2}
+.dz-clear:hover{background:var(--red)}
+.drop-zone.has-image .dz-clear{display:flex}
+.drop-zone.has-image .dz-icon,
+.drop-zone.has-image .dz-label,
+.drop-zone.has-image .dz-sub{opacity:0}
+
+.uc-body{padding:0 16px 16px}
+.uc-hint{font-size:12px;color:var(--hint);margin-bottom:12px;line-height:1.6}
+.analyse-btn{width:100%;background:var(--dark);border:none;border-radius:var(--radius-md);color:var(--yellow);font-size:14px;font-weight:700;padding:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
+.analyse-btn:hover:not(:disabled){background:#2d2d4e;transform:translateY(-1px)}
+.analyse-btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.analyse-btn .spinner{width:16px;height:16px;border:2px solid rgba(255,215,0,.3);border-top-color:#FFD700;border-radius:50%;animation:spin .7s linear infinite;display:none}
+.analyse-btn.loading .spinner{display:block}
+.analyse-btn.loading .btn-text{opacity:.5}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Sample images */
+.samples{padding:0 16px 16px}
+.samples-label{font-size:11px;font-weight:700;color:var(--hint);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.samples-row{display:flex;gap:7px;flex-wrap:wrap}
+.sample{width:56px;height:56px;border-radius:8px;border:2px solid var(--border);cursor:pointer;object-fit:cover;transition:all .15s;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:22px}
+.sample:hover{border-color:var(--yellow);transform:scale(1.08)}
+
+/* Results panel */
+.results-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-xl);overflow:hidden}
+.rc-head{background:var(--scan-bg);padding:14px 18px;display:flex;align-items:center;justify-content:space-between}
+.rc-head-title{color:var(--yellow);font-size:13px;font-weight:700;letter-spacing:.3px}
+.rc-status{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+.rc-status.ready{color:rgba(255,255,255,.3)}
+.rc-status.scanning{color:#FFD700;animation:pulse 1s ease-in-out infinite}
+.rc-status.done{color:#22c55e}
+.rc-status.error{color:#ef4444}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+.result-empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:13px;line-height:1.8}
+.result-empty .ico{font-size:36px;margin-bottom:10px;display:block;opacity:.35}
+
+/* AI analysis text */
+.ai-analysis{padding:16px 18px 12px;border-bottom:1px solid #f5f4ef}
+.ai-analysis-label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--hint);margin-bottom:8px}
+.ai-analysis-text{font-size:13px;color:var(--text2);line-height:1.7;font-style:italic}
+
+/* Match cards */
+.matches-label{padding:12px 18px 8px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--hint)}
+.match-list{padding:0 10px 14px;display:flex;flex-direction:column;gap:6px}
+
+.match-card{border:1px solid var(--border);border-radius:var(--radius-md);padding:10px 12px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .15s;position:relative}
+.match-card:hover{border-color:var(--yellow);background:var(--yellow-bg)}
+.match-card.top-match{border-color:var(--yellow);background:var(--yellow-bg)}
+.match-card.top-match::before{content:'Best match';position:absolute;top:-9px;left:10px;background:var(--yellow);color:var(--dark);font-size:9px;font-weight:800;padding:2px 7px;border-radius:20px;letter-spacing:.5px;text-transform:uppercase}
+
+.match-img{width:48px;height:48px;object-fit:contain;background:var(--bg);border-radius:7px;border:1px solid var(--border);flex-shrink:0}
+.match-img-fb{width:48px;height:48px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+.match-info{flex:1;min-width:0}
+.match-name{font-size:13px;font-weight:700;color:var(--text)}
+.match-sub{font-size:11px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.match-conf{text-align:right;flex-shrink:0}
+.match-conf-pct{font-size:16px;font-weight:800;color:var(--text)}
+.match-conf-lbl{font-size:9px;color:var(--hint);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.match-price{font-size:11px;color:var(--muted);margin-top:2px}
+.match-conf-bar{height:3px;border-radius:2px;margin-top:4px;background:var(--border)}
+.match-conf-fill{height:3px;border-radius:2px;background:var(--yellow);transition:width .5s ease}
+
+/* Scan lines animation */
+.scanning-overlay{display:none;position:absolute;inset:0;pointer-events:none;overflow:hidden;border-radius:var(--radius-lg)}
+.scanning-overlay.active{display:block}
+.scan-line{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(255,215,0,.6),transparent);animation:scandown 1.5s ease-in-out infinite}
+@keyframes scandown{0%{top:-2px}100%{top:100%}}
+
+/* Comparison mode */
+.compare-section{grid-column:1/-1;background:#fff;border:1px solid var(--border);border-radius:var(--radius-xl);overflow:hidden;display:none}
+.compare-section.visible{display:block}
+.cs-head{background:var(--scan-bg);padding:14px 18px;display:flex;align-items:center;gap:10px}
+.cs-head-title{color:var(--yellow);font-size:13px;font-weight:700}
+.compare-grid{padding:16px;display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:start}
+.compare-upload{border:2px dashed var(--border2);border-radius:var(--radius-md);min-height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;transition:all .2s;background:var(--bg);position:relative}
+.compare-upload:hover{border-color:var(--yellow);background:var(--yellow-bg)}
+.compare-upload.has-image{border-style:solid;border-color:var(--yellow)}
+.cu-preview{position:absolute;inset:0;object-fit:contain;padding:10px;box-sizing:border-box;width:100%;height:100%}
+.compare-vs{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.vs-icon{font-size:24px;color:var(--hint)}
+.compare-btn{background:var(--dark);border:none;border-radius:var(--radius-md);color:var(--yellow);font-size:13px;font-weight:700;padding:9px 18px;cursor:pointer;white-space:nowrap}
+.compare-btn:hover{background:#2d2d4e}
+.compare-result{grid-column:1/-1;background:var(--bg);border-radius:var(--radius-md);padding:14px;font-size:13px;color:var(--text2);line-height:1.7;display:none}
+.compare-result.visible{display:block}
+.compare-verdict{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.verdict-ico{font-size:28px}
+.verdict-text{font-size:16px;font-weight:800;color:var(--text)}
+
+/* History */
+.history-strip{grid-column:1/-1;background:#fff;border:1px solid var(--border);border-radius:var(--radius-xl);padding:16px 18px}
+.hs-label{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--hint);margin-bottom:10px}
+.hs-grid{display:flex;gap:8px;flex-wrap:wrap}
+.hs-item{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-size:11px;color:var(--text2);cursor:pointer;transition:all .13s;display:flex;align-items:center;gap:6px}
+.hs-item:hover{background:#fff;border-color:#ccc}
+.hs-item-result{font-weight:700;color:var(--text)}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="../../index.html" class="nav-logo">Studs<span>Up</span></a>
+  <div class="nav-links">
+    <a href="home.html"         class="nav-link">Marketplace</a>
+    <a href="lugbulk.html"      class="nav-link">📦 Parts</a>
+    <a href="search.html"       class="nav-link">Search</a>
+    <a href="collection.html"   class="nav-link">My Collection</a>
+    <a href="lug.html"          class="nav-link">LUGs</a>
+    <a href="stream.html"       class="nav-link">Streams</a>
+    <a href="profile-blog.html" class="nav-link">Profile</a>
+    <a href="instructions.html" class="nav-link">Instructions</a>
+    <a href="changelog.html"    class="nav-link">📋 v6.2</a>
+  </div>
+  <div class="nav-right" id="navRight">
+    <div id="navSellArea"></div>
+    <div id="navUserArea"></div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="ai-hero">
+  <div class="ai-hero-inner">
+    <div>
+      <div class="ai-eyebrow">AI-powered · Claude Vision</div>
+      <div class="ai-title">Identify any<br><span>LEGO brick</span></div>
+      <div class="ai-sub">Take a photo, upload it — Claude analyses shape, color and stud pattern then matches it against 12,658 parts in the LUGBULK 2026 catalogue. Works on single bricks, mixed piles or blurry photos.</div>
+    </div>
+    <div class="ai-badge">
+      <div class="ai-badge-ico">🤖</div>
+      <div class="ai-badge-label">Claude Vision</div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- ── UPLOAD PANEL ── -->
+  <div class="upload-card">
+    <div class="uc-head">
+      <div class="uc-head-dot"></div>
+      <div class="uc-head-title">Upload brick photo</div>
+    </div>
+
+    <div class="drop-zone" id="dropZone"
+         onclick="document.getElementById('fileInput').click()"
+         ondragover="handleDragOver(event)"
+         ondragleave="handleDragLeave(event)"
+         ondrop="handleDrop(event)">
+      <div class="scanning-overlay" id="scanOverlay"><div class="scan-line"></div></div>
+      <div class="dz-icon">📷</div>
+      <div class="dz-label">Drop photo here or click to browse</div>
+      <div class="dz-sub">JPG, PNG, WebP — up to 5 MB</div>
+      <img class="dz-preview" id="preview" src="" alt="" style="display:none">
+      <button class="dz-clear" id="clearBtn" onclick="clearImage(event)">✕</button>
+    </div>
+    <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFile(this.files[0])">
+
+    <div class="uc-body">
+      <div class="uc-hint">💡 Best results: plain background, single brick, good lighting. Also works on piles of mixed bricks.</div>
+      <button class="analyse-btn" id="analyseBtn" onclick="analyse()" disabled>
+        <div class="spinner"></div>
+        <span class="btn-text">🔍 Identify this brick</span>
+      </button>
+    </div>
+
+    <div class="samples">
+      <div class="samples-label">Try with a sample</div>
+      <div class="samples-row">
+        <div class="sample" title="Red 2×4 plate" onclick="loadSample('plate2x4_red')">🟥</div>
+        <div class="sample" title="Dark grey Technic beam" onclick="loadSample('technic_beam')">⬛</div>
+        <div class="sample" title="Yellow 1×1 brick" onclick="loadSample('brick1x1_yellow')">🟨</div>
+        <div class="sample" title="Transparent blue slope" onclick="loadSample('slope_trans')">🔷</div>
+        <div class="sample" title="Mixed pile" onclick="loadSample('mixed_pile')">🧱</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── RESULTS PANEL ── -->
+  <div class="results-card">
+    <div class="rc-head">
+      <div class="rc-head-title">Analysis results</div>
+      <div class="rc-status ready" id="rcStatus">READY</div>
+    </div>
+    <div id="resultsBody">
+      <div class="result-empty">
+        <span class="ico">🔬</span>
+        Upload a photo and click Identify to analyse the brick with Claude AI.<br><br>
+        The AI will describe what it sees and suggest matching parts from the catalogue.
+      </div>
+    </div>
+  </div>
+
+  <!-- ── COMPARE TWO BRICKS ── -->
+  <div class="compare-section visible">
+    <div class="cs-head">
+      <span style="font-size:16px">⚖️</span>
+      <div class="cs-head-title">Compare two bricks</div>
+      <span style="font-size:12px;color:rgba(255,255,255,.3);margin-left:auto">Are these the same part?</span>
+    </div>
+    <div class="compare-grid">
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--hint);margin-bottom:7px;text-transform:uppercase;letter-spacing:.5px">Brick A</div>
+        <div class="compare-upload" id="cu1" onclick="document.getElementById('cFile1').click()">
+          <span style="font-size:28px">📷</span>
+          <span style="font-size:12px;color:var(--hint)">Click to upload</span>
+          <img class="cu-preview" id="cp1" style="display:none">
+        </div>
+        <input type="file" id="cFile1" accept="image/*" style="display:none" onchange="loadCompare(1,this.files[0])">
+      </div>
+      <div class="compare-vs">
+        <div class="vs-icon">⚔</div>
+        <button class="compare-btn" onclick="compareBricks()" id="compareBtn" disabled>Compare →</button>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--hint);margin-bottom:7px;text-transform:uppercase;letter-spacing:.5px">Brick B</div>
+        <div class="compare-upload" id="cu2" onclick="document.getElementById('cFile2').click()">
+          <span style="font-size:28px">📷</span>
+          <span style="font-size:12px;color:var(--hint)">Click to upload</span>
+          <img class="cu-preview" id="cp2" style="display:none">
+        </div>
+        <input type="file" id="cFile2" accept="image/*" style="display:none" onchange="loadCompare(2,this.files[0])">
+      </div>
+      <div class="compare-result" id="compareResult"></div>
+    </div>
+  </div>
+
+  <!-- ── HISTORY ── -->
+  <div class="history-strip" id="historyStrip" style="display:none">
+    <div class="hs-label">Recent identifications</div>
+    <div class="hs-grid" id="historyGrid"></div>
+  </div>
+
+</div>
+
+<script src="../js/shared.js"></script>
+<script>
+// ── NAV ────────────────────────────────────────────────────────────────────
+(function(){
+  var u=null;try{u=JSON.parse(sessionStorage.getItem('su_user'));}catch(e){}
+  var sa=document.getElementById('navSellArea');
+  if(sa) sa.innerHTML=u&&u.name
+    ?'<button class="nav-sell" onclick="location.href=\'profile-blog.html\'">+ Sell parts</button>'
+    :'<button class="nav-sell" onclick="location.href=\'login.html\'">+ Sell parts</button>';
+  var el=document.getElementById('navUserArea');if(!el)return;
+  if(u&&u.name){
+    el.innerHTML='<a href="profile-blog.html" style="display:flex;align-items:center;gap:7px;text-decoration:none"><div class="nav-avatar" style="font-size:12px">'+u.avatar+'</div></a>';
+  }else{
+    el.innerHTML='<a href="login.html" class="nav-sell" style="text-decoration:none">Sign in</a>';
+  }
+})();
+
+// ── STATE ─────────────────────────────────────────────────────────────────
+let currentImageB64 = null;
+let compareB64 = {1: null, 2: null};
+let history = [];
+
+// BL Color name → CSS color (for match display)
+const COLOR_CSS = {
+  'Black':'#1a1a1a','Blue':'#006cb7','Green':'#00852b','Red':'#c91a09',
+  'Yellow':'#f2cd37','White':'#ffffff','Orange':'#fe8a18','Brown':'#583927',
+  'Tan':'#f5e4bc','Dark Bluish Gray':'#595d60','Light Bluish Gray':'#a0a5a9',
+  'Dark Red':'#720e0f','Dark Blue':'#003882','Dark Green':'#00451a',
+  'Lime':'#bbd159','Sand Green':'#7db38a','Reddish Brown':'#88421d',
+  'Medium Azure':'#68c3d4','Coral':'#ff7b54','Dark Orange':'#a95500',
+};
+
+// ── DRAG & DROP ────────────────────────────────────────────────────────────
+function handleDragOver(e){e.preventDefault();document.getElementById('dropZone').classList.add('drag-over');}
+function handleDragLeave(e){document.getElementById('dropZone').classList.remove('drag-over');}
+function handleDrop(e){
+  e.preventDefault();
+  document.getElementById('dropZone').classList.remove('drag-over');
+  const f=e.dataTransfer.files[0];
+  if(f&&f.type.startsWith('image/')) handleFile(f);
+}
+
+function handleFile(file){
+  if(!file) return;
+  if(file.size > 5*1024*1024){toast('Image too large — max 5 MB','error'); return;}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const b64=e.target.result;
+    showPreview(b64);
+    currentImageB64=b64.split(',')[1];
+    document.getElementById('analyseBtn').disabled=false;
+  };
+  reader.readAsDataURL(file);
+}
+
+function showPreview(dataUrl){
+  const dz=document.getElementById('dropZone');
+  const img=document.getElementById('preview');
+  img.src=dataUrl;
+  img.style.display='block';
+  dz.classList.add('has-image');
+  dz.classList.remove('drag-over');
+}
+
+function clearImage(e){
+  e.stopPropagation();
+  document.getElementById('preview').style.display='none';
+  document.getElementById('preview').src='';
+  document.getElementById('dropZone').classList.remove('has-image');
+  document.getElementById('fileInput').value='';
+  currentImageB64=null;
+  document.getElementById('analyseBtn').disabled=true;
+  setStatus('ready','READY');
+  document.getElementById('resultsBody').innerHTML=`<div class="result-empty">
+    <span class="ico">🔬</span>
+    Upload a photo and click Identify to analyse the brick with Claude AI.
+  </div>`;
+}
+
+// ── SAMPLE IMAGES ─────────────────────────────────────────────────────────
+// Sample images are generated as colored canvases (no external deps needed)
+function loadSample(type){
+  const canvas=document.createElement('canvas');
+  canvas.width=300;canvas.height=300;
+  const ctx=canvas.getContext('2d');
+
+  const samples={
+    plate2x4_red:{bg:'#c91a09',text:'2×4 Plate\n(Red)',studs:8},
+    technic_beam:{bg:'#595d60',text:'Technic Beam\n(Dark Gray)',studs:4},
+    brick1x1_yellow:{bg:'#f2cd37',text:'1×1 Brick\n(Yellow)',studs:1},
+    slope_trans:{bg:'rgba(100,160,230,0.7)',text:'Slope\n(Trans-Blue)',studs:2},
+    mixed_pile:{bg:'#f5f4ef',text:'Mixed pile\n3D bricks',studs:12},
+  };
+  const s=samples[type]||samples.plate2x4_red;
+
+  // Background
+  ctx.fillStyle=s.bg;
+  ctx.fillRect(0,0,300,300);
+
+  // Draw studs (circles)
+  ctx.fillStyle='rgba(255,255,255,0.25)';
+  const cols=Math.min(s.studs,4); const rows=Math.ceil(s.studs/4);
+  const sw=300/(cols+1); const sh=300/(rows+2);
+  for(let r=0;r<rows;r++) for(let c=0;c<cols;c++){
+    if(r*cols+c>=s.studs) break;
+    ctx.beginPath();ctx.arc((c+1)*sw,(r+1)*sh+40,sw*.3,0,Math.PI*2);ctx.fill();
+  }
+
+  // Label
+  ctx.fillStyle='rgba(255,255,255,0.85)';
+  ctx.font='bold 18px sans-serif';
+  ctx.textAlign='center';
+  s.text.split('\n').forEach((line,i)=>ctx.fillText(line,150,200+i*24));
+
+  const dataUrl=canvas.toDataURL('image/png');
+  showPreview(dataUrl);
+  currentImageB64=dataUrl.split(',')[1];
+  document.getElementById('analyseBtn').disabled=false;
+  toast('Sample loaded — click Identify →');
+}
+
+// ── ANALYSE ───────────────────────────────────────────────────────────────
+async function analyse(){
+  if(!currentImageB64){ toast('Upload an image first','error'); return; }
+
+  const btn=document.getElementById('analyseBtn');
+  btn.disabled=true;
+  btn.classList.add('loading');
+  btn.querySelector('.btn-text').textContent='Analysing…';
+  setStatus('scanning','SCANNING');
+  document.getElementById('scanOverlay').classList.add('active');
+
+  document.getElementById('resultsBody').innerHTML=`
+    <div class="result-empty" style="padding:32px">
+      <span class="ico" style="opacity:1;animation:pulse 1s infinite">🔬</span>
+      Claude is analysing your photo…<br>
+      <span style="font-size:11px;color:var(--hint);margin-top:8px;display:block">Identifying shape · color · stud pattern</span>
+    </div>`;
+
+  try{
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:1000,
+        messages:[{
+          role:'user',
+          content:[
+            {
+              type:'image',
+              source:{type:'base64',media_type:'image/jpeg',data:currentImageB64}
+            },
+            {
+              type:'text',
+              text:`You are a LEGO parts expert. Analyse this photo and identify the LEGO brick(s) shown.
+
+Return ONLY a JSON object in this exact format (no markdown, no explanation):
+{
+  "description": "One sentence describing what you see in the photo",
+  "is_pile": false,
+  "bricks": [
+    {
+      "bl_part_id": "3020",
+      "color_name": "Red",
+      "confidence": 92,
+      "shape": "Plate 2x4",
+      "notes": "Classic flat plate, 2 rows of 4 studs"
+    }
+  ],
+  "search_terms": ["plate", "2x4", "red"]
+}
+
+Rules:
+- bl_part_id should be the BrickLink part ID (just numbers/letters, no color info)
+- color_name must be an exact BrickLink color name like "Red", "Dark Bluish Gray", "Light Bluish Gray", "Black", "White", "Yellow", "Orange", "Tan", "Reddish Brown", "Dark Red", "Dark Blue", "Dark Green", "Lime", "Sand Green", "Medium Azure", "Coral", "Dark Orange", "Trans-Clear", "Trans-Red", "Trans-Blue", "Trans-Yellow", "Pearl Gold", "Flat Silver", "Chrome Silver"
+- confidence is 0-100 percentage
+- If it's a pile of mixed bricks, set is_pile:true and list up to 5 most visible bricks
+- If photo is too blurry, still make your best guess`
+            }
+          ]
+        }]
+      })
+    });
+
+    const data = await res.json();
+    if(data.error) throw new Error(data.error.message);
+
+    const text = data.content.find(b=>b.type==='text')?.text || '';
+    let result;
+    try{
+      const clean = text.replace(/```json|```/g,'').trim();
+      result = JSON.parse(clean);
+    } catch(e){
+      throw new Error('Could not parse AI response');
+    }
+
+    renderResults(result);
+    addToHistory(result);
+    setStatus('done','DONE');
+
+  } catch(err){
+    console.error(err);
+    setStatus('error','ERROR');
+    document.getElementById('resultsBody').innerHTML=`
+      <div class="result-empty" style="padding:24px">
+        <span class="ico" style="opacity:1">⚠️</span>
+        <strong style="color:var(--text);display:block;margin-bottom:6px">${err.message.includes('fetch')||err.message.includes('API')?'API not reachable':'Analysis failed'}</strong>
+        <span style="font-size:12px">${err.message.includes('fetch')?'Make sure the backend is running.':err.message}</span>
+      </div>`;
+  }
+
+  btn.disabled=false;
+  btn.classList.remove('loading');
+  btn.querySelector('.btn-text').textContent='🔍 Identify this brick';
+  document.getElementById('scanOverlay').classList.remove('active');
+}
+
+// ── RENDER RESULTS ─────────────────────────────────────────────────────────
+function renderResults(result){
+  const bricks = result.bricks || [];
+  let html = '';
+
+  // AI description
+  html += `<div class="ai-analysis">
+    <div class="ai-analysis-label">AI observation</div>
+    <div class="ai-analysis-text">"${result.description||'No description.'}"</div>
+  </div>`;
+
+  if(result.is_pile){
+    html += `<div style="padding:8px 18px;background:var(--yellow-bg);font-size:12px;color:#8a6a00;display:flex;align-items:center;gap:6px">
+      🧱 <strong>Mixed pile detected</strong> — showing the most visible bricks below
+    </div>`;
+  }
+
+  if(bricks.length===0){
+    html += `<div class="result-empty"><span class="ico">🤔</span>Couldn't identify a specific LEGO part. Try a clearer photo with better lighting.</div>`;
+  } else {
+    html += `<div class="matches-label">SUGGESTED MATCHES (${bricks.length})</div>`;
+    html += `<div class="match-list">`;
+    bricks.forEach((b,i)=>{
+      const css = COLOR_CSS[b.color_name] || '#aaa';
+      const initials = (b.color_name||'?').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+      const blUrl = `https://www.bricklink.com/v2/catalog/catalogitem.page?P=${b.bl_part_id}`;
+      const rebrickImg = `https://cdn.rebrickable.com/media/parts/ldraw/0/${b.bl_part_id}.png`;
+
+      html += `<div class="match-card ${i===0?'top-match':''}" onclick="window.open('${blUrl}','_blank')">
+        <img class="match-img" src="${rebrickImg}" alt=""
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="match-img-fb" style="background:${css};display:none">${initials}</div>
+        <div class="match-info">
+          <div class="match-name">${b.shape||'LEGO Part'}</div>
+          <div class="match-sub">
+            <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${css};border:1px solid rgba(0,0,0,.1);margin-right:4px;vertical-align:middle"></span>
+            ${b.color_name} · BL: ${b.bl_part_id}
+          </div>
+          ${b.notes?`<div style="font-size:10px;color:var(--hint);margin-top:2px">${b.notes}</div>`:''}
+        </div>
+        <div class="match-conf">
+          <div class="match-conf-pct">${b.confidence}%</div>
+          <div class="match-conf-lbl">match</div>
+          <div class="match-conf-bar"><div class="match-conf-fill" style="width:${b.confidence}%"></div></div>
+        </div>
+      </div>`;
+    });
+    html += `</div>`;
+
+    // Search link
+    if(result.search_terms&&result.search_terms.length>0){
+      const q = encodeURIComponent(result.search_terms.join(' '));
+      html += `<div style="padding:0 14px 14px">
+        <a href="search.html?q=${q}&tab=parts" class="btn btn-outline btn-sm" style="font-size:12px;display:inline-flex;align-items:center;gap:5px">
+          🔍 Search catalogue for "${result.search_terms.slice(0,3).join(' ')}" →
+        </a>
+      </div>`;
+    }
+  }
+
+  document.getElementById('resultsBody').innerHTML = html;
+}
+
+// ── STATUS ─────────────────────────────────────────────────────────────────
+function setStatus(type, label){
+  const el=document.getElementById('rcStatus');
+  el.className='rc-status '+type;
+  el.textContent=label;
+}
+
+// ── COMPARE ────────────────────────────────────────────────────────────────
+function loadCompare(n, file){
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const b64=e.target.result;
+    compareB64[n]=b64.split(',')[1];
+    const cu=document.getElementById('cu'+n);
+    const cp=document.getElementById('cp'+n);
+    cp.src=b64; cp.style.display='block';
+    cu.classList.add('has-image');
+    document.getElementById('compareBtn').disabled=!(compareB64[1]&&compareB64[2]);
+  };
+  reader.readAsDataURL(file);
+}
+
+async function compareBricks(){
+  if(!compareB64[1]||!compareB64[2]){toast('Upload both photos first','error');return;}
+  const btn=document.getElementById('compareBtn');
+  btn.textContent='Comparing…'; btn.disabled=true;
+
+  const result=document.getElementById('compareResult');
+  result.style.display='block';
+  result.innerHTML='<span style="color:var(--hint)">🔬 Claude is comparing the two photos…</span>';
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:600,
+        messages:[{
+          role:'user',
+          content:[
+            {type:'image',source:{type:'base64',media_type:'image/jpeg',data:compareB64[1]}},
+            {type:'image',source:{type:'base64',media_type:'image/jpeg',data:compareB64[2]}},
+            {type:'text',text:`Compare these two LEGO brick photos. Are they the same part and color?
+
+Return ONLY JSON:
+{
+  "same_part": true,
+  "same_color": true,
+  "verdict": "Same",
+  "confidence": 88,
+  "part_a": "Red 2×4 Plate (BL: 3020)",
+  "part_b": "Red 2×4 Plate (BL: 3020)",
+  "explanation": "Both show a red 2×4 flat plate with identical stud pattern and dimensions.",
+  "differences": ""
+}
+
+verdict must be one of: "Same", "Same part different color", "Different parts", "Cannot determine"`}
+          ]
+        }]
+      })
+    });
+    const data=await res.json();
+    const text=data.content.find(b=>b.type==='text')?.text||'';
+    const r=JSON.parse(text.replace(/```json|```/g,'').trim());
+
+    const icon=r.same_part&&r.same_color?'✅':r.same_part?'🟡':'❌';
+    const col=r.same_part&&r.same_color?'#22c55e':r.same_part?'#f59e0b':'#ef4444';
+
+    result.innerHTML=`
+      <div class="compare-verdict">
+        <div class="verdict-ico">${icon}</div>
+        <div>
+          <div class="verdict-text" style="color:${col}">${r.verdict}</div>
+          <div style="font-size:11px;color:var(--hint)">${r.confidence}% confidence</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px;font-size:12px">
+        <div style="background:var(--bg);border-radius:6px;padding:8px"><strong>Photo A:</strong> ${r.part_a||'Unknown'}</div>
+        <div style="background:var(--bg);border-radius:6px;padding:8px"><strong>Photo B:</strong> ${r.part_b||'Unknown'}</div>
+      </div>
+      <div style="font-size:13px;color:var(--text2)"><strong>Analysis:</strong> ${r.explanation||''}</div>
+      ${r.differences?`<div style="font-size:12px;color:var(--muted);margin-top:6px"><strong>Differences:</strong> ${r.differences}</div>`:''}`;
+
+    result.classList.add('visible');
+  } catch(err){
+    result.innerHTML=`<span style="color:var(--red)">⚠️ Comparison failed: ${err.message}</span>`;
+  }
+
+  btn.textContent='Compare →'; btn.disabled=false;
+}
+
+// ── HISTORY ────────────────────────────────────────────────────────────────
+function addToHistory(result){
+  const bricks=result.bricks||[];
+  if(!bricks.length) return;
+  const entry={
+    time:new Date().toLocaleTimeString(),
+    label:bricks[0].shape||'Unknown',
+    color:bricks[0].color_name||'',
+    conf:bricks[0].confidence||0,
+  };
+  history.unshift(entry);
+  if(history.length>8) history.pop();
+
+  const strip=document.getElementById('historyStrip');
+  const grid=document.getElementById('historyGrid');
+  strip.style.display='';
+  grid.innerHTML=history.map(h=>`
+    <div class="hs-item">
+      <span>${h.time}</span>
+      <span class="hs-item-result">${h.label} · ${h.color}</span>
+      <span style="color:var(--hint)">${h.conf}%</span>
+    </div>`).join('');
+}
+</script>
+</body>
+</html>
