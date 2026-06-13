@@ -334,64 +334,64 @@
 </script>
 <!-- Load the 3.5MB data file -->
 <script>
-// Load parts: API when on Render, static file when local
-const PARTS_API = (function(){
+// Smart loader: tries API first (paginated, fast), falls back to static 3.5MB JS
+(function(){
   const h = window.location.hostname;
-  if(h.includes('onrender.com')) return 'https://studsup-api.onrender.com';
-  if(window.location.protocol === 'file:') return 'http://localhost:8000';
-  return '';
-})();
+  const onRender = h.includes('onrender.com');
+  const API = onRender ? 'https://studsup-api.onrender.com' : 
+              (h==='localhost'||h==='127.0.0.1') ? 'http://localhost:8000' : null;
 
-// Image URL — use Rebrickable CDN on Render (no hotlink block), BrickLink locally
-function partImgUrl(p) {
-  // Rebrickable works fine cross-origin; BrickLink blocks onrender.com referrer
-  const h = window.location.hostname;
-  if(h.includes('onrender.com')) {
-    return `https://cdn.rebrickable.com/media/parts/elements/${p.eid||p.element_id}.jpg`;
+  function imgUrl(blcol, blp, eid) {
+    // Rebrickable on Render (BrickLink blocks onrender referrer), BrickLink locally
+    if(onRender) return `https://cdn.rebrickable.com/media/parts/elements/${eid}.jpg`;
+    return `https://img.bricklink.com/ItemImage/PN/${blcol}/${blp}.png`;
   }
-  return p.img || p.img_url || `https://img.bricklink.com/ItemImage/PN/${p.blcol||p.bl_color_id}/${p.blp||p.bl_part_id}.png`;
-}
 
-if(PARTS_API) {
-  // Load from API — fetch first page, build BL_COLOR_NAMES from colors endpoint
-  Promise.all([
-    fetch(`${PARTS_API}/api/parts?per_page=200&sort=avail_avg_usd&order=asc&page=1`).then(r=>r.json()),
-    fetch(`${PARTS_API}/api/parts/colors`).then(r=>r.json())
-  ]).then(([partsData, colors]) => {
-    // Map API response to PARTS format expected by initApp
-    window.PARTS = partsData.items.map(p => ({
-      eid: p.element_id, lcol: p.lego_color_id||0, blcol: p.bl_color_id,
-      did: p.design_id||0, blp: p.bl_part_id,
-      cname: p.bl_color_name, ccss: p.color_css||'#ccc',
-      img: partImgUrl({eid:p.element_id,blcol:p.bl_color_id,blp:p.bl_part_id}),
-      slots:p.avail_lots||0, sqty:p.sold_qty||0,
-      smin:p.sold_min_usd||0, savg:p.sold_avg_usd||0, smax:p.sold_max_usd||0,
-      alots:p.avail_lots||0, aqty:p.avail_qty||0,
-      amin:p.avail_min_usd||0, aavg:p.avail_avg_usd||0, amax:p.avail_max_usd||0,
-    }));
-    window.BL_COLOR_NAMES = {};
-    colors.forEach(c => { window.BL_COLOR_NAMES[c.bl_color_id] = c.bl_color_name; });
-    // Store total for display
-    window.PARTS_TOTAL = partsData.total;
-    initApp();
-  }).catch(err => {
-    console.warn('API failed, falling back to static data:', err);
-    loadStaticFallback();
-  });
-} else {
-  loadStaticFallback();
-}
+  function loadFromAPI(api) {
+    Promise.all([
+      fetch(api+'/api/parts?per_page=200&sort=avail_avg_usd&order=asc&in_stock=false').then(r=>r.json()),
+      fetch(api+'/api/parts/colors').then(r=>r.json())
+    ]).then(([partsData, colors]) => {
+      window.PARTS = partsData.items.map(p => ({
+        eid:p.element_id, lcol:p.lego_color_id||0, blcol:p.bl_color_id,
+        did:p.design_id||0, blp:p.bl_part_id,
+        cname:p.bl_color_name, ccss:p.color_css||'#ccc',
+        img:imgUrl(p.bl_color_id, p.bl_part_id, p.element_id),
+        slots:p.avail_lots||0, sqty:p.sold_qty||0,
+        smin:p.sold_min_usd||0, savg:p.sold_avg_usd||0, smax:p.sold_max_usd||0,
+        alots:p.avail_lots||0, aqty:p.avail_qty||0,
+        amin:p.avail_min_usd||0, aavg:p.avail_avg_usd||0, amax:p.avail_max_usd||0,
+      }));
+      window.BL_COLOR_NAMES = {};
+      colors.forEach(c => { window.BL_COLOR_NAMES[c.bl_color_id] = c.bl_color_name; });
+      window.PARTS_TOTAL = partsData.total;
+      initApp();
+    }).catch(err => {
+      console.warn('API load failed, trying static file:', err.message);
+      loadStatic();
+    });
+  }
 
-function loadStaticFallback() {
-  const s = document.createElement('script');
-  s.src = 'lugbulk_data.js';
-  s.onload = () => {
-    // patch img URLs for local
-    if(window.PARTS) window.PARTS.forEach(p => { p.img = partImgUrl(p); });
-    initApp();
-  };
-  document.head.appendChild(s);
-}
+  function loadStatic() {
+    const s = document.createElement('script');
+    s.src = 'lugbulk_data.js';
+    s.onload = () => initApp();
+    s.onerror = () => {
+      document.getElementById('loadingOverlay').innerHTML =
+        '<div style="text-align:center;padding:40px"><div style="font-size:48px;margin-bottom:12px">⚠️</div>' +
+        '<div style="font-size:16px;font-weight:700;margin-bottom:8px">Could not load parts data</div>' +
+        '<div style="font-size:13px;color:#888">API is offline and static file failed to load.<br>' +
+        'Try refreshing in 30 seconds.</div></div>';
+    };
+    document.head.appendChild(s);
+  }
+
+  if(API) {
+    loadFromAPI(API);
+  } else {
+    loadStatic();
+  }
+})();
 </script>
 <script>
 // ── STATE ────────────────────────────────────────────────────────────────────
