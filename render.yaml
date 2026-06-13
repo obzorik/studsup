@@ -1,27 +1,22 @@
 services:
-  # ── BACKEND — FastAPI + SQLite ─────────────────────────────────────────────
   - type: web
     name: studsup-api
     env: python
-    region: frankfurt          # closest to Latvia
+    region: frankfurt
     plan: free
     rootDir: backend
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /api/health
-    envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.0
 
-  # ── FRONTEND — Static HTML ─────────────────────────────────────────────────
   - type: web
     name: studsup-frontend
     env: static
     region: frankfurt
     plan: free
-    rootDir: frontend
+    rootDir: .
     staticPublishPath: .
     routes:
       - type: rewrite
         source: /*
-        destination: /pages/home.html
+        destination: /index.html
